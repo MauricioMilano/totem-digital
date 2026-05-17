@@ -1,0 +1,92 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { ButtonPrimary } from "@/components/shared/button-primary";
+import { TextInput } from "@/components/shared/text-input";
+import { Scissors } from "lucide-react";
+
+export default function TotemPage() {
+  const router = useRouter();
+  const [cpf, setCpf] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  function formatCPF(value: string) {
+    const digits = value.replace(/\D/g, "").slice(0, 11);
+    return digits
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+
+    const cpfDigits = cpf.replace(/\D/g, "");
+    if (cpfDigits.length !== 11) {
+      setError("CPF deve ter 11 dígitos");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await fetch(`/api/clientes/${cpfDigits}`);
+      if (res.status === 404) {
+        // Novo cliente - redirecionar para cadastro
+        router.push(`/totem/novo-cliente?cpf=${cpfDigits}`);
+        return;
+      }
+
+      if (!res.ok) throw new Error();
+
+      const cliente = await res.json();
+      // Salvar cliente na sessão - usamos sessionStorage
+      sessionStorage.setItem(
+        "totem-cliente",
+        JSON.stringify({ id: cliente.id, nome: cliente.nome, cpf: cliente.cpf })
+      );
+
+      router.push("/totem/servicos");
+    } catch {
+      setError("Erro ao buscar CPF. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center px-4">
+      <div className="w-full max-w-md text-center">
+        {/* Logo / Header */}
+        <div className="mb-12">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-brand-primary mb-6">
+            <Scissors className="w-7 h-7 text-white" />
+          </div>
+          <h1 className="text-display-lg text-ink mb-2">Barbearia</h1>
+          <p className="text-body-md text-body max-w-sm mx-auto">
+            Informe seu CPF para iniciar seu atendimento
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <TextInput
+            label="CPF"
+            placeholder="000.000.000-00"
+            value={cpf}
+            onChange={(e) => setCpf(formatCPF(e.target.value))}
+            error={error}
+            maxLength={14}
+            autoFocus
+          />
+
+          <ButtonPrimary type="submit" disabled={loading} className="w-full">
+            {loading ? "Buscando..." : "Continuar"}
+          </ButtonPrimary>
+        </form>
+      </div>
+    </div>
+  );
+}

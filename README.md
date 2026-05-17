@@ -1,36 +1,136 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💈 Barbearia — Comanda Digital
 
-## Getting Started
+Sistema de comanda digital para barbearia operado via **totem touchscreen**, com tema editorial **Airtable Design System**.
 
-First, run the development server:
+## Funcionalidades
+
+### 🖥️ Totem (Cliente)
+- Input de CPF para identificação
+- Cadastro de novos clientes
+- Seleção de serviços (corte, barba, combo, etc.)
+- Cardápio de bebidas com filtro por idade
+- Produtos adicionais para venda
+- Escolha da forma de pagamento (PIX, Cartão, Dinheiro)
+- Opção de parcelamento no cartão de crédito
+- Resumo da comanda com valor total
+
+### 👨‍💼 Admin (Profissional)
+- Dashboard com estatísticas
+- CRUD de serviços
+- CRUD de bebidas e categorias
+- CRUD de produtos e categorias
+- **CRUD de formas de pagamento** (com parcelamento configurável)
+- Lista de clientes
+- Gestão de comandas (abrir, fechar, pagar, reabrir)
+- Detalhe da comanda com forma de pagamento e parcelas
+
+## Stack
+
+- **Framework:** Next.js 15 (App Router)
+- **Linguagem:** TypeScript
+- **Banco:** PostgreSQL (via Docker)
+- **ORM:** Prisma
+- **Autenticação:** NextAuth v5 (Credentials)
+- **UI:** Shadcn/UI + Tailwind CSS
+- **Tema:** Airtable Design System
+- **Formulários:** React Hook Form + Zod
+
+## Pré-requisitos
+
+- Docker e Docker Compose
+- Node.js 18+
+- npm
+
+## Setup
+
+### 1. Subir o banco PostgreSQL
+
+```bash
+docker compose up -d
+```
+
+### 2. Instalar dependências
+
+```bash
+npm install
+```
+
+### 3. Configurar variáveis de ambiente
+
+O arquivo `.env` já está configurado para desenvolvimento:
+
+```
+DATABASE_URL="postgresql://barbearia:barbearia123@localhost:5432/barbearia_comanda"
+NEXTAUTH_SECRET="super-secret-key-change-in-production-123456"
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+### 4. Rodar migrations e seed
+
+```bash
+npx prisma migrate dev --name init
+npx prisma db seed
+```
+
+### 5. Iniciar o servidor
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 6. Acessar
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Totem:** http://localhost:3000/totem
+- **Admin:** http://localhost:3000/login
+- **Login padrão:** `admin@barbearia.com` / `admin123`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Estrutura do Projeto
 
-## Learn More
+```
+src/
+├── app/
+│   ├── (admin)/          # Área administrativa (protegida)
+│   │   ├── login/        # Tela de login
+│   │   ├── page.tsx      # Dashboard
+│   │   ├── servicos/     # CRUD serviços
+│   │   ├── cardapio/
+│   │   │   ├── bebidas/         # CRUD bebidas
+│   │   │   ├── produtos/        # CRUD produtos
+│   │   │   └── formas-pagamento/ # CRUD formas de pagamento
+│   │   ├── clientes/     # Lista de clientes
+│   │   └── comandas/     # Gestão de comandas
+│   ├── (totem)/          # Interface do totem
+│   │   ├── page.tsx      # Input CPF
+│   │   ├── novo-cliente/ # Cadastro novo cliente
+│   │   ├── servicos/     # Seleção de serviços
+│   │   ├── bebidas/      # Cardápio bebidas
+│   │   ├── produtos/     # Produtos adicionais
+│   │   ├── resumo/       # Resumo + pagamento
+│   │   └── sucesso/      # Confirmação
+│   └── api/              # API routes
+├── components/
+│   ├── admin/            # Componentes admin
+│   ├── shared/           # Componentes Airtable (button, input)
+│   ├── totem/            # Componentes totem
+│   └── ui/               # Shadcn/UI components
+├── hooks/
+│   └── use-comanda.ts    # Estado global da comanda
+└── lib/
+    ├── auth.ts           # Config NextAuth
+    ├── prisma.ts         # Cliente Prisma
+    └── utils.ts          # Utilitários
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Tema Airtable
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+O sistema segue o design system editorial da Airtable:
+- **White canvas** primário com tipo em **dark ink**
+- Botões **near-black pill** como CTA primário
+- Cards de **brand voltage** (coral, forest, dark) para momentos de impacto
+- Tipografia Haas Grotesk em pesos modestos
+- Espaçamento generoso (96px entre seções)
+- Sistema de pagamento usa token `rounded.pill` como sub-sistema próprio
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Licença
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT

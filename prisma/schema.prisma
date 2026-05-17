@@ -1,0 +1,160 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum StatusComanda {
+  ABERTA
+  EM_ANDAMENTO
+  FECHADA
+  PAGA
+  CANCELADA
+}
+
+enum CategoriaServico {
+  CORTE
+  BARBA
+  HIDRATACAO
+  SOBRANCELHA
+  COMBO
+  OUTRO
+}
+
+model Usuario {
+  id        String   @id @default(cuid())
+  nome      String
+  email     String   @unique
+  senha     String
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  comandas  Comanda[]
+}
+
+model Cliente {
+  id        String      @id @default(cuid())
+  nome      String
+  cpf       String      @unique
+  telefone  String?
+  email     String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  comandas  Comanda[]
+}
+
+model FormaPagamento {
+  id                  String   @id @default(cuid())
+  nome                String
+  descricao           String?
+  permiteParcelamento Boolean  @default(false)
+  maximoParcelas      Int      @default(1)
+  ativo               Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  comandas            Comanda[]
+}
+
+model Servico {
+  id          String           @id @default(cuid())
+  nome        String
+  descricao   String?
+  categoria   CategoriaServico @default(CORTE)
+  preco       Decimal          @db.Decimal(10, 2)
+  duracaoMin  Int              @default(30)
+  ativo       Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  itens       ItemComanda[]
+}
+
+model CategoriaBebida {
+  id        String      @id @default(cuid())
+  nome      String      @unique
+  descricao String?
+  ativo     Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  bebidas   Bebida[]
+}
+
+model Bebida {
+  id            String          @id @default(cuid())
+  nome          String
+  descricao     String?
+  preco         Decimal         @db.Decimal(10, 2)
+  categoriaId   String
+  categoria     CategoriaBebida @relation(fields: [categoriaId], references: [id])
+  possuiAlcool  Boolean         @default(false)
+  volumeMl      Int?
+  ativo         Boolean         @default(true)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  itens         ItemComanda[]
+}
+
+model CategoriaProduto {
+  id        String    @id @default(cuid())
+  nome      String    @unique
+  descricao String?
+  ativo     Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  produtos  Produto[]
+}
+
+model Produto {
+  id            String           @id @default(cuid())
+  nome          String
+  descricao     String?
+  preco         Decimal          @db.Decimal(10, 2)
+  categoriaId   String
+  categoria     CategoriaProduto @relation(fields: [categoriaId], references: [id])
+  quantidade    Int              @default(0)
+  ativo         Boolean          @default(true)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  itens         ItemComanda[]
+}
+
+model Comanda {
+  id                 String          @id @default(cuid())
+  clienteId          String
+  cliente            Cliente         @relation(fields: [clienteId], references: [id])
+  usuarioId          String?
+  usuario            Usuario?        @relation(fields: [usuarioId], references: [id])
+  formaPagamentoId   String?
+  formaPagamento     FormaPagamento? @relation(fields: [formaPagamentoId], references: [id])
+  quantidadeParcelas Int             @default(1)
+  status             StatusComanda   @default(ABERTA)
+  total              Decimal         @default(0) @db.Decimal(10, 2)
+  observacao         String?
+  fechadaEm          DateTime?
+  pagaEm             DateTime?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  itens              ItemComanda[]
+}
+
+model ItemComanda {
+  id         String  @id @default(cuid())
+  comandaId  String
+  comanda    Comanda @relation(fields: [comandaId], references: [id])
+
+  // Campos polimórficos: serviço, bebida ou produto
+  servicoId  String?
+  servico    Servico?  @relation(fields: [servicoId], references: [id])
+  bebidaId   String?
+  bebida     Bebida?   @relation(fields: [bebidaId], references: [id])
+  produtoId  String?
+  produto    Produto?  @relation(fields: [produtoId], references: [id])
+
+  nomeItem   String   // Cópia do nome para histórico
+  precoUnit  Decimal  @db.Decimal(10, 2)
+  quantidade Int      @default(1)
+  total      Decimal  @db.Decimal(10, 2)
+  createdAt  DateTime @default(now())
+}
