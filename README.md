@@ -60,7 +60,7 @@ npm install
 O arquivo `.env` já está configurado para desenvolvimento:
 
 ```
-DATABASE_URL="postgresql://barbearia:barbearia123@localhost:5432/barbearia_comanda"
+DATABASE_URL="postgresql://barbearia:barbearia123@localhost:5433/barbearia_comanda"
 NEXTAUTH_SECRET="super-secret-key-change-in-production-123456"
 NEXTAUTH_URL="http://localhost:3000"
 ```

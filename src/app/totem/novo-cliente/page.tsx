@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { TextInput } from "@/components/shared/text-input";
 import { toast } from "sonner";
 import { ArrowLeft, UserPlus } from "lucide-react";
+import { Suspense } from "react";
 
-export default function NovoClientePage() {
+function NovoClienteForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const cpfFromUrl = searchParams.get("cpf") || "";
@@ -123,5 +124,13 @@ export default function NovoClientePage() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function NovoClientePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Carregando...</div>}>
+      <NovoClienteForm />
+    </Suspense>
   );
 }

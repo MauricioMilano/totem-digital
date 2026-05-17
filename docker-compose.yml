@@ -6,11 +6,13 @@ services:
     container_name: barbearia-postgres
     restart: unless-stopped
     ports:
-      - '5432:5432'
+      - '5433:5432'
     environment:
       POSTGRES_USER: barbearia
       POSTGRES_PASSWORD: barbearia123
       POSTGRES_DB: barbearia_comanda
+      
+
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
