@@ -89,7 +89,7 @@ export function FormasPagamentoTable({
                 key={parcela}
                 className={`inline-flex px-2.5 py-1 rounded-pill text-xs font-medium ${
                   parcela === 1
-                    ? "bg-surface-soft text-muted"
+                    ? "bg-success/10 text-success"
                     : "bg-signature-cream text-ink"
                 }`}
               >

@@ -140,7 +140,7 @@ export function PagamentoSelector({
             {isSelected && !forma.permiteParcelamento && (
               <div className="pl-9">
                 <div className="p-3 bg-surface-soft rounded-lg">
-                  <span className="text-body-md text-body">
+                  <span className="text-body-md text-success font-medium">
                     Pagamento à vista
                   </span>
                 </div>
