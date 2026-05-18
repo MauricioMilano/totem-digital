@@ -14,7 +14,7 @@ const ButtonSecondary = forwardRef<HTMLButtonElement, ButtonSecondaryProps>(
         className={cn(
           "inline-flex items-center justify-center gap-2",
           "bg-canvas text-ink text-button font-medium",
-          "h-11 px-6 rounded-pill border border-border",
+          "h-11 px-6 rounded-md border border-border",
           "transition-colors duration-150",
           "hover:bg-secondary",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",

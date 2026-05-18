@@ -14,12 +14,9 @@ export default {
         "cal-body": ["Inter", "Cal Sans", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", "Oxygen", "Ubuntu", "Cantarell", '"Fira Sans"', '"Droid Sans"', '"Helvetica Neue"', "sans-serif"],
       },
       colors: {
-        primary: "#111111",
         canvas: "#ffffff",
-        secondary: "#F5F5F5",
         "surface-soft": "#F8F9FA",
         "surface-dark": "#101010",
-        border: "#E5E5E5",
         ink: "#111111",
         body: "#333333",
         brand: {
@@ -103,7 +100,7 @@ export default {
       borderRadius: {
         xs: "2px",
         sm: "6px",
-        md: "10px",
+         md: "8px",
         lg: "12px",
         xl: "16px",
         pill: "999px",
