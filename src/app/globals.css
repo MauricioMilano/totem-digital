@@ -4,6 +4,10 @@
 
 @layer base {
   :root {
+    --cal-primary: #111111;
+    --cal-canvas: #ffffff;
+    --cal-secondary: #F5F5F5;
+    --cal-border: #E5E5E5;
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -79,7 +83,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-haas;
+    @apply bg-background text-foreground font-cal;
   }
 }
 

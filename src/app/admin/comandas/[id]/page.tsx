@@ -35,7 +35,7 @@ interface Comanda {
 const statusConfig: Record<string, { label: string; color: string }> = {
   ABERTA: { label: "Aberta", color: "bg-blue-50 text-blue-700" },
   EM_ANDAMENTO: { label: "Em Andamento", color: "bg-yellow-50 text-yellow-700" },
-  FECHADA: { label: "Fechada", color: "bg-gray-100 text-gray-700" },
+   FECHADA: { label: "Fechada", color: "bg-secondary text-muted" },
   PAGA: { label: "Paga", color: "bg-green-50 text-green-700" },
   CANCELADA: { label: "Cancelada", color: "bg-red-50 text-red-700" },
 };
@@ -109,7 +109,7 @@ export default function ComandaDetailPage() {
 
   if (!comanda) return null;
 
-  const status = statusConfig[comanda.status] || { label: comanda.status, color: "bg-gray-100 text-gray-700" };
+  const status = statusConfig[comanda.status] || { label: comanda.status, color: "bg-secondary text-muted" };
   const podeFechar = comanda.status === "ABERTA" || comanda.status === "EM_ANDAMENTO";
   const podePagar = comanda.status === "FECHADA";
 
@@ -133,7 +133,7 @@ export default function ComandaDetailPage() {
             {comanda.cliente.nome} · {comanda.cliente.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4")}
           </p>
         </div>
-        <span className={`inline-flex px-3 py-1 rounded text-sm font-medium ${status.color}`}>
+        <span className={`inline-flex px-3 py-1 rounded-pill text-sm font-medium ${status.color}`}>
           {status.label}
         </span>
       </div>

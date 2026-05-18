@@ -81,10 +81,10 @@ export default async function DashboardPage() {
                   <td className="px-4 py-3 text-ink">{comanda.cliente.nome}</td>
                   <td className="px-4 py-3">
                     <span className={cn(
-                      "inline-flex px-2 py-0.5 rounded text-xs font-medium",
+                      "inline-flex px-2 py-0.5 rounded-pill text-xs font-medium",
                       comanda.status === "ABERTA" && "bg-blue-50 text-blue-700",
                       comanda.status === "EM_ANDAMENTO" && "bg-yellow-50 text-yellow-700",
-                      comanda.status === "FECHADA" && "bg-gray-50 text-gray-700",
+                      comanda.status === "FECHADA" && "bg-secondary text-muted",
                       comanda.status === "PAGA" && "bg-green-50 text-green-700",
                     )}>
                       {statusLabel(comanda.status)}

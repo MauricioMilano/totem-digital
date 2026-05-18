@@ -31,7 +31,7 @@ export function Sidebar() {
   return (
     <aside className="w-60 h-screen bg-canvas border-r border-hairline flex flex-col">
       <div className="px-6 py-5 border-b border-hairline">
-        <Link href="/" className="text-title-sm text-ink font-haas">
+        <Link href="/" className="text-title-sm text-ink font-cal">
           Barbearia
         </Link>
         <p className="text-caption text-muted mt-0.5">Área Profissional</p>
@@ -48,7 +48,7 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-md text-body-md transition-colors",
+                 "flex items-center gap-3 px-3 py-2.5 rounded-pill text-body-md transition-colors",
                 isActive
                   ? "bg-surface-soft text-ink font-medium"
                   : "text-body hover:bg-surface-soft hover:text-ink"
@@ -64,7 +64,7 @@ export function Sidebar() {
       <div className="p-3 border-t border-hairline">
         <button
            onClick={() => signOut({ callbackUrl: "/admin/login" })}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-md text-body-md text-body hover:bg-surface-soft hover:text-ink w-full transition-colors"
+           className="flex items-center gap-3 px-3 py-2.5 rounded-pill text-body-md text-body hover:bg-surface-soft hover:text-ink w-full transition-colors"
         >
           <LogOut className="w-4 h-4" />
           Sair

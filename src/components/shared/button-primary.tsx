@@ -13,11 +13,11 @@ const ButtonPrimary = forwardRef<HTMLButtonElement, ButtonPrimaryProps>(
         ref={ref}
         className={cn(
           "inline-flex items-center justify-center gap-2",
-          "bg-brand-primary text-white text-button",
-          "px-6 py-4 rounded-lg",
-          "transition-all duration-150",
-          "hover:bg-brand-primary-active",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-info-border focus-visible:ring-offset-2",
+          "bg-primary text-canvas text-button font-medium",
+          "h-11 px-6 rounded-pill",
+          "transition-colors duration-150",
+          "hover:bg-primary/90",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
           "disabled:opacity-50 disabled:cursor-not-allowed",
           className
         )}

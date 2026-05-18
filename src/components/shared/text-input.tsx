@@ -11,18 +11,18 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     return (
       <div className="flex flex-col gap-1.5">
         {label && (
-          <label className="text-caption text-body">{label}</label>
+          <label className="text-caption text-ink">{label}</label>
         )}
         <input
           ref={ref}
           className={cn(
-            "w-full h-11 px-4 py-3",
+            "w-full h-11 px-4",
             "bg-canvas text-ink text-body-md",
-            "border border-hairline rounded-sm",
-            "placeholder:text-muted/60",
-            "focus:outline-none focus:border-info-border focus:ring-1 focus:ring-info-border",
-            "disabled:bg-surface-soft disabled:cursor-not-allowed",
-            error && "border-destructive/70 focus:border-destructive focus:ring-destructive",
+            "border border-border rounded-pill",
+            "placeholder:text-muted-foreground",
+            "focus-visible:outline-none focus-visible:border-border focus-visible:ring-2 focus-visible:ring-primary",
+            "disabled:bg-secondary disabled:cursor-not-allowed",
+            error && "border-destructive/70 focus-visible:border-destructive focus-visible:ring-destructive",
             className
           )}
           {...props}

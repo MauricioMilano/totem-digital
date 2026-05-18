@@ -62,7 +62,7 @@ export function DashboardStats({
             key={stat.label}
             className="bg-canvas border border-hairline rounded-lg p-5 flex items-start gap-4"
           >
-            <div className={`p-2.5 rounded-md ${stat.bg}`}>
+            <div className={`p-2.5 rounded-pill ${stat.bg}`}>
               <Icon className={`w-5 h-5 ${stat.color}`} />
             </div>
             <div>

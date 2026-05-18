@@ -155,7 +155,7 @@ export default function ServicosPage() {
               <label className="text-caption text-body">Categoria</label>
               <select
                 {...form.register("categoria")}
-                className="w-full h-11 px-4 py-3 bg-canvas text-ink text-body-md border border-hairline rounded-sm focus:outline-none focus:border-info-border"
+                 className="w-full h-11 px-4 py-3 bg-canvas text-ink text-body-md border border-border rounded-pill focus:outline-none focus:border-border focus:ring-2 focus:ring-primary"
               >
                 {categorias.map((cat) => (
                   <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -194,7 +194,7 @@ export default function ServicosPage() {
                 <td className="px-4 py-3 text-right text-ink">R$ {Number(servico.preco).toFixed(2)}</td>
                 <td className="px-4 py-3 text-center text-body">{servico.duracaoMin} min</td>
                 <td className="px-4 py-3 text-center">
-                  <span className={`inline-flex px-2 py-0.5 rounded text-xs font-medium ${servico.ativo ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+                  <span className={`inline-flex px-2 py-0.5 rounded-pill text-xs font-medium ${servico.ativo ? "bg-green-50 text-green-700" : "bg-secondary text-muted"}`}>
                     {servico.ativo ? "Sim" : "Não"}
                   </span>
                 </td>

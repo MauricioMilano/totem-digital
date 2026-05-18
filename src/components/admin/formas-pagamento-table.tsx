@@ -56,7 +56,7 @@ export function FormasPagamentoTable({
                     onChange={() => onToggleActive(forma.id, !forma.ativo)}
                     className="sr-only peer"
                   />
-                  <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-info-border rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-primary"></div>
+                  <div className="w-9 h-5 bg-secondary peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-primary"></div>
                 </label>
                 <span className={`text-xs font-medium ${forma.ativo ? "text-success" : "text-muted"}`}>
                   {forma.ativo ? "Ativo" : "Inativo"}
@@ -87,7 +87,7 @@ export function FormasPagamentoTable({
             ).map((parcela) => (
               <span
                 key={parcela}
-                className={`inline-flex px-2.5 py-1 rounded text-xs font-medium ${
+                className={`inline-flex px-2.5 py-1 rounded-pill text-xs font-medium ${
                   parcela === 1
                     ? "bg-surface-soft text-muted"
                     : "bg-signature-cream text-ink"

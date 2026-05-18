@@ -13,11 +13,11 @@ const ButtonSecondary = forwardRef<HTMLButtonElement, ButtonSecondaryProps>(
         ref={ref}
         className={cn(
           "inline-flex items-center justify-center gap-2",
-          "bg-canvas text-ink text-button",
-          "px-6 py-4 rounded-lg border border-hairline",
-          "transition-all duration-150",
-          "hover:bg-surface-soft",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-info-border focus-visible:ring-offset-2",
+          "bg-canvas text-ink text-button font-medium",
+          "h-11 px-6 rounded-pill border border-border",
+          "transition-colors duration-150",
+          "hover:bg-secondary",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
           "disabled:opacity-50 disabled:cursor-not-allowed",
           className
         )}
