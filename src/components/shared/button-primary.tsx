@@ -13,7 +13,7 @@ const ButtonPrimary = forwardRef<HTMLButtonElement, ButtonPrimaryProps>(
         ref={ref}
         className={cn(
           "inline-flex items-center justify-center gap-2",
-          "bg-primary text-canvas text-button font-medium",
+           "bg-primary text-primary-foreground font-medium",
           "h-11 px-6 rounded-md",
           "transition-colors duration-150",
           "hover:bg-primary/90",

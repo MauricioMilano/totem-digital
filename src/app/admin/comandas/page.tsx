@@ -20,7 +20,7 @@ interface Comanda {
 const statusConfig: Record<string, { label: string; color: string }> = {
   ABERTA: { label: "Aberta", color: "bg-blue-50 text-blue-700" },
   EM_ANDAMENTO: { label: "Em Andamento", color: "bg-yellow-50 text-yellow-700" },
-   FECHADA: { label: "Fechada", color: "bg-secondary text-ink" },
+   FECHADA: { label: "Fechada", color: "bg-secondary text-secondary-foreground" },
   PAGA: { label: "Paga", color: "bg-green-50 text-green-700" },
   CANCELADA: { label: "Cancelada", color: "bg-red-50 text-red-700" },
 };
@@ -100,7 +100,7 @@ export default function ComandasPage() {
             </thead>
             <tbody>
               {comandas.map((comanda) => {
-                 const status = statusConfig[comanda.status] || { label: comanda.status, color: "bg-secondary text-ink" };
+                 const status = statusConfig[comanda.status] || { label: comanda.status, color: "bg-secondary text-secondary-foreground" };
                 return (
                   <tr
                     key={comanda.id}

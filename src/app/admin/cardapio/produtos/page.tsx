@@ -157,7 +157,7 @@ export default function ProdutosPage() {
                 <td className="px-4 py-3 text-right text-ink">R$ {Number(p.preco).toFixed(2)}</td>
                 <td className="px-4 py-3 text-center text-body">{p.quantidade}</td>
                 <td className="px-4 py-3 text-center">
-                  <span className={`inline-flex px-2 py-0.5 rounded-pill text-xs font-medium ${p.ativo ? "bg-green-50 text-green-700" : "bg-secondary text-ink"}`}>
+                  <span className={`inline-flex px-2 py-0.5 rounded-pill text-xs font-medium ${p.ativo ? "bg-green-50 text-green-700" : "bg-secondary text-secondary-foreground"}`}>
                     {p.ativo ? "Sim" : "Não"}
                   </span>
                 </td>

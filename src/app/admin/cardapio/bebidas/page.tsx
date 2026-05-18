@@ -184,7 +184,7 @@ export default function BebidasPage() {
                 </td>
                 <td className="px-4 py-3 text-center text-body">{b.volumeMl ? `${b.volumeMl}ml` : "—"}</td>
                 <td className="px-4 py-3 text-center">
-                  <span className={`inline-flex px-2 py-0.5 rounded-pill text-xs font-medium ${b.ativo ? "bg-green-50 text-green-70:0" : "bg-secondary text-ink"}`}>
+                  <span className={`inline-flex px-2 py-0.5 rounded-pill text-xs font-medium ${b.ativo ? "bg-green-50 text-green-700" : "bg-secondary text-secondary-foreground"}`}>
                     {b.ativo ? "Sim" : "Não"}
                   </span>
                 </td>
