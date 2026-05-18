@@ -16,13 +16,13 @@ import {
 import { signOut } from "next-auth/react";
 
 const menuItems = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/servicos", label: "Serviços", icon: Scissors },
-  { href: "/cardapio/bebidas", label: "Bebidas", icon: Wine },
-  { href: "/cardapio/produtos", label: "Produtos", icon: Package },
-  { href: "/cardapio/formas-pagamento", label: "Formas de Pagamento", icon: CreditCard },
-  { href: "/clientes", label: "Clientes", icon: Users },
-  { href: "/comandas", label: "Comandas", icon: FileText },
+  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/servicos", label: "Serviços", icon: Scissors },
+  { href: "/admin/cardapio/bebidas", label: "Bebidas", icon: Wine },
+  { href: "/admin/cardapio/produtos", label: "Produtos", icon: Package },
+  { href: "/admin/cardapio/formas-pagamento", label: "Formas de Pagamento", icon: CreditCard },
+  { href: "/admin/clientes", label: "Clientes", icon: Users },
+  { href: "/admin/comandas", label: "Comandas", icon: FileText },
 ];
 
 export function Sidebar() {
