@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { auth } from "@/lib/auth";
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen gap-6 bg-background p-4">
       <div className="text-center space-y-2 mb-8">
@@ -13,7 +16,7 @@ export default function Home() {
           <Link href="/totem">Totem</Link>
         </Button>
         <Button asChild variant="outline" size="lg" className="w-full sm:w-auto px-8 py-6 text-lg font-semibold">
-          <Link href="/admin/login">Admin</Link>
+          <Link href={session ? "/admin" : "/admin/login"}>Admin</Link>
         </Button>
       </div>
     </div>

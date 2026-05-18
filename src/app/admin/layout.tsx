@@ -3,6 +3,7 @@ import { TopNav } from "@/components/admin/top-nav";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { SessionProvider } from "next-auth/react";
+import { headers } from "next/headers";
 
 export default async function AdminLayout({
   children,
@@ -10,7 +11,16 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const session = await auth();
-  if (!session) redirect("/login");
+  const headerList = await headers();
+  const pathname = headerList.get("x-pathname");
+
+  if (!session && pathname !== "/admin/login") {
+    redirect("/admin/login");
+  }
+
+  if (pathname === "/admin/login") {
+    return <SessionProvider session={session}>{children}</SessionProvider>;
+  }
 
   return (
     <SessionProvider session={session}>
@@ -26,3 +36,4 @@ export default async function AdminLayout({
     </SessionProvider>
   );
 }
+

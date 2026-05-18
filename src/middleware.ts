@@ -5,9 +5,13 @@ export default auth((req) => {
   const { pathname } = req.nextUrl;
   const isLoggedIn = !!req.auth;
 
+  // Create response
+  const response = NextResponse.next();
+  response.headers.set("x-pathname", pathname);
+
   // Rotas públicas do totem
   if (pathname.startsWith("/totem") || pathname === "/") {
-    return NextResponse.next();
+    return response;
   }
 
   // Rotas de login
@@ -15,20 +19,23 @@ export default auth((req) => {
     if (isLoggedIn) {
       return NextResponse.redirect(new URL("/", req.url));
     }
-    return NextResponse.next();
+    return response;
   }
 
   // Rotas protegidas do admin
-  if (pathname.startsWith("/admin") || pathname.startsWith("/cardapio") ||
-      pathname.startsWith("/servicos") || pathname.startsWith("/clientes") ||
-      pathname.startsWith("/comandas")) {
+  if (
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/cardapio") ||
+    pathname.startsWith("/servicos") ||
+    pathname.startsWith("/clientes") ||
+    pathname.startsWith("/comandas")
+  ) {
     if (!isLoggedIn && pathname !== "/admin/login") {
       return NextResponse.redirect(new URL("/admin/login", req.url));
     }
-    return NextResponse.next();
   }
 
-  return NextResponse.next();
+  return response;
 });
 
 export const config = {

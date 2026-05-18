@@ -63,7 +63,7 @@ export function Sidebar() {
 
       <div className="p-3 border-t border-hairline">
         <button
-          onClick={() => signOut({ callbackUrl: "/login" })}
+           onClick={() => signOut({ callbackUrl: "/admin/login" })}
           className="flex items-center gap-3 px-3 py-2.5 rounded-md text-body-md text-body hover:bg-surface-soft hover:text-ink w-full transition-colors"
         >
           <LogOut className="w-4 h-4" />

@@ -81,7 +81,7 @@ npm run dev
 ### 6. Acessar
 
 - **Totem:** http://localhost:3000/totem
-- **Admin:** http://localhost:3000/login
+- **Admin:** http://localhost:3000/admin/login
 - **Login padrão:** `admin@barbearia.com` / `admin123`
 
 ## Estrutura do Projeto
