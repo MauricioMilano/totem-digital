@@ -34,7 +34,7 @@ export function Sidebar() {
         <Link href="/" className="text-title-sm text-ink font-cal">
           Barbearia
         </Link>
-        <p className="text-caption text-muted mt-0.5">Área Profissional</p>
+        <p className="text-caption text-muted-foreground mt-0.5">Área Profissional</p>
       </div>
 
       <nav className="flex-1 p-3 space-y-0.5">

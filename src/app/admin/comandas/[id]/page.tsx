@@ -35,7 +35,7 @@ interface Comanda {
 const statusConfig: Record<string, { label: string; color: string }> = {
   ABERTA: { label: "Aberta", color: "bg-blue-50 text-blue-700" },
   EM_ANDAMENTO: { label: "Em Andamento", color: "bg-yellow-50 text-yellow-700" },
-   FECHADA: { label: "Fechada", color: "bg-secondary text-muted" },
+   FECHADA: { label: "Fechada", color: "bg-secondary text-secondary-foreground" },
   PAGA: { label: "Paga", color: "bg-green-50 text-green-700" },
   CANCELADA: { label: "Cancelada", color: "bg-red-50 text-red-700" },
 };
@@ -102,14 +102,14 @@ export default function ComandaDetailPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-40">
-        <div className="text-body-md text-muted">Carregando...</div>
+        <div className="text-body-md text-muted-foreground">Carregando...</div>
       </div>
     );
   }
 
   if (!comanda) return null;
 
-  const status = statusConfig[comanda.status] || { label: comanda.status, color: "bg-secondary text-muted" };
+  const status = statusConfig[comanda.status] || { label: comanda.status, color: "bg-secondary text-secondary-foreground" };
   const podeFechar = comanda.status === "ABERTA" || comanda.status === "EM_ANDAMENTO";
   const podePagar = comanda.status === "FECHADA";
 
@@ -141,13 +141,13 @@ export default function ComandaDetailPage() {
       {/* Payment info */}
       <div className="bg-surface-soft rounded-lg p-4 flex items-center gap-6">
         <div>
-          <p className="text-caption text-muted">Forma de Pagamento</p>
+          <p className="text-caption text-muted-foreground">Forma de Pagamento</p>
           <p className="text-body-md text-ink font-medium">
             {comanda.formaPagamento?.nome || "Não definido"}
           </p>
         </div>
         <div>
-          <p className="text-caption text-muted">Parcelas</p>
+          <p className="text-caption text-muted-foreground">Parcelas</p>
           <p className="text-body-md text-ink font-medium">
             {comanda.quantidadeParcelas > 1
               ? `${comanda.quantidadeParcelas}x`
@@ -155,14 +155,14 @@ export default function ComandaDetailPage() {
           </p>
         </div>
         <div>
-          <p className="text-caption text-muted">Total</p>
+          <p className="text-caption text-muted-foreground">Total</p>
           <p className="text-body-md text-ink font-medium">
             R$ {Number(comanda.total).toFixed(2)}
           </p>
         </div>
         {comanda.pagaEm && (
           <div>
-            <p className="text-caption text-muted">Pago em</p>
+            <p className="text-caption text-muted-foreground">Pago em</p>
             <p className="text-body-md text-ink font-medium">
               {new Date(comanda.pagaEm).toLocaleString("pt-BR")}
             </p>
@@ -177,10 +177,10 @@ export default function ComandaDetailPage() {
           <table className="w-full text-body-md">
             <thead>
               <tr className="border-b border-hairline bg-surface-soft">
-                <th className="text-left px-4 py-3 text-caption text-muted">Item</th>
-                <th className="text-right px-4 py-3 text-caption text-muted">Preço Unit.</th>
-                <th className="text-center px-4 py-3 text-caption text-muted">Qtd</th>
-                <th className="text-right px-4 py-3 text-caption text-muted">Total</th>
+                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Item</th>
+                <th className="text-right px-4 py-3 text-caption text-muted-foreground">Preço Unit.</th>
+                <th className="text-center px-4 py-3 text-caption text-muted-foreground">Qtd</th>
+                <th className="text-right px-4 py-3 text-caption text-muted-foreground">Total</th>
               </tr>
             </thead>
             <tbody>

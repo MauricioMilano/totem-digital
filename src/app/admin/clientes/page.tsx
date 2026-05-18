@@ -69,18 +69,18 @@ export default function ClientesPage() {
       </form>
 
       {loading ? (
-        <div className="text-body-md text-muted">Carregando...</div>
+        <div className="text-body-md text-muted-foreground">Carregando...</div>
       ) : (
         <div className="bg-canvas border border-hairline rounded-lg overflow-hidden">
           <table className="w-full text-body-md">
             <thead>
               <tr className="border-b border-hairline bg-surface-soft">
-                <th className="text-left px-4 py-3 text-caption text-muted">Nome</th>
-                <th className="text-left px-4 py-3 text-caption text-muted">CPF</th>
-                <th className="text-left px-4 py-3 text-caption text-muted">Telefone</th>
-                <th className="text-left px-4 py-3 text-caption text-muted">Email</th>
-                <th className="text-center px-4 py-3 text-caption text-muted">Comandas</th>
-                <th className="text-left px-4 py-3 text-caption text-muted">Cadastro</th>
+                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Nome</th>
+                <th className="text-left px-4 py-3 text-caption text-muted-foreground">CPF</th>
+                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Telefone</th>
+                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Email</th>
+                <th className="text-center px-4 py-3 text-caption text-muted-foreground">Comandas</th>
+                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Cadastro</th>
               </tr>
             </thead>
             <tbody>
@@ -101,7 +101,7 @@ export default function ClientesPage() {
               {clientes.length === 0 && (
                 <tr>
                   <td colSpan={6} className="px-4 py-8 text-center text-body">
-                    <Users className="w-8 h-8 mx-auto mb-2 text-muted" />
+                    <Users className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
                     Nenhum cliente encontrado
                   </td>
                 </tr>

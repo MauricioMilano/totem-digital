@@ -66,7 +66,7 @@ export function DashboardStats({
               <Icon className={`w-5 h-5 ${stat.color}`} />
             </div>
             <div>
-              <p className="text-caption text-muted">{stat.label}</p>
+              <p className="text-caption text-muted-foreground">{stat.label}</p>
               <p className="text-title-md text-ink mt-0.5">{stat.value}</p>
             </div>
           </div>

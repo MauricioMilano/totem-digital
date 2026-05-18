@@ -20,7 +20,7 @@ interface Comanda {
 const statusConfig: Record<string, { label: string; color: string }> = {
   ABERTA: { label: "Aberta", color: "bg-blue-50 text-blue-700" },
   EM_ANDAMENTO: { label: "Em Andamento", color: "bg-yellow-50 text-yellow-700" },
-   FECHADA: { label: "Fechada", color: "bg-secondary text-muted" },
+   FECHADA: { label: "Fechada", color: "bg-secondary text-ink" },
   PAGA: { label: "Paga", color: "bg-green-50 text-green-700" },
   CANCELADA: { label: "Cancelada", color: "bg-red-50 text-red-700" },
 };
@@ -83,24 +83,24 @@ export default function ComandasPage() {
       </div>
 
       {loading ? (
-        <div className="text-body-md text-muted py-8">Carregando...</div>
+        <div className="text-body-md text-muted-foreground py-8">Carregando...</div>
       ) : (
         <div className="bg-canvas border border-hairline rounded-lg overflow-hidden">
           <table className="w-full text-body-md">
             <thead>
               <tr className="border-b border-hairline bg-surface-soft">
-                <th className="text-left px-4 py-3 text-caption text-muted">Cliente</th>
-                <th className="text-left px-4 py-3 text-caption text-muted">Status</th>
-                <th className="text-left px-4 py-3 text-caption text-muted">Pagamento</th>
-                <th className="text-center px-4 py-3 text-caption text-muted">Parcelas</th>
-                <th className="text-right px-4 py-3 text-caption text-muted">Total</th>
-                <th className="text-right px-4 py-3 text-caption text-muted">Itens</th>
-                <th className="text-left px-4 py-3 text-caption text-muted">Data</th>
+                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Cliente</th>
+                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Status</th>
+                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Pagamento</th>
+                <th className="text-center px-4 py-3 text-caption text-muted-foreground">Parcelas</th>
+                <th className="text-right px-4 py-3 text-caption text-muted-foreground">Total</th>
+                <th className="text-right px-4 py-3 text-caption text-muted-foreground">Itens</th>
+                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Data</th>
               </tr>
             </thead>
             <tbody>
               {comandas.map((comanda) => {
-                 const status = statusConfig[comanda.status] || { label: comanda.status, color: "bg-secondary text-muted" };
+                 const status = statusConfig[comanda.status] || { label: comanda.status, color: "bg-secondary text-ink" };
                 return (
                   <tr
                     key={comanda.id}
@@ -136,7 +136,7 @@ export default function ComandasPage() {
               {comandas.length === 0 && (
                 <tr>
                   <td colSpan={7} className="px-4 py-8 text-center text-body">
-                    <FileText className="w-8 h-8 mx-auto mb-2 text-muted" />
+                    <FileText className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
                     Nenhuma comanda encontrada
                   </td>
                 </tr>

@@ -118,7 +118,7 @@ export default function FormasPagamentoPage() {
       </div>
 
       {loading ? (
-        <div className="text-body-md text-muted">Carregando...</div>
+        <div className="text-body-md text-muted-foreground">Carregando...</div>
       ) : (
         <FormasPagamentoTable
           formas={formas}

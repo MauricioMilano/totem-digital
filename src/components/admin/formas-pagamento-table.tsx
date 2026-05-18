@@ -27,7 +27,7 @@ export function FormasPagamentoTable({
   if (formas.length === 0) {
     return (
       <div className="bg-surface-soft border border-hairline rounded-lg p-8 text-center">
-        <CreditCard className="w-8 h-8 mx-auto mb-2 text-muted" />
+        <CreditCard className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
         <p className="text-body-md text-body">Nenhuma forma de pagamento cadastrada</p>
       </div>
     );
@@ -58,7 +58,7 @@ export function FormasPagamentoTable({
                   />
                   <div className="w-9 h-5 bg-secondary peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-primary"></div>
                 </label>
-                <span className={`text-xs font-medium ${forma.ativo ? "text-success" : "text-muted"}`}>
+                <span className={`text-xs font-medium ${forma.ativo ? "text-success" : "text-ink"}`}>
                   {forma.ativo ? "Ativo" : "Inativo"}
                 </span>
               </div>

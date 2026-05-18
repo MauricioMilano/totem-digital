@@ -113,7 +113,7 @@ export default function BebidasPage() {
     setShowForm(true);
   }
 
-  if (loading) return <div className="text-body-md text-muted p-8">Carregando...</div>;
+  if (loading) return <div className="text-body-md text-muted-foreground p-8">Carregando...</div>;
 
   return (
     <div className="space-y-6">
@@ -164,13 +164,13 @@ export default function BebidasPage() {
         <table className="w-full text-body-md">
           <thead>
             <tr className="border-b border-hairline bg-surface-soft">
-              <th className="text-left px-4 py-3 text-caption text-muted">Nome</th>
-              <th className="text-left px-4 py-3 text-caption text-muted">Categoria</th>
-              <th className="text-right px-4 py-3 text-caption text-muted">Preço</th>
-              <th className="text-center px-4 py-3 text-caption text-muted">Álcool</th>
-              <th className="text-center px-4 py-3 text-caption text-muted">Volume</th>
-              <th className="text-center px-4 py-3 text-caption text-muted">Ativo</th>
-              <th className="text-right px-4 py-3 text-caption text-muted">Ações</th>
+              <th className="text-left px-4 py-3 text-caption text-muted-foreground">Nome</th>
+              <th className="text-left px-4 py-3 text-caption text-muted-foreground">Categoria</th>
+              <th className="text-right px-4 py-3 text-caption text-muted-foreground">Preço</th>
+              <th className="text-center px-4 py-3 text-caption text-muted-foreground">Álcool</th>
+              <th className="text-center px-4 py-3 text-caption text-muted-foreground">Volume</th>
+              <th className="text-center px-4 py-3 text-caption text-muted-foreground">Ativo</th>
+              <th className="text-right px-4 py-3 text-caption text-muted-foreground">Ações</th>
             </tr>
           </thead>
           <tbody>
@@ -180,11 +180,11 @@ export default function BebidasPage() {
                 <td className="px-4 py-3 text-body">{b.categoria.nome}</td>
                 <td className="px-4 py-3 text-right text-ink">R$ {Number(b.preco).toFixed(2)}</td>
                 <td className="px-4 py-3 text-center">
-                  {b.possuiAlcool ? <span className="text-xs text-signature-coral">Sim</span> : <span className="text-xs text-muted">Não</span>}
+                  {b.possuiAlcool ? <span className="text-xs text-signature-coral">Sim</span> : <span className="text-xs text-muted-foreground">Não</span>}
                 </td>
                 <td className="px-4 py-3 text-center text-body">{b.volumeMl ? `${b.volumeMl}ml` : "—"}</td>
                 <td className="px-4 py-3 text-center">
-                  <span className={`inline-flex px-2 py-0.5 rounded-pill text-xs font-medium ${b.ativo ? "bg-green-50 text-green-700" : "bg-secondary text-muted"}`}>
+                  <span className={`inline-flex px-2 py-0.5 rounded-pill text-xs font-medium ${b.ativo ? "bg-green-50 text-green-70:0" : "bg-secondary text-ink"}`}>
                     {b.ativo ? "Sim" : "Não"}
                   </span>
                 </td>
@@ -197,7 +197,7 @@ export default function BebidasPage() {
               </tr>
             ))}
             {bebidas.length === 0 && (
-              <tr><td colSpan={7} className="px-4 py-8 text-center text-body"><Wine className="w-8 h-8 mx-auto mb-2 text-muted" />Nenhuma bebida encontrada</td></tr>
+              <tr><td colSpan={7} className="px-4 py-8 text-center text-body"><Wine className="w-8 h-8 mx-auto mb-2 text-ink" />Nenhuma bebida encontrada</td></tr>
             )}
           </tbody>
         </table>

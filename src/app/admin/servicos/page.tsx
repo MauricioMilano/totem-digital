@@ -121,7 +121,7 @@ export default function ServicosPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-40">
-        <div className="text-body-md text-muted">Carregando...</div>
+        <div className="text-body-md text-muted-foreground">Carregando...</div>
       </div>
     );
   }
@@ -178,12 +178,12 @@ export default function ServicosPage() {
         <table className="w-full text-body-md">
           <thead>
             <tr className="border-b border-hairline bg-surface-soft">
-              <th className="text-left px-4 py-3 text-caption text-muted">Nome</th>
-              <th className="text-left px-4 py-3 text-caption text-muted">Categoria</th>
-              <th className="text-right px-4 py-3 text-caption text-muted">Preço</th>
-              <th className="text-center px-4 py-3 text-caption text-muted">Duração</th>
-              <th className="text-center px-4 py-3 text-caption text-muted">Ativo</th>
-              <th className="text-right px-4 py-3 text-caption text-muted">Ações</th>
+              <th className="text-left px-4 py-3 text-caption text-muted-foreground">Nome</th>
+              <th className="text-left px-4 py-3 text-caption text-muted-foreground">Categoria</th>
+              <th className="text-right px-4 py-3 text-caption text-muted-foreground">Preço</th>
+              <th className="text-center px-4 py-3 text-caption text-muted-foreground">Duração</th>
+              <th className="text-center px-4 py-3 text-caption text-muted-foreground">Ativo</th>
+              <th className="text-right px-4 py-3 text-caption text-muted-foreground">Ações</th>
             </tr>
           </thead>
           <tbody>
@@ -194,7 +194,7 @@ export default function ServicosPage() {
                 <td className="px-4 py-3 text-right text-ink">R$ {Number(servico.preco).toFixed(2)}</td>
                 <td className="px-4 py-3 text-center text-body">{servico.duracaoMin} min</td>
                 <td className="px-4 py-3 text-center">
-                  <span className={`inline-flex px-2 py-0.5 rounded-pill text-xs font-medium ${servico.ativo ? "bg-green-50 text-green-700" : "bg-secondary text-muted"}`}>
+                  <span className={`inline-flex px-2 py-0.5 rounded-pill text-xs font-medium ${servico.ativo ? "bg-green-50 text-green-700" : "bg-secondary text-ink"}`}>
                     {servico.ativo ? "Sim" : "Não"}
                   </span>
                 </td>
@@ -213,7 +213,7 @@ export default function ServicosPage() {
             {servicos.length === 0 && (
               <tr>
                 <td colSpan={6} className="px-4 py-8 text-center text-body">
-                  <Scissors className="w-8 h-8 mx-auto mb-2 text-muted" />
+                  <Scissors className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
                   Nenhum serviço encontrado
                 </td>
               </tr>

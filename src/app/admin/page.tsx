@@ -68,11 +68,11 @@ export default async function DashboardPage() {
           <table className="w-full text-body-md">
             <thead>
               <tr className="border-b border-hairline bg-surface-soft">
-                <th className="text-left px-4 py-3 text-caption text-muted">Cliente</th>
-                <th className="text-left px-4 py-3 text-caption text-muted">Status</th>
-                <th className="text-left px-4 py-3 text-caption text-muted">Pagamento</th>
-                <th className="text-right px-4 py-3 text-caption text-muted">Total</th>
-                <th className="text-left px-4 py-3 text-caption text-muted">Data</th>
+                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Cliente</th>
+                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Status</th>
+                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Pagamento</th>
+                <th className="text-right px-4 py-3 text-caption text-muted-foreground">Total</th>
+                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Data</th>
               </tr>
             </thead>
             <tbody>
@@ -84,7 +84,7 @@ export default async function DashboardPage() {
                       "inline-flex px-2 py-0.5 rounded-pill text-xs font-medium",
                       comanda.status === "ABERTA" && "bg-blue-50 text-blue-700",
                       comanda.status === "EM_ANDAMENTO" && "bg-yellow-50 text-yellow-700",
-                      comanda.status === "FECHADA" && "bg-secondary text-muted",
+                      comanda.status === "FECHADA" && "bg-secondary text-ink font-medium",
                       comanda.status === "PAGA" && "bg-green-50 text-green-700",
                     )}>
                       {statusLabel(comanda.status)}
