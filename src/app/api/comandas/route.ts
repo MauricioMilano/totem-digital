@@ -36,9 +36,9 @@ export async function POST(request: NextRequest) {
       quantidadeParcelas,
     } = body;
 
-    if (!clienteId || !itens || !Array.isArray(itens) || itens.length === 0) {
+    if (!itens || !Array.isArray(itens) || itens.length === 0) {
       return NextResponse.json(
-        { error: "Cliente e itens são obrigatórios" },
+        { error: "Itens são obrigatórios" },
         { status: 400 }
       );
     }

@@ -10,7 +10,7 @@ import { ArrowLeft, FileText } from "lucide-react";
 
 interface Comanda {
   id: string;
-  cliente: { id: string; nome: string; cpf: string };
+  cliente: { id: string; nome: string; cpf: string } | null;
   usuario: { id: string; nome: string } | null;
   formaPagamento: { id: string; nome: string } | null;
   quantidadeParcelas: number;
@@ -129,9 +129,11 @@ export default function ComandaDetailPage() {
           <h1 className="text-display-md text-ink">
             Comanda #{comanda.id.slice(-8).toUpperCase()}
           </h1>
-          <p className="text-body-md text-body mt-1">
-            {comanda.cliente.nome} · {comanda.cliente.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4")}
-          </p>
+           <p className="text-body-md text-body mt-1">
+             {comanda.cliente 
+               ? `${comanda.cliente.nome} · ${comanda.cliente.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4")}`
+               : "Cliente Convidado"}
+           </p>
         </div>
         <span className={`inline-flex px-3 py-1 rounded-pill text-sm font-medium ${status.color}`}>
           {status.label}
@@ -230,16 +232,16 @@ export default function ComandaDetailPage() {
         )}
       </div>
 
-      <PagamentoModal
-        open={showPagamento}
-        onOpenChange={setShowPagamento}
-        comandaId={comanda.id}
-        clienteNome={comanda.cliente.nome}
-        total={Number(comanda.total)}
-        formaPagamento={comanda.formaPagamento?.nome || null}
-        quantidadeParcelas={comanda.quantidadeParcelas}
-        onSuccess={loadComanda}
-      />
+       <PagamentoModal
+         open={showPagamento}
+         onOpenChange={setShowPagamento}
+         comandaId={comanda.id}
+         clienteNome={comanda.cliente?.nome || "Convidado"}
+         total={Number(comanda.total)}
+         formaPagamento={comanda.formaPagamento?.nome || null}
+         quantidadeParcelas={comanda.quantidadeParcelas}
+         onSuccess={loadComanda}
+       />
     </div>
   );
 }

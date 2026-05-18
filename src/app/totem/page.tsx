@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
+import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { TextInput } from "@/components/shared/text-input";
 import { Scissors } from "lucide-react";
+import { setCustomerStatus, setCliente } from "@/hooks/use-comanda";
 
 export default function TotemPage() {
   const router = useRouter();
@@ -18,6 +20,11 @@ export default function TotemPage() {
       .replace(/(\d{3})(\d)/, "$1.$2")
       .replace(/(\d{3})(\d)/, "$1.$2")
       .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+  }
+
+  async function handleGuestClick() {
+    setCustomerStatus("GUEST");
+    router.push("/totem/servicos");
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -43,11 +50,8 @@ export default function TotemPage() {
       if (!res.ok) throw new Error();
 
       const cliente = await res.json();
-      // Salvar cliente na sessão - usamos sessionStorage
-      sessionStorage.setItem(
-        "totem-cliente",
-        JSON.stringify({ id: cliente.id, nome: cliente.nome, cpf: cliente.cpf })
-      );
+      // Salvar cliente na sessão via hook de estado global
+      setCliente(cliente.id, cliente.nome, cliente.cpf);
 
       router.push("/totem/servicos");
     } catch {
@@ -82,11 +86,18 @@ export default function TotemPage() {
             autoFocus
           />
 
-          <ButtonPrimary type="submit" disabled={loading} className="w-full">
-            {loading ? "Buscando..." : "Continuar"}
-          </ButtonPrimary>
-        </form>
+            <ButtonPrimary type="submit" disabled={loading} className="w-full">
+              {loading ? "Buscando..." : "Continuar"}
+            </ButtonPrimary>
+          </form>
+
+          <div className="mt-6 text-center">
+            <span className="text-body-sm text-body mr-2">Já possui CPF?</span>
+            <ButtonSecondary onClick={handleGuestClick} className="underline decoration-brand-primary underline-offset-4 p-0 h-auto bg-transparent border-none text-brand-primary hover:bg-transparent" >
+              Continuar como Convidado
+            </ButtonSecondary>
+          </div>
+        </div>
       </div>
-    </div>
   );
 }

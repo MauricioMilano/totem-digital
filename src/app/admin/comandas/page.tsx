@@ -8,7 +8,7 @@ import { FileText, Search } from "lucide-react";
 
 interface Comanda {
   id: string;
-  cliente: { nome: string };
+  cliente: { nome: string } | null;
   formaPagamento: { nome: string } | null;
   total: number;
   status: string;
@@ -107,7 +107,7 @@ export default function ComandasPage() {
                     className="border-b border-hairline last:border-0 cursor-pointer hover:bg-surface-soft/50 transition-colors"
                     onClick={() => router.push(`/comandas/${comanda.id}`)}
                   >
-                    <td className="px-4 py-3 text-ink font-medium">{comanda.cliente.nome}</td>
+                    <td className="px-4 py-3 text-ink font-medium">{comanda.cliente?.nome || "Convidado"}</td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex px-2 py-0.5 rounded-pill text-xs font-medium ${status.color}`}>
                         {status.label}

@@ -8,6 +8,7 @@ import { TextInput } from "@/components/shared/text-input";
 import { toast } from "sonner";
 import { ArrowLeft, UserPlus } from "lucide-react";
 import { Suspense } from "react";
+import { setCliente, setCustomerStatus } from "@/hooks/use-comanda";
 
 function NovoClienteForm() {
   const router = useRouter();
@@ -25,6 +26,11 @@ function NovoClienteForm() {
       return digits.replace(/(\d{2})(\d)/, "($1) $2").replace(/(\d{4})(\d)/, "$1-$2");
     }
     return digits.replace(/(\d{2})(\d)/, "($1) $2").replace(/(\d{5})(\d)/, "$1-$2");
+  }
+
+  async function handleGuestClick() {
+    setCustomerStatus("GUEST");
+    router.push("/totem/servicos");
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -51,10 +57,7 @@ function NovoClienteForm() {
       if (!res.ok) throw new Error();
 
       const cliente = await res.json();
-      sessionStorage.setItem(
-        "totem-cliente",
-        JSON.stringify({ id: cliente.id, nome: cliente.nome, cpf: cliente.cpf })
-      );
+      setCliente(cliente.id, cliente.nome, cliente.cpf);
 
       toast.success("Cadastro realizado!");
       router.push("/totem/servicos");
@@ -109,20 +112,30 @@ function NovoClienteForm() {
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          <div className="flex gap-3 pt-2">
-            <ButtonSecondary
-              type="button"
-              onClick={() => router.push("/totem")}
-              className="flex-1"
-            >
-              Cancelar
-            </ButtonSecondary>
-            <ButtonPrimary type="submit" disabled={loading} className="flex-1">
-              {loading ? "Salvando..." : "Confirmar"}
-            </ButtonPrimary>
-          </div>
-        </form>
-      </div>
+           <div className="flex gap-3 pt-2">
+             <ButtonSecondary
+               type="button"
+               onClick={() => router.push("/totem")}
+               className="flex-1"
+             >
+               Cancelar
+             </ButtonSecondary>
+             <ButtonPrimary type="submit" disabled={loading} className="flex-1">
+               {loading ? "Salvando..." : "Confirmar"}
+             </ButtonPrimary>
+           </div>
+
+           <div className="mt-6 text-center">
+             <span className="text-body-sm text-body mr-2">Não quer se cadastrar?</span>
+             <ButtonSecondary 
+               onClick={handleGuestClick} 
+               className="underline decoration-brand-primary underline-offset-4 p-0 h-auto bg-transparent border-none text-brand-primary hover:bg-transparent"
+             >
+               Continuar como Convidado
+             </ButtonSecondary>
+           </div>
+         </form>
+       </div>
     </div>
   );
 }

@@ -78,7 +78,7 @@ export default async function DashboardPage() {
             <tbody>
               {ultimasComandas.map((comanda) => (
                 <tr key={comanda.id} className="border-b border-hairline last:border-0">
-                  <td className="px-4 py-3 text-ink">{comanda.cliente.nome}</td>
+                  <td className="px-4 py-3 text-ink">{comanda.cliente?.nome || "Convidado"}</td>
                   <td className="px-4 py-3">
                     <span className={cn(
                       "inline-flex px-2 py-0.5 rounded-pill text-xs font-medium",

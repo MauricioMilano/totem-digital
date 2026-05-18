@@ -1,3 +1,5 @@
+export type CustomerStatus = "IDENTIFIED" | "REGISTERING" | "GUEST";
+
 export interface ItemSelecionado {
   tipo: "servico" | "bebida" | "produto";
   id: string;
@@ -10,6 +12,7 @@ export interface ItemSelecionado {
 }
 
 export interface ComandaState {
+  customerStatus: CustomerStatus;
   clienteId: string | null;
   clienteNome: string;
   clienteCpf: string;
@@ -22,6 +25,7 @@ export interface ComandaState {
 
 // Global state for the totem flow
 let comandaState: ComandaState = {
+  customerStatus: "GUEST",
   clienteId: null,
   clienteNome: "",
   clienteCpf: "",
@@ -48,7 +52,12 @@ export function subscribeToComanda(listener: () => void) {
 }
 
 export function setCliente(id: string, nome: string, cpf: string) {
-  comandaState = { ...comandaState, clienteId: id, clienteNome: nome, clienteCpf: cpf };
+  comandaState = { ...comandaState, customerStatus: "IDENTIFIED", clienteId: id, clienteNome: nome, clienteCpf: cpf };
+  notifyListeners();
+}
+
+export function setCustomerStatus(status: CustomerStatus) {
+  comandaState = { ...comandaState, customerStatus: status };
   notifyListeners();
 }
 
@@ -117,6 +126,7 @@ export function setMaioridade(value: boolean) {
 
 export function limparComanda() {
   comandaState = {
+    customerStatus: "GUEST",
     clienteId: null,
     clienteNome: "",
     clienteCpf: "",
