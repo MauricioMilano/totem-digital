@@ -34,8 +34,6 @@ interface Comanda {
 
 const statusConfig: Record<string, { label: string; color: string }> = {
   ABERTA: { label: "Aberta", color: "bg-blue-50 text-blue-700" },
-  EM_ANDAMENTO: { label: "Em Andamento", color: "bg-yellow-50 text-yellow-700" },
-   FECHADA: { label: "Fechada", color: "bg-secondary text-secondary-foreground" },
   PAGA: { label: "Paga", color: "bg-green-50 text-green-700" },
   CANCELADA: { label: "Cancelada", color: "bg-red-50 text-red-700" },
 };
@@ -67,22 +65,6 @@ export default function ComandaDetailPage() {
 
   useEffect(() => { loadComanda(); }, [params.id]);
 
-  async function handleFechar() {
-    setActionLoading(true);
-    try {
-      const res = await fetch(`/api/comandas/${params.id}/fechar`, {
-        method: "POST",
-      });
-      if (!res.ok) throw new Error();
-      toast.success("Comanda fechada");
-      loadComanda();
-    } catch {
-      toast.error("Erro ao fechar comanda");
-    } finally {
-      setActionLoading(false);
-    }
-  }
-
   async function handleReabrir() {
     setActionLoading(true);
     try {
@@ -110,8 +92,7 @@ export default function ComandaDetailPage() {
   if (!comanda) return null;
 
   const status = statusConfig[comanda.status] || { label: comanda.status, color: "bg-secondary text-secondary-foreground" };
-  const podeFechar = comanda.status === "ABERTA" || comanda.status === "EM_ANDAMENTO";
-  const podePagar = comanda.status === "FECHADA";
+  const podePagar = comanda.status === "ABERTA";
 
   return (
     <div className="max-w-3xl space-y-6">
@@ -215,20 +196,10 @@ export default function ComandaDetailPage() {
 
       {/* Actions */}
       <div className="flex gap-3 pt-2">
-        {podeFechar && (
-          <ButtonPrimary onClick={handleFechar} disabled={actionLoading}>
-            {actionLoading ? "Fechando..." : "Fechar Comanda"}
-          </ButtonPrimary>
-        )}
         {podePagar && (
           <ButtonPrimary onClick={() => setShowPagamento(true)}>
             Registrar Pagamento
           </ButtonPrimary>
-        )}
-        {comanda.status === "FECHADA" && (
-          <ButtonSecondary onClick={handleReabrir} disabled={actionLoading}>
-            Reabrir Comanda
-          </ButtonSecondary>
         )}
       </div>
 

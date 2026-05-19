@@ -83,9 +83,8 @@ export default async function DashboardPage() {
                     <span className={cn(
                       "inline-flex px-2 py-0.5 rounded-pill text-xs font-medium",
                       comanda.status === "ABERTA" && "bg-blue-50 text-blue-700",
-                      comanda.status === "EM_ANDAMENTO" && "bg-yellow-50 text-yellow-700",
-                      comanda.status === "FECHADA" && "bg-secondary text-ink font-medium",
                       comanda.status === "PAGA" && "bg-green-50 text-green-700",
+                      comanda.status === "CANCELADA" && "bg-red-50 text-red-700",
                     )}>
                       {statusLabel(comanda.status)}
                     </span>
@@ -119,8 +118,6 @@ export default async function DashboardPage() {
 function statusLabel(status: string) {
   const map: Record<string, string> = {
     ABERTA: "Aberta",
-    EM_ANDAMENTO: "Em Andamento",
-    FECHADA: "Fechada",
     PAGA: "Paga",
     CANCELADA: "Cancelada",
   };

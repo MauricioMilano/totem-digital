@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { addItem, getComandaState, setMaioridade } from "@/hooks/use-comanda";
+import { getActiveComandaId } from "@/lib/totem-utils";
 import { toast } from "sonner";
 import { ArrowLeft, Check, Scissors, ChevronRight } from "lucide-react";
 
@@ -44,29 +45,59 @@ export default function ServicosPage() {
     );
   }
 
-  function handleContinue() {
+  async function handleContinue() {
     if (selected.length === 0) {
       toast.error("Selecione pelo menos um serviço");
       return;
     }
 
-    // Add selected services to comanda
-    selected.forEach((id) => {
-      const servico = servicos.find((s) => s.id === id);
-      if (servico) {
-        addItem({
-          tipo: "servico",
-          id: servico.id,
-          nomeItem: servico.nome,
-          precoUnit: Number(servico.preco),
-          quantidade: 1,
-          servicoId: servico.id,
-        });
-      }
-    });
+    setLoading(true);
+    try {
+      const clienteId = sessionStorage.getItem("totem-cliente");
+      const activeComandaId = await getActiveComandaId(clienteId || "");
 
-    setMaioridade(maioridade);
-    router.push("/totem/bebidas");
+          const itensToAdd = selected.map((id) => {
+            const servico = servicos.find((s) => s.id === id);
+            return {
+              nomeItem: servico?.nome || "Serviço",
+              precoUnit: Number(servico?.preco || 0),
+              quantidade: 1,
+              servicoId: servico?.id ?? undefined,
+              bebidaId: undefined,
+              produtoId: undefined,
+            };
+          });
+
+      if (activeComandaId) {
+        // Add to existing open tab
+        const res = await fetch(`/api/comandas/${activeComandaId}/itens`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ itens: itensToAdd }),
+        });
+        if (!res.ok) throw new Error();
+        toast.success("Itens adicionados à sua comanda!");
+        router.push("/totem/minha-comanda");
+      } else {
+        // Standard flow for new tab
+        itensToAdd.forEach((item) => {
+          addItem({
+            tipo: "servico",
+            id: item.servicoId!,
+            nomeItem: item.nomeItem,
+            precoUnit: item.precoUnit,
+            quantidade: item.quantidade,
+            servicoId: item.servicoId,
+          });
+        });
+        setMaioridade(maioridade);
+        router.push("/totem/bebidas");
+      }
+    } catch {
+      toast.error("Erro ao adicionar serviços. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (loading) {

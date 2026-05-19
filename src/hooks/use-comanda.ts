@@ -52,11 +52,17 @@ export function subscribeToComanda(listener: () => void) {
 }
 
 export function setCliente(id: string, nome: string, cpf: string) {
+  if (typeof window !== "undefined") {
+    sessionStorage.setItem("totem-cliente", id);
+  }
   comandaState = { ...comandaState, customerStatus: "IDENTIFIED", clienteId: id, clienteNome: nome, clienteCpf: cpf };
   notifyListeners();
 }
 
 export function setCustomerStatus(status: CustomerStatus) {
+  if (typeof window !== "undefined" && status === "GUEST") {
+    sessionStorage.setItem("totem-cliente", "guest");
+  }
   comandaState = { ...comandaState, customerStatus: status };
   notifyListeners();
 }
@@ -125,6 +131,9 @@ export function setMaioridade(value: boolean) {
 }
 
 export function limparComanda() {
+  if (typeof window !== "undefined") {
+    sessionStorage.removeItem("totem-cliente");
+  }
   comandaState = {
     customerStatus: "GUEST",
     clienteId: null,

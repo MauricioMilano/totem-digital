@@ -8,7 +8,22 @@ export async function POST(
   try {
     const { id } = await params;
 
-    const comanda = await prisma.comanda.update({
+    const comanda = await prisma.comanda.findUnique({
+      where: { id },
+    });
+
+    if (!comanda) {
+      return NextResponse.json({ error: "Comanda não encontrada" }, { status: 404 });
+    }
+
+    if (comanda.status !== "ABERTA") {
+      return NextResponse.json(
+        { error: `A comanda está no status ${comanda.status} e não pode ser paga` },
+        { status: 400 }
+      );
+    }
+
+    const paidComanda = await prisma.comanda.update({
       where: { id },
       data: {
         status: "PAGA",
@@ -21,7 +36,7 @@ export async function POST(
       },
     });
 
-    return NextResponse.json(comanda);
+    return NextResponse.json(paidComanda);
   } catch (error) {
     console.error("Erro ao pagar comanda:", error);
     return NextResponse.json(

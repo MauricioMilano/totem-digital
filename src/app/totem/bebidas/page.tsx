@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { addItem, getComandaState } from "@/hooks/use-comanda";
+import { getActiveComandaId } from "@/lib/totem-utils";
 import { toast } from "sonner";
 import { ArrowLeft, Wine, Plus, Minus, ChevronRight } from "lucide-react";
 

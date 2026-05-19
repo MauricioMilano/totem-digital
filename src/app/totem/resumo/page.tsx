@@ -59,32 +59,63 @@ export default function ResumoPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/comandas", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          clienteId: state.clienteId,
-          formaPagamentoId: state.formaPagamentoId,
-          quantidadeParcelas: state.quantidadeParcelas,
-          itens: state.itens.map((item) => ({
-            nomeItem: item.nomeItem,
-            precoUnit: item.precoUnit,
-            quantidade: item.quantidade,
-            servicoId: item.servicoId,
-            bebidaId: item.bebidaId,
-            produtoId: item.produtoId,
-          })),
-        }),
-      });
+      const clienteId = sessionStorage.getItem("totem-cliente");
+      let existingComandaId = null;
 
-      if (!res.ok) throw new Error();
+      if (clienteId && clienteId !== "guest") {
+        const comandaRes = await fetch(`/api/comandas/totem/${clienteId}`);
+        if (comandaRes.ok) {
+          const data = await comandaRes.json();
+          existingComandaId = data.id;
+        }
+      }
 
-      const comanda = await res.json();
-      sessionStorage.setItem("comanda-id", comanda.id);
+      if (existingComandaId) {
+        const res = await fetch(`/api/comandas/${existingComandaId}/itens`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            itens: state.itens.map((item) => ({
+              nomeItem: item.nomeItem,
+              precoUnit: item.precoUnit,
+              quantidade: item.quantidade,
+              servicoId: item.servicoId,
+              bebidaId: item.bebidaId,
+              produtoId: item.produtoId,
+            })),
+          }),
+        });
+
+        if (!res.ok) throw new Error();
+        sessionStorage.setItem("comanda-id", existingComandaId);
+      } else {
+        const res = await fetch("/api/comandas", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            clienteId: state.clienteId,
+            formaPagamentoId: state.formaPagamentoId,
+            quantidadeParcelas: state.quantidadeParcelas,
+            itens: state.itens.map((item) => ({
+              nomeItem: item.nomeItem,
+              precoUnit: item.precoUnit,
+              quantidade: item.quantidade,
+              servicoId: item.servicoId,
+              bebidaId: item.bebidaId,
+              produtoId: item.produtoId,
+            })),
+          }),
+        });
+
+        if (!res.ok) throw new Error();
+        const comanda = await res.json();
+        sessionStorage.setItem("comanda-id", comanda.id);
+      }
+
       limparComanda();
       router.push("/totem/sucesso");
     } catch {
-      toast.error("Erro ao abrir comanda. Tente novamente.");
+      toast.error("Erro ao processar comanda. Tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -218,21 +249,27 @@ export default function ResumoPage() {
         </div>
 
         {/* Actions */}
-        <div className="flex gap-3">
-          <ButtonSecondary
-            onClick={() => router.push("/totem/produtos")}
-            className="flex-1"
-          >
-            Voltar ao Cardápio
-          </ButtonSecondary>
-          <ButtonPrimary
-            onClick={handleAbrirComanda}
-            disabled={loading}
-            className="flex-1"
-          >
-            {loading ? "Abrindo..." : "Abrir Comanda"}
-          </ButtonPrimary>
-        </div>
+          <div className="flex gap-3">
+            <ButtonSecondary
+              onClick={() => router.push("/totem")}
+              className="flex-1"
+            >
+              Início
+            </ButtonSecondary>
+            <ButtonSecondary
+              onClick={() => router.push("/totem/produtos")}
+              className="flex-1"
+            >
+              Cardápio
+            </ButtonSecondary>
+            <ButtonPrimary
+              onClick={handleAbrirComanda}
+              disabled={loading}
+              className="flex-1"
+            >
+              {loading ? "Processando..." : "Confirmar"}
+            </ButtonPrimary>
+          </div>
       </div>
     </div>
   );

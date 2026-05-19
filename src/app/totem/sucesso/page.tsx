@@ -16,6 +16,7 @@ export default function SucessoPage() {
       return;
     }
     setComandaId(id);
+    sessionStorage.removeItem("totem-cliente");
   }, [router]);
 
   function handleNovaComanda() {
