@@ -22,7 +22,7 @@ interface PagamentoModalProps {
   quantidadeParcelas: number;
   onSuccess: () => void;
   formaPagamentoId?: string | null;
-  onPaymentMethodChange?: (id: string, nome: string, max: number) => void;
+  onPaymentMethodChange?: (id: string, nome:            string, max: number) => void;
 }
 
 export function PagamentoModal({
@@ -79,7 +79,7 @@ export function PagamentoModal({
     setSelectedFormaPagamentoId(id);
     setSelectedFormaPagamentoNome(nome);
     if (max === 1) {
-      setSelectedQuantidadeParcelas(1);
+      setSelectedQuantidadeParcel            Parcelas(1);
     }
     onPaymentMethodChange?.(id, nome, max);
   };
@@ -110,7 +110,7 @@ export function PagamentoModal({
             <div className="bg-surface-soft rounded-lg p-4 space-y-2">
               <div className="flex justify-between">
                 <span className="text-body-md text-body">Cliente</span>
-                <span className="text-body-intmd text-ink font-medium">
+                <span className="text-body-md text-ink font-medium">
                   {clienteNome}
                 </span>
               </div>

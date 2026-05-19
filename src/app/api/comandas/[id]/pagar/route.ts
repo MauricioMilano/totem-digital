@@ -16,25 +16,38 @@ export async function POST(
       return NextResponse.json({ error: "Comanda não encontrada" }, { status: 404 });
     }
 
-    if (comanda.status !== "ABERTA") {
-      return NextResponse.json(
-        { error: `A comanda está no status ${comanda.status} e não pode ser paga` },
-        { status: 400 }
-      );
-    }
+     if (comanda.status !== "ABERTA") {
+       return NextResponse.json(
+         { error: `A comanda está no status ${comanda.status} e não pode ser paga` },
+         { status: 400 }
+       );
+     }
 
-    const paidComanda = await prisma.comanda.update({
-      where: { id },
-      data: {
-        status: "PAGA",
-        pagaEm: new Date(),
-      },
-      include: {
-        cliente: true,
-        formaPagamento: true,
-        itens: true,
-      },
-    });
+     const body = await request.json().catch(() => ({}));
+     const { formaPagamentoId, quantidadeParcelas } = body;
+
+     const updateData: any = {
+       status: "PAGA",
+       pagaEm: new Date(),
+     };
+
+     if (formaPagamentoId) {
+       updateData.formaPagamentoId = formaPagamentoId;
+     }
+
+     if (quantidadeParcelas !== undefined) {
+       updateData.quantidadeParcelas = quantidadeParcelas;
+     }
+
+     const paidComanda = await prisma.comanda.update({
+       where: { id },
+       data: updateData,
+       include: {
+         cliente: true,
+         formaPagamento: true,
+         itens: true,
+       },
+     });
 
     return NextResponse.json(paidComanda);
   } catch (error) {

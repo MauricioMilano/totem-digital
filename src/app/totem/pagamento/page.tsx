@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
+import { PagamentoSelector } from "@/components/totem/pagamento-selector";
 import { toast } from "sonner";
 import { CreditCard, ArrowLeft } from "lucide-react";
 
@@ -18,6 +19,8 @@ export default function PagamentoPage() {
   const [comanda, setComanda] = useState<Comanda | null>(null);
   const [loading, setLoading] = useState(true);
   const [paying, setPaying] = useState(false);
+  const [formaPagamentoId, setFormaPagamentoId] = useState<string | null>(null);
+  const [quantidadeParcelas, setQuantidadeParcelas] = useState<number>(1);
 
   useEffect(() => {
     async function fetchComanda() {
@@ -47,10 +50,22 @@ export default function PagamentoPage() {
   async function handleConfirmPayment() {
     if (!comanda) return;
 
+    if (!formaPagamentoId) {
+      toast.error("Por favor, selecione uma forma de pagamento.");
+      return;
+    }
+
     setPaying(true);
     try {
       const res = await fetch(`/api/comandas/${comanda.id}/pagar`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          formaPagamentoId,
+          quantidadeParcelas,
+        }),
       });
 
       if (!res.ok) throw new Error();
@@ -97,12 +112,20 @@ export default function PagamentoPage() {
 
           <div className="bg-surface-soft p-4 rounded-xl text-caption text-body text-center">
             Ao confirmar, sua comanda será marcada como paga e finalizada.
-          </div>
+          </div >
+
+          <PagamentoSelector
+            total={Number(comanda.total)}
+            onSelectForma={setFormaPagamentoId}
+            onSelectParcelas={setQuantidadeParcelas}
+            formaPagamentoId={formaPagamentoId}
+            quantidadeParcelas={quantidadeParcelas}
+          />
 
           <div className="flex flex-col gap-3">
             <ButtonPrimary 
               onClick={handleConfirmPayment} 
-              disabled={paying}
+              disabled={paying || !formaPagamentoId}
               className="w-full py-6 text-lg"
             >
               {paying ? "Processando..." : "Confirmar Pagamento"}

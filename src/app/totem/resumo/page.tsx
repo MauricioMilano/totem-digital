@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
-import { PagamentoSelector } from "@/components/totem/pagamento-selector";
+
 import {
   getComandaState,
   getTotal,
@@ -46,11 +46,6 @@ export default function ResumoPage() {
   const total = getTotal();
 
   async function handleAbrirComanda() {
-    if (!state.formaPagamentoId) {
-      toast.error("Selecione uma forma de pagamento");
-      return;
-    }
-
     if (state.itens.length === 0) {
       toast.error("Adicione pelo menos um item à comanda");
       return;
@@ -94,7 +89,7 @@ export default function ResumoPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             clienteId: state.clienteId,
-            formaPagamentoId: state.formaPagamentoId,
+            ...(state.formaPagamentoId && { formaPagamentoId: state.formaPagamentoId }),
             quantidadeParcelas: state.quantidadeParcelas,
             itens: state.itens.map((item) => ({
               nomeItem: item.nomeItem,
@@ -229,23 +224,6 @@ export default function ResumoPage() {
               </span>
             </div>
           )}
-        </div>
-
-        {/* Payment Selection */}
-        <div className="mb-8">
-          <PagamentoSelector
-            formaPagamentoId={state.formaPagamentoId}
-            quantidadeParcelas={state.quantidadeParcelas}
-            total={total}
-            onSelectForma={(id, nome, _maxParcelas) => {
-              setFormaPagamento(id, nome, _maxParcelas);
-              forceUpdate((n) => n + 1);
-            }}
-            onSelectParcelas={(qtd) => {
-              setQuantidadeParcelas(qtd);
-              forceUpdate((n) => n + 1);
-            }}
-          />
         </div>
 
         {/* Actions */}
