@@ -7,6 +7,8 @@ import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { TextInput } from "@/components/shared/text-input";
 import { Scissors, ShoppingBag } from "lucide-react";
 import { setCustomerStatus, setCliente } from "@/hooks/use-comanda";
+import { useTotemSession } from "@/hooks/use-totem-session";
+import { formatCPF } from "@/lib/totem-utils";
 
 export default function TotemPage() {
   const router = useRouter();
@@ -15,9 +17,11 @@ export default function TotemPage() {
   const [loading, setLoading] = useState(false);
   const [hasActiveComanda, setHasActiveComanda] = useState(false);
 
+  const { getCliente } = useTotemSession();
+
   useEffect(() => {
     async function checkActiveComanda() {
-      const clienteId = sessionStorage.getItem("totem-cliente");
+      const clienteId = getCliente();
       if (clienteId && clienteId !== "guest") {
         try {
           const res = await fetch(`/api/comandas/totem/${clienteId}`);
@@ -31,14 +35,6 @@ export default function TotemPage() {
     }
     checkActiveComanda();
   }, []);
-
-  function formatCPF(value: string) {
-    const digits = value.replace(/\D/g, "").slice(0, 11);
-    return digits
-      .replace(/(\d{3})(\d)/, "$1.$2")
-      .replace(/(\d{3})(\d)/, "$1.$2")
-      .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
-  }
 
   async function handleGuestClick() {
     setCustomerStatus("GUEST");

@@ -2,12 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { CategoriaServico } from "@prisma/client";
 
-export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const todas = searchParams.get("todas") === "true";
-
+export async function GET() {
   const servicos = await prisma.servico.findMany({
-    where: todas ? {} : { ativo: true },
+    where: { ativo: true },
     orderBy: { nome: "asc" },
   });
 

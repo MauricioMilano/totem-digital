@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
-import { addItem, getComandaState, setMaioridade } from "@/hooks/use-comanda";
-import { getActiveComandaId } from "@/lib/totem-utils";
+import { addItem, getComandaState, setMaioridade, hydrateComandaFromStorage } from "@/hooks/use-comanda";
+import { useTotemSession } from "@/hooks/use-totem-session";
 import { toast } from "sonner";
 import { ArrowLeft, Check, Scissors, ChevronRight } from "lucide-react";
 
@@ -20,13 +20,16 @@ interface Servico {
 
 export default function ServicosPage() {
   const router = useRouter();
+  const { getCliente, clearTotemSession } = useTotemSession();
   const [servicos, setServicos] = useState<Servico[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<string[]>([]);
   const [maioridade, setMaioridadeLocal] = useState(false);
 
   useEffect(() => {
-    const cliente = sessionStorage.getItem("totem-cliente");
+    hydrateComandaFromStorage();
+
+    const cliente = getCliente();
     if (!cliente) {
       router.push("/totem");
       return;
@@ -53,46 +56,20 @@ export default function ServicosPage() {
 
     setLoading(true);
     try {
-      const clienteId = sessionStorage.getItem("totem-cliente");
-      const activeComandaId = await getActiveComandaId(clienteId || "");
-
-          const itensToAdd = selected.map((id) => {
-            const servico = servicos.find((s) => s.id === id);
-            return {
-              nomeItem: servico?.nome || "Serviço",
-              precoUnit: Number(servico?.preco || 0),
-              quantidade: 1,
-              servicoId: servico?.id ?? undefined,
-              bebidaId: undefined,
-              produtoId: undefined,
-            };
-          });
-
-      if (activeComandaId) {
-        // Add to existing open tab
-        const res = await fetch(`/api/comandas/${activeComandaId}/itens`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ itens: itensToAdd }),
+      selected.forEach((id) => {
+        const servico = servicos.find((s) => s.id === id);
+        if (!servico) return;
+        addItem({
+          tipo: "servico",
+          id: servico.id,
+          nomeItem: servico.nome,
+          precoUnit: Number(servico.preco),
+          quantidade: 1,
+          servicoId: servico.id,
         });
-        if (!res.ok) throw new Error();
-        toast.success("Itens adicionados à sua comanda!");
-        router.push("/totem/minha-comanda");
-      } else {
-        // Standard flow for new tab
-        itensToAdd.forEach((item) => {
-          addItem({
-            tipo: "servico",
-            id: item.servicoId!,
-            nomeItem: item.nomeItem,
-            precoUnit: item.precoUnit,
-            quantidade: item.quantidade,
-            servicoId: item.servicoId,
-          });
-        });
-        setMaioridade(maioridade);
-        router.push("/totem/bebidas");
-      }
+      });
+      setMaioridade(maioridade);
+      router.push("/totem/bebidas");
     } catch {
       toast.error("Erro ao adicionar serviços. Tente novamente.");
     } finally {
@@ -113,7 +90,10 @@ export default function ServicosPage() {
       {/* Header */}
       <div className="px-6 py-4 border-b border-hairline">
         <button
-          onClick={() => router.push("/totem")}
+          onClick={() => {
+            clearTotemSession();
+            router.push("/totem");
+          }}
           className="flex items-center gap-2 text-body-md text-body hover:text-ink transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />

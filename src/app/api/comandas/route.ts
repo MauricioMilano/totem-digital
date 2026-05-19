@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { resolveItemPrices, validateAndDecrementStock } from "@/lib/comandas-utils";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -43,50 +44,59 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Calcular total
-    let total = 0;
-    const itensData = itens.map((item: any) => {
-      const precoUnit = parseFloat(item.precoUnit);
-      const quantidade = item.quantidade || 1;
-      const totalItem = precoUnit * quantidade;
-      total += totalItem;
+    const itensParsed = itens.map((item: any) => ({
+      nomeItem: item.nomeItem,
+      precoUnit: parseFloat(item.precoUnit),
+      quantidade: item.quantidade || 1,
+      servicoId: item.servicoId || null,
+      bebidaId: item.bebidaId || null,
+      produtoId: item.produtoId || null,
+    }));
 
-      return {
-        nomeItem: item.nomeItem,
-        precoUnit,
-        quantidade,
-        total: totalItem,
-        servicoId: item.servicoId || null,
-        bebidaId: item.bebidaId || null,
-        produtoId: item.produtoId || null,
-      };
-    });
+    const comanda = await prisma.$transaction(async (tx) => {
+      const resolvedItens = await resolveItemPrices(tx, itensParsed);
 
-    const comanda = await prisma.comanda.create({
-      data: {
-        clienteId,
-        formaPagamentoId: formaPagamentoId || null,
-        quantidadeParcelas: quantidadeParcelas || 1,
-        total,
-        itens: {
-          create: itensData,
-        },
-      },
-      include: {
-        cliente: true,
-        formaPagamento: true,
-        itens: {
-          include: {
-            servico: true,
-            bebida: true,
-            produto: true,
+      await validateAndDecrementStock(tx, resolvedItens);
+
+      const total = resolvedItens.reduce((acc, item) => acc + item.total, 0);
+
+      return tx.comanda.create({
+        data: {
+          clienteId,
+          formaPagamentoId: formaPagamentoId || null,
+          quantidadeParcelas: quantidadeParcelas || 1,
+          total,
+          itens: {
+            create: resolvedItens.map((item) => ({
+              nomeItem: item.nomeItem,
+              precoUnit: item.precoUnit,
+              quantidade: item.quantidade,
+              total: item.total,
+              servicoId: item.servicoId,
+              bebidaId: item.bebidaId,
+              produtoId: item.produtoId,
+            })),
           },
         },
-      },
+        include: {
+          cliente: true,
+          formaPagamento: true,
+          itens: {
+            include: {
+              servico: true,
+              bebida: true,
+              produto: true,
+            },
+          },
+        },
+      });
     });
 
     return NextResponse.json(comanda, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message && error.message.startsWith("Estoque insuficiente")) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
     console.error("Erro ao criar comanda:", error);
     return NextResponse.json(
       { error: "Erro ao criar comanda" },

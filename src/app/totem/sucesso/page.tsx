@@ -4,24 +4,25 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { CheckCircle, Scissors } from "lucide-react";
+import { useTotemSession } from "@/hooks/use-totem-session";
 
 export default function SucessoPage() {
   const router = useRouter();
-  const [comandaId, setComandaId] = useState<string | null>(null);
+  const { getComandaId, clearTotemSession } = useTotemSession();
+  const [comandaId, setComandaIdState] = useState<string | null>(null);
 
   useEffect(() => {
-    const id = sessionStorage.getItem("comanda-id");
+    const id = getComandaId();
     if (!id) {
       router.push("/totem");
       return;
     }
-    setComandaId(id);
-    sessionStorage.removeItem("totem-cliente");
+    setComandaIdState(id);
+    clearTotemSession();
   }, [router]);
 
   function handleNovaComanda() {
-    sessionStorage.removeItem("totem-cliente");
-    sessionStorage.removeItem("comanda-id");
+    clearTotemSession();
     router.push("/totem");
   }
 
@@ -35,10 +36,10 @@ export default function SucessoPage() {
               <CheckCircle className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-display-md text-white mb-2">
-              Comanda Aberta!
+              Pagamento Confirmado!
             </h1>
             <p className="text-body-md text-white/80 mb-2">
-              Sua comanda foi registrada com sucesso.
+              Sua comanda foi paga com sucesso.
             </p>
             {comandaId && (
               <p className="text-caption text-white/60 font-mono">

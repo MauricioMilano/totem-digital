@@ -3,12 +3,11 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const todas = searchParams.get("todas") === "true";
   const categoriaId = searchParams.get("categoriaId");
 
   const bebidas = await prisma.bebida.findMany({
     where: {
-      ...(todas ? {} : { ativo: true }),
+      ativo: true,
       ...(categoriaId ? { categoriaId } : {}),
     },
     include: { categoria: true },

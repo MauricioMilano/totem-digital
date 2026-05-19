@@ -8,13 +8,9 @@ export async function GET(
   try {
     const { clienteId } = await params;
 
-    if (clienteId === "guest") {
-      return NextResponse.json({ error: "Clientes convidados não possuem comanda persistente" }, { status: 403 });
-    }
-
     const comanda = await prisma.comanda.findFirst({
       where: {
-        clienteId,
+        clienteId: clienteId === "guest" ? null : clienteId,
         status: "ABERTA",
       },
       include: {

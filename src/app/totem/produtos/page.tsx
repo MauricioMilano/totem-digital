@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
-import { addItem } from "@/hooks/use-comanda";
+import { addItem, hydrateComandaFromStorage } from "@/hooks/use-comanda";
+import { useTotemSession } from "@/hooks/use-totem-session";
 import { toast } from "sonner";
 import { ArrowLeft, Package, Plus, Minus, ChevronRight } from "lucide-react";
 
@@ -24,6 +25,7 @@ interface Categoria {
 
 export default function ProdutosPage() {
   const router = useRouter();
+  const { getCliente } = useTotemSession();
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [categoriaAtiva, setCategoriaAtiva] = useState<string>("todas");
@@ -31,7 +33,9 @@ export default function ProdutosPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const cliente = sessionStorage.getItem("totem-cliente");
+    hydrateComandaFromStorage();
+
+    const cliente = getCliente();
     if (!cliente) {
       router.push("/totem");
       return;

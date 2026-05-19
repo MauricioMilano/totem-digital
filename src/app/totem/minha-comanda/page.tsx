@@ -6,6 +6,7 @@ import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { toast } from "sonner";
 import { ArrowLeft, ShoppingBag, CreditCard } from "lucide-react";
+import { useTotemSession } from "@/hooks/use-totem-session";
 
 interface ComandaItem {
   id: string;
@@ -24,13 +25,14 @@ interface Comanda {
 
 export default function MinhaComandaPage() {
   const router = useRouter();
+  const { getCliente } = useTotemSession();
   const [comanda, setComanda] = useState<Comanda | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchComanda() {
-      const clienteId = sessionStorage.getItem("totem-cliente");
-      if (!clienteId || clienteId === "guest") {
+      const clienteId = getCliente();
+      if (!clienteId) {
         toast.error("Você precisa estar identificado para ver sua comanda");
         router.push("/totem");
         return;

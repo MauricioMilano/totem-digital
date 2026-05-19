@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
-import { addItem, getComandaState } from "@/hooks/use-comanda";
+import { addItem, getComandaState, hydrateComandaFromStorage } from "@/hooks/use-comanda";
 import { getActiveComandaId } from "@/lib/totem-utils";
+import { useTotemSession } from "@/hooks/use-totem-session";
 import { toast } from "sonner";
 import { ArrowLeft, Wine, Plus, Minus, ChevronRight } from "lucide-react";
 
@@ -27,6 +28,7 @@ interface Categoria {
 
 export default function BebidasPage() {
   const router = useRouter();
+  const { getCliente } = useTotemSession();
   const [bebidas, setBebidas] = useState<Bebida[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [categoriaAtiva, setCategoriaAtiva] = useState<string>("todas");
@@ -35,7 +37,9 @@ export default function BebidasPage() {
   const maioridade = getComandaState().maioridade;
 
   useEffect(() => {
-    const cliente = sessionStorage.getItem("totem-cliente");
+    hydrateComandaFromStorage();
+
+    const cliente = getCliente();
     if (!cliente) {
       router.push("/totem");
       return;

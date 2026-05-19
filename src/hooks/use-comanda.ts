@@ -1,3 +1,7 @@
+import { setCliente as setSessionCliente, clearTotemSession } from "@/hooks/use-totem-session";
+
+const STORAGE_KEY_CARRINHO = "totem-carrinho";
+
 export type CustomerStatus = "IDENTIFIED" | "REGISTERING" | "GUEST";
 
 export interface ItemSelecionado {
@@ -17,8 +21,6 @@ export interface ComandaState {
   clienteNome: string;
   clienteCpf: string;
   itens: ItemSelecionado[];
-  formaPagamentoId: string | null;
-  formaPagamentoNome: string;
   quantidadeParcelas: number;
   maioridade: boolean;
 }
@@ -30,8 +32,6 @@ let comandaState: ComandaState = {
   clienteNome: "",
   clienteCpf: "",
   itens: [],
-  formaPagamentoId: null,
-  formaPagamentoNome: "",
   quantidadeParcelas: 1,
   maioridade: false,
 };
@@ -40,6 +40,34 @@ const listeners = new Set<() => void>();
 
 function notifyListeners() {
   listeners.forEach((listener) => listener());
+}
+
+function persistState() {
+  if (typeof window === "undefined") return;
+  const data = {
+    itens: comandaState.itens,
+    quantidadeParcelas: comandaState.quantidadeParcelas,
+    maioridade: comandaState.maioridade,
+  };
+  sessionStorage.setItem(STORAGE_KEY_CARRINHO, JSON.stringify(data));
+}
+
+export function hydrateComandaFromStorage(): boolean {
+  if (typeof window === "undefined") return false;
+  const raw = sessionStorage.getItem(STORAGE_KEY_CARRINHO);
+  if (!raw) return false;
+  try {
+    const data = JSON.parse(raw);
+    comandaState = {
+      ...comandaState,
+      itens: data.itens ?? [],
+      quantidadeParcelas: data.quantidadeParcelas ?? 1,
+      maioridade: data.maioridade ?? false,
+    };
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export function getComandaState(): ComandaState {
@@ -52,18 +80,18 @@ export function subscribeToComanda(listener: () => void) {
 }
 
 export function setCliente(id: string, nome: string, cpf: string) {
-  if (typeof window !== "undefined") {
-    sessionStorage.setItem("totem-cliente", id);
-  }
+  setSessionCliente(id);
   comandaState = { ...comandaState, customerStatus: "IDENTIFIED", clienteId: id, clienteNome: nome, clienteCpf: cpf };
+  persistState();
   notifyListeners();
 }
 
 export function setCustomerStatus(status: CustomerStatus) {
-  if (typeof window !== "undefined" && status === "GUEST") {
-    sessionStorage.setItem("totem-cliente", "guest");
+  if (status === "GUEST") {
+    setSessionCliente("guest");
   }
   comandaState = { ...comandaState, customerStatus: status };
+  persistState();
   notifyListeners();
 }
 
@@ -86,12 +114,14 @@ export function addItem(item: ItemSelecionado) {
       itens: [...comandaState.itens, item],
     };
   }
+  persistState();
   notifyListeners();
 }
 
 export function removeItem(index: number) {
   const updated = comandaState.itens.filter((_, i) => i !== index);
   comandaState = { ...comandaState, itens: updated };
+  persistState();
   notifyListeners();
 }
 
@@ -103,36 +133,26 @@ export function updateQuantidade(index: number, quantidade: number) {
   const updated = [...comandaState.itens];
   updated[index] = { ...updated[index], quantidade };
   comandaState = { ...comandaState, itens: updated };
-  notifyListeners();
-}
-
-export function setFormaPagamento(
-  formaPagamentoId: string,
-  formaPagamentoNome: string,
-  maximoParcelas: number
-) {
-  comandaState = {
-    ...comandaState,
-    formaPagamentoId,
-    formaPagamentoNome,
-    quantidadeParcelas: 1,
-  };
+  persistState();
   notifyListeners();
 }
 
 export function setQuantidadeParcelas(quantidade: number) {
   comandaState = { ...comandaState, quantidadeParcelas: quantidade };
+  persistState();
   notifyListeners();
 }
 
 export function setMaioridade(value: boolean) {
   comandaState = { ...comandaState, maioridade: value };
+  persistState();
   notifyListeners();
 }
 
 export function limparComanda() {
+  clearTotemSession();
   if (typeof window !== "undefined") {
-    sessionStorage.removeItem("totem-cliente");
+    sessionStorage.removeItem(STORAGE_KEY_CARRINHO);
   }
   comandaState = {
     customerStatus: "GUEST",
@@ -140,8 +160,6 @@ export function limparComanda() {
     clienteNome: "",
     clienteCpf: "",
     itens: [],
-    formaPagamentoId: null,
-    formaPagamentoNome: "",
     quantidadeParcelas: 1,
     maioridade: false,
   };

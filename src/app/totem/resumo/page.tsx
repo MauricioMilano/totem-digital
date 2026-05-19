@@ -10,35 +10,36 @@ import {
   getTotal,
   removeItem,
   updateQuantidade,
-  setFormaPagamento,
-  setQuantidadeParcelas,
   limparComanda,
+  hydrateComandaFromStorage,
+  subscribeToComanda,
 } from "@/hooks/use-comanda";
+import { useTotemSession } from "@/hooks/use-totem-session";
 import { toast } from "sonner";
 import { ArrowLeft, Trash2, Minus, Plus } from "lucide-react";
 
 export default function ResumoPage() {
   const router = useRouter();
+  const { getCliente, setComandaId } = useTotemSession();
   const [state, setState] = useState(getComandaState());
   const [loading, setLoading] = useState(false);
   const [, forceUpdate] = useState(0);
 
   useEffect(() => {
-    const cliente = sessionStorage.getItem("totem-cliente");
+    hydrateComandaFromStorage();
+
+    const cliente = getCliente();
     if (!cliente) {
       router.push("/totem");
       return;
     }
 
-    // Subscribe to state changes
-    const unsubscribe = () => {};
-    const interval = setInterval(() => {
+    const unsubscribe = subscribeToComanda(() => {
       setState(getComandaState());
       forceUpdate((n) => n + 1);
-    }, 200);
+    });
 
     return () => {
-      clearInterval(interval);
       unsubscribe();
     };
   }, [router]);
@@ -54,7 +55,7 @@ export default function ResumoPage() {
     setLoading(true);
 
     try {
-      const clienteId = sessionStorage.getItem("totem-cliente");
+      const clienteId = getCliente();
       let existingComandaId = null;
 
       if (clienteId && clienteId !== "guest") {
@@ -82,14 +83,13 @@ export default function ResumoPage() {
         });
 
         if (!res.ok) throw new Error();
-        sessionStorage.setItem("comanda-id", existingComandaId);
+        setComandaId(existingComandaId);
       } else {
         const res = await fetch("/api/comandas", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             clienteId: state.clienteId,
-            ...(state.formaPagamentoId && { formaPagamentoId: state.formaPagamentoId }),
             quantidadeParcelas: state.quantidadeParcelas,
             itens: state.itens.map((item) => ({
               nomeItem: item.nomeItem,
@@ -104,11 +104,11 @@ export default function ResumoPage() {
 
         if (!res.ok) throw new Error();
         const comanda = await res.json();
-        sessionStorage.setItem("comanda-id", comanda.id);
+        setComandaId(comanda.id);
       }
 
       limparComanda();
-      router.push("/totem/sucesso");
+      router.push("/totem/pagamento");
     } catch {
       toast.error("Erro ao processar comanda. Tente novamente.");
     } finally {

@@ -9,24 +9,19 @@ import { toast } from "sonner";
 import { ArrowLeft, UserPlus } from "lucide-react";
 import { Suspense } from "react";
 import { setCliente, setCustomerStatus } from "@/hooks/use-comanda";
+import { useTotemSession } from "@/hooks/use-totem-session";
+import { formatCPF, formatPhone } from "@/lib/totem-utils";
 
 function NovoClienteForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const cpfFromUrl = searchParams.get("cpf") || "";
+  const { clearTotemSession } = useTotemSession();
 
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-
-  function formatPhone(value: string) {
-    const digits = value.replace(/\D/g, "").slice(0, 11);
-    if (digits.length <= 10) {
-      return digits.replace(/(\d{2})(\d)/, "($1) $2").replace(/(\d{4})(\d)/, "$1-$2");
-    }
-    return digits.replace(/(\d{2})(\d)/, "($1) $2").replace(/(\d{5})(\d)/, "$1-$2");
-  }
 
   async function handleGuestClick() {
     setCustomerStatus("GUEST");
@@ -85,7 +80,7 @@ function NovoClienteForm() {
           </div>
           <h1 className="text-display-md text-ink mb-1">Novo Cliente</h1>
           <p className="text-body-md text-body">
-            CPF: {cpfFromUrl.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4")}
+            CPF: {formatCPF(cpfFromUrl)}
           </p>
         </div>
 
@@ -114,11 +109,14 @@ function NovoClienteForm() {
 
            <div className="flex gap-3 pt-2">
              <ButtonSecondary
-               type="button"
-               onClick={() => router.push("/totem")}
-               className="flex-1"
-             >
-               Cancelar
+                type="button"
+                onClick={() => {
+                  clearTotemSession();
+                  router.push("/totem");
+                }}
+                className="flex-1"
+              >
+                Cancelar
              </ButtonSecondary>
              <ButtonPrimary type="submit" disabled={loading} className="flex-1">
                {loading ? "Salvando..." : "Confirmar"}

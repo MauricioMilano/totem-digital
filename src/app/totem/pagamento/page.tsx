@@ -7,6 +7,7 @@ import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { PagamentoSelector } from "@/components/totem/pagamento-selector";
 import { toast } from "sonner";
 import { CreditCard, ArrowLeft } from "lucide-react";
+import { useTotemSession } from "@/hooks/use-totem-session";
 
 interface Comanda {
   id: string;
@@ -16,6 +17,7 @@ interface Comanda {
 
 export default function PagamentoPage() {
   const router = useRouter();
+  const { getCliente } = useTotemSession();
   const [comanda, setComanda] = useState<Comanda | null>(null);
   const [loading, setLoading] = useState(true);
   const [paying, setPaying] = useState(false);
@@ -24,8 +26,8 @@ export default function PagamentoPage() {
 
   useEffect(() => {
     async function fetchComanda() {
-      const clienteId = sessionStorage.getItem("totem-cliente");
-      if (!clienteId || clienteId === "guest") {
+      const clienteId = getCliente();
+      if (!clienteId) {
         toast.error("Você precisa estar identificado para pagar sua comanda");
         router.push("/totem");
         return;
