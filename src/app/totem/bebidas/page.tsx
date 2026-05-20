@@ -5,10 +5,9 @@ import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { addItem, getComandaState, hydrateComandaFromStorage } from "@/hooks/use-comanda";
-import { getActiveComandaId } from "@/lib/totem-utils";
 import { useTotemSession } from "@/hooks/use-totem-session";
 import { toast } from "sonner";
-import { ArrowLeft, Wine, Plus, Minus, ChevronRight } from "lucide-react";
+import { ArrowLeft, Plus, Minus, ChevronRight, Wine } from "lucide-react";
 
 interface Bebida {
   id: string;
@@ -28,7 +27,7 @@ interface Categoria {
 
 export default function BebidasPage() {
   const router = useRouter();
-  const { getCliente } = useTotemSession();
+  const { getCliente, updateLastActivity } = useTotemSession();
   const [bebidas, setBebidas] = useState<Bebida[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [categoriaAtiva, setCategoriaAtiva] = useState<string>("todas");
@@ -68,10 +67,11 @@ export default function BebidasPage() {
       }
     }
     load();
-  }, [router, maioridade]);
+  }, [router, maioridade, getCliente]);
 
   function addQuantidade(id: string) {
     setQuantidades((prev) => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
+    updateLastActivity();
   }
 
   function removeQuantidade(id: string) {
@@ -83,9 +83,11 @@ export default function BebidasPage() {
       }
       return { ...prev, [id]: atual - 1 };
     });
+    updateLastActivity();
   }
 
   function handleContinue() {
+    updateLastActivity();
     // Add selected drinks to comanda
     Object.entries(quantidades).forEach(([id, qtd]) => {
       const bebida = bebidas.find((b) => b.id === id);
@@ -193,7 +195,7 @@ export default function BebidasPage() {
                       >
                         <Minus className="w-4 h-4" />
                       </button>
-                      <span className="w-6 text-center text-body-md font-medium text-ink">
+                      <span className="text-body-md font-medium text-ink w-6 text-center">
                         {qtd}
                       </span>
                       <button

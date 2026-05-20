@@ -3,6 +3,7 @@
 export const SESSION_KEYS = {
   TOTEM_CLIENTE: "totem-cliente",
   COMANDA_ID: "comanda-id",
+  LAST_ACTIVITY: "totem-last-activity",
 } as const;
 
 function guard() {
@@ -17,6 +18,18 @@ export function getCliente(): string | null {
 export function setCliente(id: string): void {
   if (!guard()) return;
   sessionStorage.setItem(SESSION_KEYS.TOTEM_CLIENTE, id);
+  updateLastActivity();
+}
+
+export function updateLastActivity(): void {
+  if (!guard()) return;
+  sessionStorage.setItem(SESSION_KEYS.LAST_ACTIVITY, Date.now().toString());
+}
+
+export function getLastActivity(): number | null {
+  if (!guard()) return null;
+  const last = sessionStorage.getItem(SESSION_KEYS.LAST_ACTIVITY);
+  return last ? Number(last) : null;
 }
 
 export function getComandaId(): string | null {
@@ -27,12 +40,14 @@ export function getComandaId(): string | null {
 export function setComandaId(id: string): void {
   if (!guard()) return;
   sessionStorage.setItem(SESSION_KEYS.COMANDA_ID, id);
+  updateLastActivity();
 }
 
 export function clearTotemSession(): void {
   if (!guard()) return;
   sessionStorage.removeItem(SESSION_KEYS.TOTEM_CLIENTE);
   sessionStorage.removeItem(SESSION_KEYS.COMANDA_ID);
+  sessionStorage.removeItem(SESSION_KEYS.LAST_ACTIVITY);
 }
 
 export function isAuthenticated(): boolean {
@@ -44,6 +59,8 @@ export function useTotemSession() {
   return {
     getCliente,
     setCliente,
+    updateLastActivity,
+    getLastActivity,
     getComandaId,
     setComandaId,
     clearTotemSession,

@@ -20,7 +20,7 @@ interface Servico {
 
 export default function ServicosPage() {
   const router = useRouter();
-  const { getCliente, clearTotemSession } = useTotemSession();
+  const { getCliente, clearTotemSession, updateLastActivity } = useTotemSession();
   const [servicos, setServicos] = useState<Servico[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<string[]>([]);
@@ -49,6 +49,7 @@ export default function ServicosPage() {
   }
 
   async function handleContinue() {
+    updateLastActivity();
     if (selected.length === 0) {
       toast.error("Selecione pelo menos um serviço");
       return;
@@ -70,7 +71,7 @@ export default function ServicosPage() {
       });
       setMaioridade(maioridade);
       router.push("/totem/bebidas");
-    } catch {
+    } catch (error) {
       toast.error("Erro ao adicionar serviços. Tente novamente.");
     } finally {
       setLoading(false);

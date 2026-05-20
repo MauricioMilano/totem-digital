@@ -1,4 +1,5 @@
 import { setCliente as setSessionCliente, clearTotemSession } from "@/hooks/use-totem-session";
+import { toast } from "sonner";
 
 const STORAGE_KEY_CARRINHO = "totem-carrinho";
 
@@ -108,11 +109,13 @@ export function addItem(item: ItemSelecionado) {
       quantidade: updated[existingIndex].quantidade + 1,
     };
     comandaState = { ...comandaState, itens: updated };
+    toast.success(`${item.nomeItem} adicionado!`);
   } else {
     comandaState = {
       ...comandaState,
       itens: [...comandaState.itens, item],
     };
+    toast.success(`${item.nomeItem} adicionado!`);
   }
   persistState();
   notifyListeners();
@@ -120,7 +123,9 @@ export function addItem(item: ItemSelecionado) {
 
 export function removeItem(index: number) {
   const updated = comandaState.itens.filter((_, i) => i !== index);
+  const removedItem = comandaState.itens[index];
   comandaState = { ...comandaState, itens: updated };
+  if (removedItem) toast.error(`${removedItem.nomeItem} removido!`);
   persistState();
   notifyListeners();
 }

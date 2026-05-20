@@ -67,17 +67,17 @@ export default function ResumoPage() {
       }
 
       if (existingComandaId) {
-        const res = await fetch(`/api/comandas/${existingComandaId}/itens`, {
+        const res = await fetch("/api/comandas/totem/merge", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
+            comandaId: existingComandaId,
             itens: state.itens.map((item) => ({
+              id: item.id,
+              tipo: item.tipo,
               nomeItem: item.nomeItem,
               precoUnit: item.precoUnit,
               quantidade: item.quantidade,
-              servicoId: item.servicoId,
-              bebidaId: item.bebidaId,
-              produtoId: item.produtoId,
             })),
           }),
         });
@@ -229,16 +229,10 @@ export default function ResumoPage() {
         {/* Actions */}
           <div className="flex gap-3">
             <ButtonSecondary
-              onClick={() => router.push("/totem")}
+              onClick={() => router.push("/totem/servicos")}
               className="flex-1"
             >
-              Início
-            </ButtonSecondary>
-            <ButtonSecondary
-              onClick={() => router.push("/totem/produtos")}
-              className="flex-1"
-            >
-              Cardápio
+              Adicionar mais itens
             </ButtonSecondary>
             <ButtonPrimary
               onClick={handleAbrirComanda}

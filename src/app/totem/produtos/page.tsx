@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
+import { Skeleton } from "@/components/ui/skeleton";
 import { addItem, hydrateComandaFromStorage } from "@/hooks/use-comanda";
 import { useTotemSession } from "@/hooks/use-totem-session";
 import { toast } from "sonner";
@@ -25,9 +26,10 @@ interface Categoria {
 
 export default function ProdutosPage() {
   const router = useRouter();
-  const { getCliente } = useTotemSession();
+  const { getCliente, updateLastActivity } = useTotemSession();
   const [produtos, setProdutos] = useState<Produto[]>([]);
-  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [categorias, setCategorias] = useState<Categoria[]>(
+[]);
   const [categoriaAtiva, setCategoriaAtiva] = useState<string>("todas");
   const [quantidades, setQuantidades] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
@@ -60,6 +62,7 @@ export default function ProdutosPage() {
 
   function addQuantidade(id: string) {
     setQuantidades((prev) => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
+    updateLastActivity();
   }
 
   function removeQuantidade(id: string) {
@@ -71,6 +74,7 @@ export default function ProdutosPage() {
       }
       return { ...prev, [id]: atual - 1 };
     });
+    updateLastActivity();
   }
 
   function handleContinue() {
@@ -97,8 +101,18 @@ export default function ProdutosPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-body-md text-muted">Carregando...</div>
+      <div className="min-h-screen flex flex-col px-4 py-8">
+        <div className="space-y-4">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="flex items-center justify-between p-4 rounded-lg border border-hairline bg-canvas">
+              <div className="space-y-2">
+                <Skeleton className="h-5 w-32" />
+                <Skeleton className="h-4 w-24" />
+              </div>
+              <Skeleton className="h-8 w-16" />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }

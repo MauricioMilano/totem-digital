@@ -50,11 +50,13 @@ export async function POST(
      });
 
     return NextResponse.json(paidComanda);
-  } catch (error) {
-    console.error("Erro ao pagar comanda:", error);
-    return NextResponse.json(
-      { error: "Erro ao pagar comanda" },
-      { status: 500 }
-    );
-  }
+    } catch (error) {
+      console.error("Erro ao pagar comanda:", error);
+      const errorMessage = error instanceof Error ? error.message : "Erro desconhedoci no processamento do pagamento";
+      return NextResponse.json(
+        { error: `Erro ao pagar comanda: ${errorMessage}` },
+        { status: 500 }
+      );
+    }
+
 }
