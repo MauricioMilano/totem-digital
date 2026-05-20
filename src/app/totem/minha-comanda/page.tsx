@@ -85,7 +85,7 @@ export default function MinhaComandaPage() {
               <div key={item.id} className="flex justify-between items-center py-2 border-b border-hairline last:border-0">
                 <div>
                   <p className="text-body-md text-ink font-medium">{item.nomeItem}</p>
-                  <p className="text-caption text-muted-foreground">
+                  <p className="text-caption text-body">
                     {item.quantidade}x R$ {Number(item.precoUnit).toFixed(2)}
                   </p>
                 </div>

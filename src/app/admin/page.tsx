@@ -68,11 +68,11 @@ export default async function DashboardPage() {
           <table className="w-full text-body-md">
             <thead>
               <tr className="border-b border-hairline bg-surface-soft">
-                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Cliente</th>
-                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Status</th>
-                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Pagamento</th>
-                <th className="text-right px-4 py-3 text-caption text-muted-foreground">Total</th>
-                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Data</th>
+                <th className="text-left px-4 py-3 text-caption text-body">Cliente</th>
+                <th className="text-left px-4 py-3 text-caption text-body">Status</th>
+                <th className="text-left px-4 py-3 text-caption text-body">Pagamento</th>
+                <th className="text-right px-4 py-3 text-caption text-body">Total</th>
+                <th className="text-left px-4 py-3 text-caption text-body">Data</th>
               </tr>
             </thead>
             <tbody>

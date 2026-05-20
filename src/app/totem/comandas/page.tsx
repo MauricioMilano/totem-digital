@@ -98,7 +98,7 @@ export default function ComandasAtivasPage() {
                     <User className="w-5 h-5 text-brand-primary" />
                   </div>
                   <div className="text-right">
-                    <p className="text-caption text-muted flex items-center gap-1 justify-end">
+                    <p className="text-caption text-body flex items-center gap-1 justify-end">
                       <Clock className="w-3 h-3" />
                       {new Date(comanda.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </p>
@@ -115,7 +115,7 @@ export default function ComandasAtivasPage() {
           </div>
         ) : (
           <div className="text-center py-20">
-            <p className="text-body-md text-muted">Nenhuma comanda ativa encontrada.</p>
+            <p className="text-body-md text-body">Nenhuma comanda ativa encontrada.</p>
           </div>
         )}
       </div>

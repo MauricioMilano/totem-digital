@@ -79,19 +79,19 @@ export default function ComandasPage() {
       </div>
 
       {loading ? (
-        <div className="text-body-md text-muted-foreground py-8">Carregando...</div>
+        <div className="text-body-md text-body py-8">Carregando...</div>
       ) : (
         <div className="bg-canvas border border-hairline rounded-lg overflow-hidden">
           <table className="w-full text-body-md">
             <thead>
               <tr className="border-b border-hairline bg-surface-soft">
-                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Cliente</th>
-                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Status</th>
-                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Pagamento</th>
-                <th className="text-center px-4 py-3 text-caption text-muted-foreground">Parcelas</th>
-                <th className="text-right px-4 py-3 text-caption text-muted-foreground">Total</th>
-                <th className="text-right px-4 py-3 text-caption text-muted-foreground">Itens</th>
-                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Data</th>
+                <th className="text-left px-4 py-3 text-caption text-body">Cliente</th>
+                <th className="text-left px-4 py-3 text-caption text-body">Status</th>
+                <th className="text-left px-4 py-3 text-caption text-body">Pagamento</th>
+                <th className="text-center px-4 py-3 text-caption text-body">Parcelas</th>
+                <th className="text-right px-4 py-3 text-caption text-body">Total</th>
+                <th className="text-right px-4 py-3 text-caption text-body">Itens</th>
+                <th className="text-left px-4 py-3 text-caption text-body">Data</th>
               </tr>
             </thead>
             <tbody>
@@ -132,7 +132,7 @@ export default function ComandasPage() {
               {comandas.length === 0 && (
                 <tr>
                   <td colSpan={7} className="px-4 py-8 text-center text-body">
-                    <FileText className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                    <FileText className="w-8 h-8 mx-auto mb-2 text-body" />
                     Nenhuma comanda encontrada
                   </td>
                 </tr>

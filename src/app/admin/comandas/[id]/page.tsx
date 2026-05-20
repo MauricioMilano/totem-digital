@@ -84,7 +84,7 @@ export default function ComandaDetailPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-40">
-        <div className="text-body-md text-muted-foreground">Carregando...</div>
+        <div className="text-body-md text-body">Carregando...</div>
       </div>
     );
   }
@@ -124,13 +124,13 @@ export default function ComandaDetailPage() {
       {/* Payment info */}
       <div className="bg-surface-soft rounded-lg p-4 flex items-center gap-6">
         <div>
-          <p className="text-caption text-muted-foreground">Forma de Pagamento</p>
+          <p className="text-caption text-body">Forma de Pagamento</p>
           <p className="text-body-md text-ink font-medium">
             {comanda.formaPagamento?.nome || "Não definido"}
           </p>
         </div>
         <div>
-          <p className="text-caption text-muted-foreground">Parcelas</p>
+          <p className="text-caption text-body">Parcelas</p>
           <p className="text-body-md text-ink font-medium">
             {comanda.quantidadeParcelas > 1
               ? `${comanda.quantidadeParcelas}x`
@@ -138,14 +138,14 @@ export default function ComandaDetailPage() {
           </p>
         </div>
         <div>
-          <p className="text-caption text-muted-foreground">Total</p>
+          <p className="text-caption text-body">Total</p>
           <p className="text-body-md text-ink font-medium">
             R$ {Number(comanda.total).toFixed(2)}
           </p>
         </div>
         {comanda.pagaEm && (
           <div>
-            <p className="text-caption text-muted-foreground">Pago em</p>
+            <p className="text-caption text-body">Pago em</p>
             <p className="text-body-md text-ink font-medium">
               {new Date(comanda.pagaEm).toLocaleString("pt-BR")}
             </p>
@@ -160,10 +160,10 @@ export default function ComandaDetailPage() {
           <table className="w-full text-body-md">
             <thead>
               <tr className="border-b border-hairline bg-surface-soft">
-                <th className="text-left px-4 py-3 text-caption text-muted-foreground">Item</th>
-                <th className="text-right px-4 py-3 text-caption text-muted-foreground">Preço Unit.</th>
-                <th className="text-center px-4 py-3 text-caption text-muted-foreground">Qtd</th>
-                <th className="text-right px-4 py-3 text-caption text-muted-foreground">Total</th>
+                <th className="text-left px-4 py-3 text-caption text-body">Item</th>
+                <th className="text-right px-4 py-3 text-caption text-body">Preço Unit.</th>
+                <th className="text-center px-4 py-3 text-caption text-body">Qtd</th>
+                <th className="text-right px-4 py-3 text-caption text-body">Total</th>
               </tr>
             </thead>
             <tbody>

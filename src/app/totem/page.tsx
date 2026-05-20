@@ -131,7 +131,7 @@ export default function TotemPage() {
                 <PlusCircle className="w-10 h-10" />
               </div>
               <h2 className="text-display-sm font-cal text-ink mb-3 tracking-tight">Novo Pedido</h2>
-              <p className="text-body-md text-muted max-w-[200px]">
+              <p className="text-body-md text-body max-w-[200px]">
                 Inicie um novo atendimento e escolha seus serviços
               </p>
             </button>
@@ -145,7 +145,7 @@ export default function TotemPage() {
                 <Search className="w-10 h-10" />
               </div>
               <h2 className="text-display-sm font-cal text-ink mb-3 tracking-tight">Minha Conta</h2>
-              <p className="text-body-md text-muted max-w-[200px]">
+              <p className="text-body-md text-body max-w-[200px]">
                 Consulte seu consumo ou finalize o pagamento
               </p>
             </button>
