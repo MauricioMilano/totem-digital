@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { PagamentoSelector } from "@/components/totem/pagamento-selector";
+import { FlowStepper } from "@/components/shared/flow-stepper";
 import { toast } from "sonner";
 import { CreditCard, ArrowLeft } from "lucide-react";
 import { useTotemSession } from "@/hooks/use-totem-session";
@@ -92,7 +93,19 @@ export default function PagamentoPage() {
   if (!comanda) return null;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-surface-soft">
+    <div className="min-h-screen flex flex-col items-center px-4 py-6 bg-surface-soft">
+      {/* Top bar: voltar + etapas */}
+      <div className="w-full max-w-md mb-4">
+        <button
+          onClick={() => router.push("/totem/resumo")}
+          className="flex items-center gap-2 text-body-md text-body hover:text-ink transition-colors mb-6"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Voltar ao pedido
+        </button>
+        <FlowStepper steps={["Serviços", "Bebidas", "Produtos", "Resumo", "Pagamento"]} current={5} />
+      </div>
+
       <div className="w-full max-w-md bg-canvas border border-hairline rounded-3xl shadow-sm overflow-hidden">
         <div className="p-6 bg-brand-primary text-white flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -133,10 +146,10 @@ export default function PagamentoPage() {
               {paying ? "Processando..." : "Confirmar Pagamento"}
             </ButtonPrimary>
             <ButtonSecondary 
-              onClick={() => router.push("/totem/minha-comanda")} 
+              onClick={() => router.push("/totem/resumo")} 
               className="w-full py-4"
             >
-              Voltar para Resumo
+              Voltar ao pedido
             </ButtonSecondary>
           </div>
         </div>

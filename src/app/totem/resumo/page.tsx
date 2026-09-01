@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
+import { FlowStepper } from "@/components/shared/flow-stepper";
 
 import {
   getComandaState,
@@ -135,14 +136,16 @@ export default function ResumoPage() {
       <div className="px-6 py-4 border-b border-hairline">
         <button
           onClick={() => router.push("/totem/produtos")}
-          className="flex items-center gap-2 text-body-md text-body hover:text-ink transition-colors"
+          className="flex items-center gap-2 text-body-md text-body hover:text-ink transition-colors mb-4"
         >
           <ArrowLeft className="w-4 h-4" />
           Voltar aos produtos
         </button>
+        <FlowStepper steps={["Serviços", "Bebidas", "Produtos", "Resumo", "Pagamento"]} current={4} />
       </div>
 
-      <div className="flex-1 max-w-2xl mx-auto w-full px-4 py-8">
+      {/* pb-20 reserva espaço para a pill do carrinho fixa no rodapé */}
+      <div className="flex-1 max-w-2xl mx-auto w-full px-4 py-8 pb-20">
         <div className="text-center mb-8">
           <h1 className="text-display-md text-ink mb-1">Resumo da Comanda</h1>
           <p className="text-body-md text-body">

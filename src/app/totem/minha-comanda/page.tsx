@@ -7,6 +7,7 @@ import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { toast } from "sonner";
 import { ArrowLeft, ShoppingBag, CreditCard } from "lucide-react";
 import { useTotemSession } from "@/hooks/use-totem-session";
+import { FlowStepper } from "@/components/shared/flow-stepper";
 
 interface ComandaItem {
   id: string;
@@ -65,7 +66,16 @@ export default function MinhaComandaPage() {
   if (!comanda) return null;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-surface-soft">
+    <div className="min-h-screen flex flex-col items-center px-4 py-6 bg-surface-soft">
+      {/* Back button */}
+      <button
+        onClick={() => router.push("/totem")}
+        className="flex items-center gap-2 text-body-md text-body hover:text-ink transition-colors mb-6 self-start"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Voltar
+      </button>
+
       <div className="w-full max-w-md bg-canvas border border-hairline rounded-3xl shadow-sm overflow-hidden">
         {/* Header */}
         <div className="p-6 bg-brand-primary text-white flex items-center justify-between">

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FlowStepper } from "@/components/shared/flow-stepper";
 import { addItem, hydrateComandaFromStorage } from "@/hooks/use-comanda";
 import { useTotemSession } from "@/hooks/use-totem-session";
 import { toast } from "sonner";
@@ -122,14 +123,16 @@ export default function ProdutosPage() {
       <div className="px-6 py-4 border-b border-hairline">
         <button
           onClick={() => router.push("/totem/bebidas")}
-          className="flex items-center gap-2 text-body-md text-body hover:text-ink transition-colors"
+          className="flex items-center gap-2 text-body-md text-body hover:text-ink transition-colors mb-4"
         >
           <ArrowLeft className="w-4 h-4" />
           Voltar às bebidas
         </button>
+        <FlowStepper steps={["Serviços", "Bebidas", "Produtos", "Resumo", "Pagamento"]} current={3} />
       </div>
 
-      <div className="flex-1 max-w-3xl mx-auto w-full px-4 py-8">
+      {/* pb-20 reserva espaço para a pill do carrinho fixa no rodapé */}
+      <div className="flex-1 max-w-3xl mx-auto w-full px-4 py-8 pb-20">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-surface-soft mb-4">
             <Package className="w-6 h-6 text-ink" />
