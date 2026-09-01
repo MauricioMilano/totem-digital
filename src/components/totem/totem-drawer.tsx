@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { 
   Drawer, 
   DrawerContent, 
   DrawerHeader, 
   DrawerTitle, 
-  DrawerTrigger,
   DrawerFooter
 } from "@/components/ui/drawer";
 import { ShoppingBag, ChevronUp, Plus, Minus, Trash2, CreditCard } from "lucide-react";
@@ -20,11 +19,19 @@ import {
 } from "@/hooks/use-comanda";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 
+/** Tempo (ms) que a barra expandida fica visível antes de colapsar para a pill compacta. */
+const COLLAPSE_DELAY_MS = 6000;
+
 export function TotemDrawer() {
   const router = useRouter();
   const pathname = usePathname();
   const [state, setState] = useState(getComandaState());
   const [isOpen, setIsOpen] = useState(false);
+  // "expanded" = barra completa (feedback de item adicionado). false = pill compacta.
+  const [expanded, setExpanded] = useState(false);
+
+  const collapseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const prevCountRef = useRef<number>(state.itens.length);
 
   useEffect(() => {
     // Subscreve às mudanças do estado global da comanda
@@ -36,6 +43,30 @@ export function TotemDrawer() {
     };
   }, []);
 
+  // Sempre que o carrinho muda (e a gaveta está fechada), mostra a barra expandida
+  // e agenda o colapso para a pill compacta após COLLAPSE_DELAY_MS de inatividade.
+  useEffect(() => {
+    const count = state.itens.length;
+    if (count === prevCountRef.current) return;
+    prevCountRef.current = count;
+
+    if (isOpen || count === 0) return; // gaveta aberta trava a barra; vazio some no render
+
+    setExpanded(true);
+    if (collapseTimerRef.current) clearTimeout(collapseTimerRef.current);
+    collapseTimerRef.current = setTimeout(() => {
+      setExpanded(false);
+    }, COLLAPSE_DELAY_MS);
+  }, [state.itens.length, isOpen]);
+
+  // Limpa o timer ao desmontar
+  useEffect(
+    () => () => {
+      if (collapseTimerRef.current) clearTimeout(collapseTimerRef.current);
+    },
+    []
+  );
+
   // Não mostrar o drawer na página inicial do totem ou se não houver itens
   const isHiddenPage = pathname === "/totem" || pathname === "/totem/sucesso";
   if (isHiddenPage || state.itens.length === 0) return null;
@@ -43,33 +74,61 @@ export function TotemDrawer() {
   const total = getTotal();
 
   return (
-    <Drawer open={isOpen} onOpenChange={setIsOpen}>
-      {/* Gatilho (A barra fina no rodapé) */}
+    <Drawer
+      open={isOpen}
+      onOpenChange={(open) => {
+        setIsOpen(open);
+        if (!open) {
+          // Gaveta fechou → volta à pill compacta e reinicia o timer de colapso
+          setExpanded(false);
+          if (collapseTimerRef.current) clearTimeout(collapseTimerRef.current);
+        }
+      }}
+    >
+      {/* Gatilho: barra expandida (feedback temporário) que colapsa para a pill compacta */}
       <div className="fixed bottom-0 left-0 right-0 z-40 px-4 pb-4">
-        <DrawerTrigger asChild>
-          <button className="w-full max-w-4xl mx-auto flex items-center justify-between bg-ink text-white p-5 rounded-xl shadow-lg hover:bg-brand-primary-active transition-all">
+        <button
+          onClick={() => setIsOpen(true)}
+          aria-haspopup="dialog"
+          className={`w-full max-w-4xl mx-auto flex items-center justify-between bg-ink text-white rounded-xl shadow-lg hover:bg-brand-primary-active transition-all duration-300 ${
+            expanded ? "p-5" : "py-3 px-4"
+          }`}
+        >
+            {/* Lado esquerdo: ícone (sempre) + resumo (somente expandido) */}
             <div className="flex items-center gap-3">
-              <div className="bg-white/20 p-2 rounded-lg">
+              <div className="relative bg-white/20 p-2 rounded-lg">
                 <ShoppingBag className="w-5 h-5" />
+                {/* Badge de itens: aparece na pill compacta (quando o resumo está oculto) */}
+                <span
+                  className={`absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-signature-coral text-white text-caption font-bold flex items-center justify-center transition-opacity duration-300 ${
+                    expanded ? "opacity-0 scale-50" : "opacity-100 scale-100"
+                  }`}
+                >
+                  {state.itens.length}
+                </span>
               </div>
-              <div className="text-left">
-                <p className="text-caption text-white/70 leading-none mb-1">
+              <div
+                className={`text-left overflow-hidden transition-all duration-300 ease-out ${
+                  expanded ? "max-w-xs opacity-100" : "max-w-0 opacity-0"
+                }`}
+              >
+                <p className="text-caption text-white/70 leading-none mb-1 whitespace-nowrap">
                   {state.itens.length} {state.itens.length === 1 ? "item" : "itens"} no carrinho
                 </p>
-                <p className="text-title-sm font-cal leading-none">
+                <p className="text-title-sm font-cal leading-none whitespace-nowrap">
                   Ver Comanda
                 </p>
               </div>
             </div>
-            
-            <div className="flex items-center gap-4">
-              <span className="text-title-md font-cal">
+
+            {/* Lado direito: total + chevron (sempre visíveis) */}
+            <div className="flex items-center gap-4 shrink-0">
+              <span className="text-title-md font-cal whitespace-nowrap">
                 R$ {total.toFixed(2)}
               </span>
               <ChevronUp className={`w-5 h-5 transition-transform ${isOpen ? "rotate-180" : ""}`} />
             </div>
           </button>
-        </DrawerTrigger>
       </div>
 
       {/* Conteúdo da Gaveta (Drawer) */}
