@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
+import { FlowStepper } from "@/components/shared/flow-stepper";
 import { addItem, getComandaState, setMaioridade, hydrateComandaFromStorage } from "@/hooks/use-comanda";
 import { useTotemSession } from "@/hooks/use-totem-session";
 import { toast } from "sonner";
-import { ArrowLeft, Check, Scissors, ChevronRight } from "lucide-react";
+import { ArrowLeft, Check, Scissors, ChevronRight, User } from "lucide-react";
 
 interface Servico {
   id: string;
@@ -90,19 +91,24 @@ export default function ServicosPage() {
     <div className="min-h-screen flex flex-col">
       {/* Header */}
       <div className="px-6 py-4 border-b border-hairline">
+        {/* Botão "Trocar cliente" não usa ícone de voltar, para não confundir com "voltar ao passo anterior". */}
         <button
           onClick={() => {
             clearTotemSession();
             router.push("/totem");
           }}
-          className="flex items-center gap-2 text-body-md text-body hover:text-ink transition-colors"
+          className="flex items-center gap-2 text-body-md text-body hover:text-ink transition-colors mb-4"
+          aria-label="Trocar cliente"
         >
-          <ArrowLeft className="w-4 h-4" />
-          Trocar CPF
+          <User className="w-4 h-4" />
+          Trocar cliente
         </button>
+
+        <FlowStepper steps={["Serviços", "Bebidas", "Produtos", "Resumo", "Pagamento"]} current={1} />
       </div>
 
-      <div className="flex-1 max-w-2xl mx-auto w-full px-4 py-12">
+      {/* pb-20 reserva espaço para a pill do carrinho fixa no rodapé */}
+      <div className="flex-1 max-w-2xl mx-auto w-full px-4 py-12 pb-20">
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-surface-soft mb-4">
             <Scissors className="w-6 h-6 text-ink" />
@@ -155,17 +161,24 @@ export default function ServicosPage() {
         </div>
 
         {/* Maioridade */}
-        <div className="flex items-center gap-3 mb-8 p-4 bg-surface-soft rounded-lg">
-          <input
-            type="checkbox"
-            id="maioridade"
-            checked={maioridade}
-            onChange={(e) => setMaioridadeLocal(e.target.checked)}
-            className="w-5 h-5 rounded border-hairline"
-          />
-          <label htmlFor="maioridade" className="text-body-md text-body cursor-pointer">
-            Tenho mais de 18 anos e desejo ver o cardápio de bebidas alcoólicas
-          </label>
+        <div className="mb-8 p-4 bg-surface-soft rounded-lg">
+          <div className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              id="maioridade"
+              checked={maioridade}
+              onChange={(e) => setMaioridadeLocal(e.target.checked)}
+              className="w-5 h-5 mt-0.5 rounded border-hairline"
+            />
+            <div>
+              <label htmlFor="maioridade" className="text-body-md text-body cursor-pointer block">
+                Tenho mais de 18 anos e quero ver o cardápio de bebidas alcoólicas
+              </label>
+              <p className="text-caption text-muted mt-1">
+                Bebidas alcólicas só aparecerão na próxima etapa se esta opção estiver marcada.
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="flex gap-3">
