@@ -53,4 +53,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: "jwt",
   },
+  // Produção atrás de domínio/reverse proxy (ex.: totem.mauriciomilano.com)
+  trustHost: true,
 });
