@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
-import { FlowStepper } from "@/components/shared/flow-stepper";
+import { TotemFlowHeader } from "@/components/totem/totem-flow-header";
 import { addItem, getComandaState, setMaioridade, hydrateComandaFromStorage } from "@/hooks/use-comanda";
 import { useTotemSession } from "@/hooks/use-totem-session";
 import { toast } from "sonner";
-import { ArrowLeft, Check, Scissors, ChevronRight, User } from "lucide-react";
+import { Check, Scissors, ChevronRight } from "lucide-react";
 
 interface Servico {
   id: string;
@@ -26,6 +26,9 @@ export default function ServicosPage() {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<string[]>([]);
   const [maioridade, setMaioridadeLocal] = useState(false);
+  // Modo edição: id da comanda aberta e os ids de serviço que ela já tinha.
+  const [editingComandaId, setEditingComandaId] = useState<string | null>(null);
+  const [existingServiceIds, setExistingServiceIds] = useState<string[]>([]);
 
   useEffect(() => {
     hydrateComandaFromStorage();
@@ -34,6 +37,28 @@ export default function ServicosPage() {
     if (!cliente) {
       router.push("/totem");
       return;
+    }
+
+    // Se vier de "Adicionar Itens à Conta Existente", entra em modo edição:
+    // pré-seleciona os serviços que a comanda aberta já possuía e guarda o id
+    // da comanda para poder removê-los (desmarcar) ou adicionar novos.
+    if (typeof window !== "undefined") {
+      const rawServicos = sessionStorage.getItem("totem-resume-servicos");
+      const rawComanda = sessionStorage.getItem("totem-resume-comanda");
+      if (rawServicos || rawComanda) {
+        // Remove apenas a chave de itens; mantém a chave da comanda para as
+        // etapas seguintes (bebidas/produtos) continuarem em modo edição.
+        sessionStorage.removeItem("totem-resume-servicos");
+        let existingIds: string[] = [];
+        try {
+          existingIds = rawServicos ? JSON.parse(rawServicos) : [];
+        } catch {
+          /* ignora valor inválido */
+        }
+        setSelected(existingIds);
+        setExistingServiceIds(existingIds);
+        if (rawComanda) setEditingComandaId(rawComanda);
+      }
     }
 
     fetch("/api/servicos")
@@ -58,6 +83,36 @@ export default function ServicosPage() {
 
     setLoading(true);
     try {
+      if (editingComandaId) {
+        // Modo edição da comanda aberta: desmarcar remove, marcar adiciona.
+        const removedIds = existingServiceIds.filter((id) => !selected.includes(id));
+        for (const id of removedIds) {
+          await fetch(
+            `/api/comandas/${editingComandaId}/itens?servicoId=${encodeURIComponent(id)}&quantidade=1`,
+            { method: "DELETE" }
+          );
+        }
+
+        const newIds = selected.filter((id) => !existingServiceIds.includes(id));
+        for (const id of newIds) {
+          const servico = servicos.find((s) => s.id === id);
+          if (!servico) continue;
+          addItem({
+            tipo: "servico",
+            id: servico.id,
+            nomeItem: servico.nome,
+            precoUnit: Number(servico.preco),
+            quantidade: 1,
+            servicoId: servico.id,
+          });
+        }
+
+        setMaioridade(maioridade);
+        router.push("/totem/bebidas");
+        return;
+      }
+
+      // Fluxo normal (sem comanda aberta): adiciona todos os selecionados ao carrinho.
       selected.forEach((id) => {
         const servico = servicos.find((s) => s.id === id);
         if (!servico) return;
@@ -90,22 +145,14 @@ export default function ServicosPage() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-hairline">
-        {/* Botão "Trocar cliente" não usa ícone de voltar, para não confundir com "voltar ao passo anterior". */}
-        <button
-          onClick={() => {
-            clearTotemSession();
-            router.push("/totem");
-          }}
-          className="flex items-center gap-2 text-body-md text-body hover:text-ink transition-colors mb-4"
-          aria-label="Trocar cliente"
-        >
-          <User className="w-4 h-4" />
-          Trocar cliente
-        </button>
-
-        <FlowStepper steps={["Serviços", "Bebidas", "Produtos", "Resumo", "Pagamento"]} current={1} />
-      </div>
+      <TotemFlowHeader
+        current={1}
+        backLabel="Trocar cliente"
+        onBack={() => {
+          clearTotemSession();
+          router.push("/totem");
+        }}
+      />
 
       {/* pb-20 reserva espaço para a pill do carrinho fixa no rodapé */}
       <div className="flex-1 max-w-2xl mx-auto w-full px-4 py-12 pb-20">

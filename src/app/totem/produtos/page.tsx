@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { Skeleton } from "@/components/ui/skeleton";
-import { FlowStepper } from "@/components/shared/flow-stepper";
+import { TotemFlowHeader } from "@/components/totem/totem-flow-header";
 import { addItem, hydrateComandaFromStorage } from "@/hooks/use-comanda";
 import { useTotemSession } from "@/hooks/use-totem-session";
 import { toast } from "sonner";
-import { ArrowLeft, Package, Plus, Minus, ChevronRight } from "lucide-react";
+import { Package, Plus, Minus, ChevronRight } from "lucide-react";
 
 interface Produto {
   id: string;
@@ -34,6 +34,9 @@ export default function ProdutosPage() {
   const [categoriaAtiva, setCategoriaAtiva] = useState<string>("todas");
   const [quantidades, setQuantidades] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
+  // Modo edição: id da comanda aberta e as quantidades de produto que ela já tinha.
+  const [editingComandaId, setEditingComandaId] = useState<string | null>(null);
+  const [existingProdutos, setExistingProdutos] = useState<Record<string, number>>({});
 
   useEffect(() => {
     hydrateComandaFromStorage();
@@ -42,6 +45,28 @@ export default function ProdutosPage() {
     if (!cliente) {
       router.push("/totem");
       return;
+    }
+
+    // Se vier de "Adicionar Itens à Conta Existente", entra em modo edição:
+    // pré-preenche as quantidades que a comanda aberta já tinha e guarda o id
+    // da comanda para poder removê-las (desmarcar) ou adicionar novos.
+    if (typeof window !== "undefined") {
+      const rawProdutos = sessionStorage.getItem("totem-resume-produtos");
+      const rawComanda = sessionStorage.getItem("totem-resume-comanda");
+      if (rawProdutos || rawComanda) {
+        // Última etapa do fluxo: remove também a chave da comanda aberta.
+        sessionStorage.removeItem("totem-resume-produtos");
+        sessionStorage.removeItem("totem-resume-comanda");
+        let existing: Record<string, number> = {};
+        try {
+          existing = rawProdutos ? JSON.parse(rawProdutos) : {};
+        } catch {
+          /* ignora valor inválido */
+        }
+        setQuantidades(existing);
+        setExistingProdutos(existing);
+        if (rawComanda) setEditingComandaId(rawComanda);
+      }
     }
 
     async function load() {
@@ -78,7 +103,51 @@ export default function ProdutosPage() {
     updateLastActivity();
   }
 
-  function handleContinue() {
+  async function handleContinue() {
+    if (editingComandaId) {
+      // Modo edição da comanda aberta: o que já estava na comanda não volta ao
+      // carrinho — apenas ajustamos as diferenças. Desmarcar/reduzir remove via
+      // DELETE; aumentar/adicionar vai para o carrinho (mesclado no resumo).
+      setLoading(true);
+      try {
+        // Itens existentes que foram reduzidos ou totalmente desmarcados.
+        for (const [id, existingQty] of Object.entries(existingProdutos)) {
+          const currentQty = quantidades[id] || 0;
+          if (currentQty < existingQty) {
+            await fetch(
+              `/api/comandas/${editingComandaId}/itens?produtoId=${encodeURIComponent(id)}&quantidade=${existingQty - currentQty}`,
+              { method: "DELETE" }
+            );
+          }
+        }
+
+        // Itens novos, ou aumentados acima da quantidade existente.
+        for (const [id, qtd] of Object.entries(quantidades)) {
+          const existingQty = existingProdutos[id] || 0;
+          if (qtd > existingQty) {
+            const produto = produtos.find((p) => p.id === id);
+            if (!produto) continue;
+            addItem({
+              tipo: "produto",
+              id: produto.id,
+              nomeItem: produto.nome,
+              precoUnit: Number(produto.preco),
+              quantidade: qtd - existingQty,
+              produtoId: produto.id,
+            });
+          }
+        }
+
+        router.push("/totem/resumo");
+      } catch {
+        toast.error("Erro ao atualizar produtos. Tente novamente.");
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
+    // Fluxo normal (sem comanda aberta): adiciona tudo ao carrinho.
     Object.entries(quantidades).forEach(([id, qtd]) => {
       const produto = produtos.find((p) => p.id === id);
       if (produto && qtd > 0) {
@@ -120,16 +189,11 @@ export default function ProdutosPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="px-6 py-4 border-b border-hairline">
-        <button
-          onClick={() => router.push("/totem/bebidas")}
-          className="flex items-center gap-2 text-body-md text-body hover:text-ink transition-colors mb-4"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Voltar às bebidas
-        </button>
-        <FlowStepper steps={["Serviços", "Bebidas", "Produtos", "Resumo", "Pagamento"]} current={3} />
-      </div>
+      <TotemFlowHeader
+        current={3}
+        backLabel="Voltar às bebidas"
+        onBack={() => router.push("/totem/bebidas")}
+      />
 
       {/* pb-20 reserva espaço para a pill do carrinho fixa no rodapé */}
       <div className="flex-1 max-w-3xl mx-auto w-full px-4 py-8 pb-20">

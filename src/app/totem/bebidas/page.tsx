@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
-import { FlowStepper } from "@/components/shared/flow-stepper";
+import { TotemFlowHeader } from "@/components/totem/totem-flow-header";
 import { addItem, getComandaState, hydrateComandaFromStorage } from "@/hooks/use-comanda";
 import { useTotemSession } from "@/hooks/use-totem-session";
 import { toast } from "sonner";
-import { ArrowLeft, Plus, Minus, ChevronRight, Wine } from "lucide-react";
+import { Plus, Minus, ChevronRight, Wine } from "lucide-react";
 
 interface Bebida {
   id: string;
@@ -35,6 +35,9 @@ export default function BebidasPage() {
   const [quantidades, setQuantidades] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const maioridade = getComandaState().maioridade;
+  // Modo edição: id da comanda aberta e as quantidades de bebida que ela já tinha.
+  const [editingComandaId, setEditingComandaId] = useState<string | null>(null);
+  const [existingBebidas, setExistingBebidas] = useState<Record<string, number>>({});
 
   useEffect(() => {
     hydrateComandaFromStorage();
@@ -43,6 +46,28 @@ export default function BebidasPage() {
     if (!cliente) {
       router.push("/totem");
       return;
+    }
+
+    // Se vier de "Adicionar Itens à Conta Existente", entra em modo edição:
+    // pré-preenche as quantidades que a comanda aberta já tinha e guarda o id
+    // da comanda para poder removê-las (desmarcar) ou adicionar novas.
+    if (typeof window !== "undefined") {
+      const rawBebidas = sessionStorage.getItem("totem-resume-bebidas");
+      const rawComanda = sessionStorage.getItem("totem-resume-comanda");
+      if (rawBebidas || rawComanda) {
+        // Remove apenas a chave de itens; mantém a da comanda para a etapa
+        // seguinte (produtos) continuar em modo edição.
+        sessionStorage.removeItem("totem-resume-bebidas");
+        let existing: Record<string, number> = {};
+        try {
+          existing = rawBebidas ? JSON.parse(rawBebidas) : {};
+        } catch {
+          /* ignora valor inválido */
+        }
+        setQuantidades(existing);
+        setExistingBebidas(existing);
+        if (rawComanda) setEditingComandaId(rawComanda);
+      }
     }
 
     async function load() {
@@ -87,9 +112,53 @@ export default function BebidasPage() {
     updateLastActivity();
   }
 
-  function handleContinue() {
+  async function handleContinue() {
     updateLastActivity();
-    // Add selected drinks to comanda
+
+    if (editingComandaId) {
+      // Modo edição da comanda aberta: o que já estava na comanda não volta ao
+      // carrinho — apenas ajustamos as diferenças. Desmarcar/reduzir remove via
+      // DELETE; aumentar/adicionar vai para o carrinho (mesclado no resumo).
+      setLoading(true);
+      try {
+        // Itens existentes que foram reduzidos ou totalmente desmarcados.
+        for (const [id, existingQty] of Object.entries(existingBebidas)) {
+          const currentQty = quantidades[id] || 0;
+          if (currentQty < existingQty) {
+            await fetch(
+              `/api/comandas/${editingComandaId}/itens?bebidaId=${encodeURIComponent(id)}&quantidade=${existingQty - currentQty}`,
+              { method: "DELETE" }
+            );
+          }
+        }
+
+        // Itens novos, ou aumentados acima da quantidade existente.
+        for (const [id, qtd] of Object.entries(quantidades)) {
+          const existingQty = existingBebidas[id] || 0;
+          if (qtd > existingQty) {
+            const bebida = bebidas.find((b) => b.id === id);
+            if (!bebida) continue;
+            addItem({
+              tipo: "bebida",
+              id: bebida.id,
+              nomeItem: bebida.nome,
+              precoUnit: Number(bebida.preco),
+              quantidade: qtd - existingQty,
+              bebidaId: bebida.id,
+            });
+          }
+        }
+
+        router.push("/totem/produtos");
+      } catch {
+        toast.error("Erro ao atualizar bebidas. Tente novamente.");
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
+    // Fluxo normal (sem comanda aberta): adiciona tudo ao carrinho.
     Object.entries(quantidades).forEach(([id, qtd]) => {
       const bebida = bebidas.find((b) => b.id === id);
       if (bebida && qtd > 0) {
@@ -121,16 +190,11 @@ export default function BebidasPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="px-6 py-4 border-b border-hairline">
-        <button
-          onClick={() => router.push("/totem/servicos")}
-          className="flex items-center gap-2 text-body-md text-body hover:text-ink transition-colors mb-4"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Voltar aos serviços
-        </button>
-        <FlowStepper steps={["Serviços", "Bebidas", "Produtos", "Resumo", "Pagamento"]} current={2} />
-      </div>
+      <TotemFlowHeader
+        current={2}
+        backLabel="Voltar aos serviços"
+        onBack={() => router.push("/totem/servicos")}
+      />
 
       {/* pb-20 reserva espaço para a pill do carrinho fixa no rodapé */}
       <div className="flex-1 max-w-3xl mx-auto w-full px-4 py-8 pb-20">

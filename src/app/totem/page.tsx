@@ -77,6 +77,36 @@ export default function TotemPage() {
 
   function handleContinueWithExisting() {
     setShowMergeModal(false);
+    const itens = activeComandaData?.itens ?? [];
+    const servicoIds = itens
+      .map((item: any) => item.servicoId)
+      .filter(Boolean);
+
+    // Bebidas e produtos usam quantidade, então guardamos um mapa id -> quantidade.
+    const bebidaQuantidades: Record<string, number> = {};
+    for (const item of itens) {
+      if (item.bebidaId) {
+        bebidaQuantidades[item.bebidaId] =
+          (bebidaQuantidades[item.bebidaId] || 0) + (Number(item.quantidade) || 1);
+      }
+    }
+    const produtoQuantidades: Record<string, number> = {};
+    for (const item of itens) {
+      if (item.produtoId) {
+        produtoQuantidades[item.produtoId] =
+          (produtoQuantidades[item.produtoId] || 0) + (Number(item.quantidade) || 1);
+      }
+    }
+
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("totem-resume-servicos", JSON.stringify(servicoIds));
+      sessionStorage.setItem("totem-resume-bebidas", JSON.stringify(bebidaQuantidades));
+      sessionStorage.setItem("totem-resume-produtos", JSON.stringify(produtoQuantidades));
+      // Guarda o id da comanda aberta para as telas trabalharem em modo edição.
+      if (activeComandaData?.id) {
+        sessionStorage.setItem("totem-resume-comanda", activeComandaData.id);
+      }
+    }
     router.push("/totem/servicos");
   }
 
