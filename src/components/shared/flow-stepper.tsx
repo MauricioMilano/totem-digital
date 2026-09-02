@@ -21,7 +21,7 @@ export function FlowStepper({ steps, current, className }: FlowStepperProps) {
     <nav
       aria-label="Etapas do pedido"
       className={cn(
-        "sticky top-3 z-30 flex items-center justify-between gap-1 sm:gap-2 rounded-full bg-white/90 backdrop-blur border border-hairline shadow-lg px-3 py-2",
+        "sticky top-3 z-30 flex items-center justify-between gap-1 sm:gap-2 rounded-full bg-surface-card/95 backdrop-blur border border-hairline shadow-lg px-3 py-2",
         className
       )}
     >
@@ -37,9 +37,9 @@ export function FlowStepper({ steps, current, className }: FlowStepperProps) {
               className={cn(
                 "w-7 sm:w-9 h-7 sm:h-9 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold border transition-colors",
                 isCurrent
-                  ? "bg-brand-primary border-brand-primary text-white"
+                  ? "bg-brand-primary border-brand-primary text-on-primary"
                   : isCompleted
-                    ? "bg-brand-primary border-brand-primary text-white"
+                    ? "bg-brand-primary border-brand-primary text-on-primary"
                     : "bg-surface-soft border-hairline text-body"
               )}
               aria-hidden={true}

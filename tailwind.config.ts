@@ -14,37 +14,52 @@ export default {
         "cal-body": ["Inter", "Cal Sans", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", "Oxygen", "Ubuntu", "Cantarell", '"Fira Sans"', '"Droid Sans"', '"Helvetica Neue"', "sans-serif"],
       },
       colors: {
-        canvas: "#ffffff",
-        "surface-soft": "#F8F9FA",
-        "surface-dark": "#101010",
-        ink: "#111111",
-        body: "#333333",
+        // ─── DOMETTS Barber & Shop — paleta escura premium ───────────────
+        // canvas = fundo base (espresso), ink = texto principal (cream)
+        canvas: "#3B2618",
+        "surface-soft": "#4A3220",
+        "surface-card": "#54391F",
+        "surface-dark": "#2E1E12",
+        ink: "#F5EFE6",
+        body: "#C4AE8F",
+        // bordas / hairlines (antes estavam ausentes da config)
+        hairline: "#5A422B",
+        "border-strong": "#6E5334",
         brand: {
-          primary: "#181d26",
-          "primary-active": "#0d1218",
+          primary: "#DCC39E", // sand / dourado — cor de destaque
+          "primary-active": "#C9AD82",
         },
+        "on-primary": "#3B2618", // texto sobre o accent (sand)
         signature: {
-          coral: "#aa2d00",
-          forest: "#0a2e0e",
-          cream: "#f5e9d4",
-          peach: "#fcab79",
-          mint: "#a8d8c4",
-          yellow: "#f4d35e",
-          mustard: "#d9a441",
+          coral: "#C15A32",
+          forest: "#4E8A5C",
+          cream: "#F5EFE6",
+          peach: "#DFA277",
+          mint: "#93BFA8",
+          yellow: "#DCC39E",
+          mustard: "#C99A45",
         },
         link: {
-          DEFAULT: "#1b61c9",
-          active: "#1a3866",
+          DEFAULT: "#7FA3FF",
+          active: "#A9C2FF",
         },
         info: {
-          DEFAULT: "#254fad",
-          border: "#458fff",
+          DEFAULT: "#6E9BE0",
+          border: "#8FB4F0",
         },
         success: {
-          DEFAULT: "#006400",
-          border: "#39bf45",
+          DEFAULT: "#5FC48D",
+          border: "#7FDCA6",
         },
-        "pricing-ink": "#1d1f25",
+        error: {
+          DEFAULT: "#E07B5A",
+          border: "#E8937A",
+        },
+        warning: {
+          DEFAULT: "#E0B15C",
+          border: "#E8C57A",
+        },
+        "pricing-ink": "#F5EFE6",
         // Keep shadcn compatibility
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

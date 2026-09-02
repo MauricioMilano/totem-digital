@@ -90,7 +90,7 @@ export function TotemDrawer() {
         <button
           onClick={() => setIsOpen(true)}
           aria-haspopup="dialog"
-          className={`w-full max-w-4xl mx-auto flex items-center justify-between bg-ink text-white rounded-xl shadow-lg hover:bg-brand-primary-active transition-all duration-300 ${
+          className={`w-full max-w-4xl mx-auto flex items-center justify-between bg-brand-primary text-on-primary rounded-xl shadow-lg hover:bg-brand-primary-active transition-all duration-300 ${
             expanded ? "p-5" : "py-3 px-4"
           }`}
         >
@@ -112,7 +112,7 @@ export function TotemDrawer() {
                   expanded ? "max-w-xs opacity-100" : "max-w-0 opacity-0"
                 }`}
               >
-                <p className="text-caption text-white/70 leading-none mb-1 whitespace-nowrap">
+                <p className="text-caption text-on-primary/80 leading-none mb-1 whitespace-nowrap">
                   {state.itens.length} {state.itens.length === 1 ? "item" : "itens"} no carrinho
                 </p>
                 <p className="text-title-sm font-cal leading-none whitespace-nowrap">
@@ -158,14 +158,14 @@ export function TotemDrawer() {
                     <div className="flex items-center gap-3 bg-surface-soft rounded-lg p-1">
                       <button 
                         onClick={() => updateQuantidade(index, item.quantidade - 1)}
-                        className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white transition-colors"
+                        className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-surface-card transition-colors"
                       >
                         <Minus className="w-4 h-4" />
                       </button>
                       <span className="text-body-md font-bold w-4 text-center">{item.quantidade}</span>
                       <button 
                         onClick={() => updateQuantidade(index, item.quantidade + 1)}
-                        className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white transition-colors"
+                        className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-surface-card transition-colors"
                       >
                         <Plus className="w-4 h-4" />
                       </button>
@@ -193,7 +193,7 @@ export function TotemDrawer() {
           <div className="flex gap-3">
             <button 
               onClick={() => setIsOpen(false)}
-              className="flex-1 py-4 text-body-md font-bold text-ink border border-hairline rounded-lg bg-white hover:bg-surface-soft transition-colors"
+                className="flex-1 py-4 text-body-md font-bold text-ink border border-hairline rounded-lg bg-canvas hover:bg-surface-card transition-colors"
             >
               Continuar Comprando
             </button>

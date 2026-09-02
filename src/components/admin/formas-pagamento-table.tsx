@@ -90,7 +90,7 @@ export function FormasPagamentoTable({
                 className={`inline-flex px-2.5 py-1 rounded-pill text-xs font-medium ${
                   parcela === 1
                     ? "bg-success/10 text-success"
-                    : "bg-signature-cream text-ink"
+                    : "bg-surface-soft text-body"
                 }`}
               >
                 {parcela === 1 ? "à vista" : `${parcela}x`}

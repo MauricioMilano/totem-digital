@@ -92,7 +92,7 @@ export function FormasPagamentoForm({
               }}
               className={`px-3 py-2 rounded-pill text-body-md border transition-colors ${
                 form.watch("maximoParcelas") === String(num)
-                  ? "bg-brand-primary text-white border-brand-primary"
+                  ? "bg-brand-primary text-on-primary border-brand-primary"
                   : "bg-canvas text-ink border-hairline hover:border-border-strong"
               }`}
             >

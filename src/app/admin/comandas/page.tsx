@@ -69,7 +69,7 @@ export default function ComandasPage() {
             onClick={() => setFiltroStatus(filtro.value)}
             className={`px-4 py-2 rounded-lg whitespace-nowrap text-body-md transition-colors ${
               filtroStatus === filtro.value
-                ? "bg-brand-primary text-white"
+                ? "bg-brand-primary text-on-primary"
                 : "bg-surface-soft text-body hover:text-ink"
             }`}
           >

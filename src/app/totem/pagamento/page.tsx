@@ -107,7 +107,7 @@ export default function PagamentoPage() {
       </div>
 
       <div className="w-full max-w-md bg-canvas border border-hairline rounded-3xl shadow-sm overflow-hidden">
-        <div className="p-6 bg-brand-primary text-white flex items-center justify-between">
+        <div className="p-6 bg-brand-primary text-on-primary flex items-center justify-between">
           <div className="flex items-center gap-3">
             <CreditCard className="w-6 h-6" />
             <h1 className="text-title-md font-medium">Pagamento</h1>

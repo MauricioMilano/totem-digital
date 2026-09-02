@@ -151,7 +151,7 @@ export default function ServicosPage() {
                           : "border-hairline"
                       }`}
                     >
-                      {isSelected && <Check className="w-4 h-4 text-white" />}
+                      {isSelected && <Check className="w-4 h-4 text-on-primary" />}
                     </div>
                   </div>
                 </div>

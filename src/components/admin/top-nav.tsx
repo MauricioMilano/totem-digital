@@ -8,7 +8,7 @@ export function TopNav() {
   return (
     <header className="h-14 bg-canvas border-b border-hairline flex items-center justify-end px-6">
       <div className="flex items-center gap-3">
-        <div className="w-7 h-7 rounded-full bg-brand-primary text-white flex items-center justify-center text-xs font-medium">
+        <div className="w-7 h-7 rounded-full bg-brand-primary text-on-primary flex items-center justify-center text-xs font-medium">
           {session?.user?.name?.charAt(0)?.toUpperCase() || "A"}
         </div>
         <span className="text-body-md text-body">{session?.user?.name || "Admin"}</span>

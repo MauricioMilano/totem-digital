@@ -150,7 +150,7 @@ export default function BebidasPage() {
             onClick={() => setCategoriaAtiva("todas")}
             className={`px-4 py-2 rounded-lg whitespace-nowrap text-body-md transition-colors ${
               categoriaAtiva === "todas"
-                ? "bg-brand-primary text-white"
+                ? "bg-brand-primary text-on-primary"
                 : "bg-surface-soft text-body hover:text-ink"
             }`}
           >
@@ -162,7 +162,7 @@ export default function BebidasPage() {
               onClick={() => setCategoriaAtiva(cat.id)}
               className={`px-4 py-2 rounded-lg whitespace-nowrap text-body-md transition-colors ${
                 categoriaAtiva === cat.id
-                  ? "bg-brand-primary text-white"
+                  ? "bg-brand-primary text-on-primary"
                   : "bg-surface-soft text-body hover:text-ink"
               }`}
             >
@@ -203,7 +203,7 @@ export default function BebidasPage() {
                       </span>
                       <button
                         onClick={() => addQuantidade(bebida.id)}
-                        className="w-8 h-8 rounded-full bg-brand-primary text-white flex items-center justify-center hover:bg-brand-primary-active"
+                        className="w-8 h-8 rounded-full bg-brand-primary text-on-primary flex items-center justify-center hover:bg-brand-primary-active"
                       >
                         <Plus className="w-4 h-4" />
                       </button>

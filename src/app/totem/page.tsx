@@ -122,7 +122,7 @@ export default function TotemPage() {
         <div className="w-full max-w-4xl text-center">
           <div className="mb-16">
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-brand-primary mb-6">
-              <Scissors className="w-10 h-10 text-white" />
+              <Scissors className="w-10 h-10 text-on-primary" />
             </div>
             <h1 className="text-display-lg font-cal text-ink mb-4">Bem-vindo à Barbearia</h1>
             <p className="text-title-md text-body max-w-lg mx-auto">
@@ -136,7 +136,7 @@ export default function TotemPage() {
               onClick={() => setStep("identification")}
               className="flex flex-col items-center p-12 bg-surface-card border border-hairline rounded-lg hover:border-brand-primary hover:shadow-lg transition-all group"
             >
-              <div className="w-20 h-20 rounded-full bg-brand-primary text-white flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+              <div className="w-20 h-20 rounded-full bg-brand-primary text-on-primary flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
                 <PlusCircle className="w-10 h-10" />
               </div>
               <h2 className="text-display-sm font-cal text-ink mb-3 tracking-tight">Novo Pedido</h2>
@@ -150,7 +150,7 @@ export default function TotemPage() {
               onClick={() => router.push("/totem/comandas")}
               className="flex flex-col items-center p-12 bg-surface-card border border-hairline rounded-lg hover:border-brand-primary hover:shadow-lg transition-all group"
             >
-              <div className="w-20 h-20 rounded-full bg-brand-primary text-white flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+              <div className="w-20 h-20 rounded-full bg-brand-primary text-on-primary flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
                 <Search className="w-10 h-10" />
               </div>
               <h2 className="text-display-sm font-cal text-ink mb-3 tracking-tight">Minha Conta</h2>

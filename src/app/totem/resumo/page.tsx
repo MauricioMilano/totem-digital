@@ -189,7 +189,7 @@ export default function ResumoPage() {
                         updateQuantidade(index, item.quantidade + 1);
                         forceUpdate((n) => n + 1);
                       }}
-                      className="w-7 h-7 rounded-full bg-brand-primary text-white flex items-center justify-center hover:bg-brand-primary-active"
+                      className="w-7 h-7 rounded-full bg-brand-primary text-on-primary flex items-center justify-center hover:bg-brand-primary-active"
                     >
                       <Plus className="w-3 h-3" />
                     </button>

@@ -58,7 +58,7 @@ export default function ComandasAtivasPage() {
   return (
     <div className="min-h-screen flex flex-col bg-canvas">
       {/* Header */}
-      <div className="px-6 py-6 border-b border-hairline bg-white sticky top-0 z-10 shadow-sm">
+      <div className="px-6 py-6 border-b border-hairline bg-canvas sticky top-0 z-10 shadow-sm">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <button
             onClick={() => router.push("/totem")}

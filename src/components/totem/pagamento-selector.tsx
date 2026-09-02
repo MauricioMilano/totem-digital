@@ -122,7 +122,7 @@ export function PagamentoSelector({
                         onClick={() => onSelectParcelas(parcela)}
                         className={`px-3 py-2 rounded-md text-body-md border transition-colors ${
                           quantidadeParcelas === parcela
-                            ? "bg-brand-primary text-white border-brand-primary"
+                            ? "bg-brand-primary text-on-primary border-brand-primary"
                             : "bg-canvas text-ink border-hairline hover:border-border-strong"
                         }`}
                       >

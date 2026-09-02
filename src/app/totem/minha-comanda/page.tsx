@@ -78,7 +78,7 @@ export default function MinhaComandaPage() {
 
       <div className="w-full max-w-md bg-canvas border border-hairline rounded-3xl shadow-sm overflow-hidden">
         {/* Header */}
-        <div className="p-6 bg-brand-primary text-white flex items-center justify-between">
+        <div className="p-6 bg-brand-primary text-on-primary flex items-center justify-between">
           <div className="flex items-center gap-3">
             <ShoppingBag className="w-6 h-6" />
             <h1 className="text-title-md font-medium">Minha Comanda</h1>
