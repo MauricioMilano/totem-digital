@@ -6,7 +6,6 @@ import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { TextInput } from "@/components/shared/text-input";
 import { PlusCircle, Search, AlertCircle } from "lucide-react";
-import { BackButton } from "@/components/shared/back-button";
 import { setCliente } from "@/hooks/use-comanda";
 import { useTotemSession } from "@/hooks/use-totem-session";
 import { formatCPF } from "@/lib/totem-utils";
@@ -19,6 +18,7 @@ import {
   DialogFooter
 } from "@/components/ui/dialog";
 import { GuestForm } from "@/components/totem/guest-form";
+import { TotemHeader } from "@/components/totem/totem-header";
 
 export default function TotemPage() {
   const router = useRouter();
@@ -176,14 +176,15 @@ export default function TotemPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-canvas">
-      <div className="w-full max-w-md text-center">
-        <BackButton
-          label="Voltar para o início"
-          onClick={() => setStep("selection")}
-          className="mb-8 mx-auto"
-        />
+    <div className="min-h-screen flex flex-col bg-canvas">
+      {/* Header padronizado */}
+      <TotemHeader
+        backLabel="Voltar para o início"
+        onBack={() => setStep("selection")}
+      />
 
+      <div className="flex-1 flex items-center justify-center px-4">
+      <div className="w-full max-w-md text-center">
         <div className="mb-12">
           <h1 className="text-display-md text-ink mb-2">Identificação</h1>
           <p className="text-body-md text-body max-w-sm mx-auto">
@@ -236,6 +237,7 @@ export default function TotemPage() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+      </div>
       </div>
     </div>
   );

@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { PagamentoSelector } from "@/components/totem/pagamento-selector";
-import { TotemFlowHeader } from "@/components/totem/totem-flow-header";
+import { TotemHeader } from "@/components/totem/totem-header";
+import { FlowStepper, FLOW_STEPS } from "@/components/shared/flow-stepper";
 import { toast } from "sonner";
 import { CreditCard } from "lucide-react";
 import { useTotemSession, getCliente, getComandaId } from "@/hooks/use-totem-session";
@@ -107,13 +108,18 @@ export default function PagamentoPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center px-4 py-6 bg-surface-soft">
-      {/* Top bar: voltar + etapas */}
-      <div className="w-full max-w-md mb-4">
-        <TotemFlowHeader
-          current={5}
+      {/* Header padronizado (stepper separado, logo abaixo) */}
+      <div className="w-full max-w-md mb-3">
+        <TotemHeader
           backLabel="Voltar ao pedido"
+          showContinueLater
           onBack={() => router.push("/totem/resumo")}
         />
+      </div>
+
+      {/* Stepper de progresso — separado do header */}
+      <div className="w-full max-w-md mb-4 px-2">
+        <FlowStepper steps={FLOW_STEPS} current={5} />
       </div>
 
       <div className="w-full max-w-md bg-canvas border border-hairline rounded-3xl shadow-sm overflow-hidden">

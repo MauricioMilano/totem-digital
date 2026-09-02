@@ -6,7 +6,8 @@ import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { TextInput } from "@/components/shared/text-input";
 import { toast } from "sonner";
-import { ArrowLeft, User } from "lucide-react";
+import { User } from "lucide-react";
+import { TotemHeader } from "@/components/totem/totem-header";
 import { setCustomerStatus } from "@/hooks/use-comanda";
 import { useTotemSession } from "@/hooks/use-totem-session";
 import { formatPhone } from "@/lib/totem-utils";
@@ -52,16 +53,12 @@ export function GuestForm({ onBack, onCancel }: GuestFormProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <button
-          onClick={onBack}
-          className="flex items-center gap-2 text-body-md text-body hover:text-ink mb-8 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Voltar
-        </button>
+    <div className="min-h-screen flex flex-col bg-canvas">
+      {/* Header padronizado */}
+      <TotemHeader backLabel="Voltar" onBack={onBack} />
 
+      <div className="flex-1 flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-surface-soft mb-4">
             <User className="w-6 h-6 text-ink" />
@@ -99,6 +96,7 @@ export function GuestForm({ onBack, onCancel }: GuestFormProps) {
             </ButtonPrimary>
           </div>
         </form>
+      </div>
       </div>
     </div>
   );

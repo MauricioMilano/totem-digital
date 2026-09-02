@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Hourglass } from "lucide-react";
-import { BackButton } from "@/components/shared/back-button";
-import { FlowStepper } from "@/components/shared/flow-stepper";
 import { useTotemSession } from "@/hooks/use-totem-session";
 import { limparComanda } from "@/hooks/use-comanda";
 import { toast } from "sonner";
@@ -17,28 +15,21 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 
-const FLOW_STEPS = ["Serviços", "Bebidas", "Produtos", "Resumo", "Pagamento"];
-
-interface TotemFlowHeaderProps {
-  /** Etapa atual (1 a 5) para o indicador de progresso. */
-  current: number;
-  /** Rótulo do botão de voltar (ex.: "Voltar às bebidas"). */
-  backLabel: string;
-  /** Ação ao clicar em voltar (retorna 1 etapa no flow). */
-  onBack: () => void;
+interface ContinueLaterButtonProps {
+  /** Classe extra para o botão gatilho. */
+  className?: string;
 }
 
 /**
- * Cabeçalho padronizado do fluxo de pedido do totem.
+ * Botão "Continuar depois" padronizado do totem.
  *
- * - "Voltar" (esquerda): retorna 1 etapa no flow, sem alterar a comanda/carrinho.
- * - "Continuar depois" (direita): pausa o atendimento — volta ao início mantendo a
- *   comanda aberta. Se já existe comanda persistida no servidor (comandaId), limpa
- *   a sessão local (os itens estão seguros no banco e podem ser retomados por
- *   Minha Conta). Se ainda não há comanda no servidor, preserva o carrinho local
- *   para não perder itens que ainda não foram persistidos.
+ * Pausa o atendimento — volta ao início mantendo a comanda aberta. Se já existe
+ * comanda persistida no servidor (comandaId), limpa a sessão local (os itens
+ * estão seguros no banco e podem ser retomados por Minha Conta). Se ainda não há
+ * comanda no servidor, preserva o carrinho local para não perder itens que
+ * ainda não foram persistidos.
  */
-export function TotemFlowHeader({ current, backLabel, onBack }: TotemFlowHeaderProps) {
+export function ContinueLaterButton({ className }: ContinueLaterButtonProps) {
   const router = useRouter();
   const { getComandaId } = useTotemSession();
   const [showPauseDialog, setShowPauseDialog] = useState(false);
@@ -56,22 +47,17 @@ export function TotemFlowHeader({ current, backLabel, onBack }: TotemFlowHeaderP
 
   return (
     <>
-      <div className="px-6 py-4 border-b border-hairline">
-        <div className="mb-4 flex items-center justify-between gap-2">
-          <BackButton label={backLabel} onClick={onBack} />
-
-          <button
-            onClick={() => setShowPauseDialog(true)}
-            aria-label="Continuar depois"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-brand-primary/40 text-body-md text-body hover:text-ink transition-colors duration-150 hover:border-brand-primary hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-          >
-            <Hourglass className="w-4 h-4" />
-            Continuar depois
-          </button>
-        </div>
-
-        <FlowStepper steps={FLOW_STEPS} current={current} />
-      </div>
+      <button
+        onClick={() => setShowPauseDialog(true)}
+        aria-label="Continuar depois"
+        className={
+          "inline-flex items-center gap-2 px-4 py-2 rounded-md border border-brand-primary/40 text-body-md text-body hover:text-ink transition-colors duration-150 hover:border-brand-primary hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary " +
+          (className ?? "")
+        }
+      >
+        <Hourglass className="w-4 h-4" />
+        Continuar depois
+      </button>
 
       {/* Confirmação de pausa */}
       <Dialog open={showPauseDialog} onOpenChange={setShowPauseDialog}>

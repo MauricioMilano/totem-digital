@@ -7,7 +7,7 @@ import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { TextInput } from "@/components/shared/text-input";
 import { toast } from "sonner";
 import { UserPlus } from "lucide-react";
-import { BackButton } from "@/components/shared/back-button";
+import { TotemHeader } from "@/components/totem/totem-header";
 import { Suspense } from "react";
 import { setCliente } from "@/hooks/use-comanda";
 import { useTotemSession } from "@/hooks/use-totem-session";
@@ -83,10 +83,12 @@ function NovoClienteForm() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <BackButton label="Voltar" onClick={() => router.push("/totem")} className="mb-8" />
+    <div className="min-h-screen flex flex-col bg-canvas">
+      {/* Header padronizado */}
+      <TotemHeader backLabel="Voltar" onBack={() => router.push("/totem")} />
 
+      <div className="flex-1 flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-surface-soft mb-4">
             <UserPlus className="w-6 h-6 text-ink" />
@@ -146,6 +148,7 @@ function NovoClienteForm() {
             </ButtonSecondary>
           </div>
         </form>
+      </div>
       </div>
     </div>
   );

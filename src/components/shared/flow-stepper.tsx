@@ -1,5 +1,8 @@
 import { cn } from "@/lib/utils";
 
+/** Etapas padrão do fluxo de pedido do totem. */
+export const FLOW_STEPS = ["Serviços", "Bebidas", "Produtos", "Resumo", "Pagamento"];
+
 type FlowStepperStep = string | { label: string };
 
 interface FlowStepperProps {

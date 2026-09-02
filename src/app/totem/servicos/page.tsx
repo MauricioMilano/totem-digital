@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
-import { TotemFlowHeader } from "@/components/totem/totem-flow-header";
+import { TotemHeader } from "@/components/totem/totem-header";
+import { FlowStepper, FLOW_STEPS } from "@/components/shared/flow-stepper";
 import { addItem, getComandaState, setMaioridade, hydrateComandaFromStorage } from "@/hooks/use-comanda";
 import { useTotemSession } from "@/hooks/use-totem-session";
 import { toast } from "sonner";
@@ -144,15 +145,20 @@ export default function ServicosPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <TotemFlowHeader
-        current={1}
+      {/* Header padronizado (stepper fica fora, logo abaixo) */}
+      <TotemHeader
         backLabel="Trocar cliente"
+        showContinueLater
         onBack={() => {
           clearTotemSession();
           router.push("/totem");
         }}
       />
+
+      {/* Stepper de progresso — separado do header */}
+      <div className="px-4 pt-3">
+        <FlowStepper steps={FLOW_STEPS} current={1} />
+      </div>
 
       {/* pb-20 reserva espaço para a pill do carrinho fixa no rodapé */}
       <div className="flex-1 max-w-2xl mx-auto w-full px-4 py-12 pb-20">

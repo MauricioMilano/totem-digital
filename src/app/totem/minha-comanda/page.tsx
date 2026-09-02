@@ -6,7 +6,7 @@ import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { toast } from "sonner";
 import { ShoppingBag, CreditCard } from "lucide-react";
-import { BackButton } from "@/components/shared/back-button";
+import { TotemHeader } from "@/components/totem/totem-header";
 import { useTotemSession, getCliente, getComandaId } from "@/hooks/use-totem-session";
 
 async function resolveComanda() {
@@ -25,7 +25,6 @@ async function resolveComanda() {
   }
   return null;
 }
-import { FlowStepper } from "@/components/shared/flow-stepper";
 
 interface ComandaItem {
   id: string;
@@ -81,17 +80,22 @@ export default function MinhaComandaPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center px-4 py-6 bg-surface-soft">
-      {/* Back button */}
-      <BackButton label="Voltar" onClick={() => router.push("/totem")} className="mb-6 self-start" />
+      {/* Header padronizado */}
+      <TotemHeader
+        backLabel="Voltar"
+        showContinueLater
+        onBack={() => router.push("/totem")}
+      >
+        <h1 className="text-title-md font-medium text-ink flex items-center gap-2">
+          <ShoppingBag className="w-5 h-5" />
+          Minha Comanda
+        </h1>
+      </TotemHeader>
 
-      <div className="w-full max-w-md bg-canvas border border-hairline rounded-3xl shadow-sm overflow-hidden">
-        {/* Header */}
-        <div className="p-6 bg-brand-primary text-on-primary flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <ShoppingBag className="w-6 h-6" />
-            <h1 className="text-title-md font-medium">Minha Comanda</h1>
-          </div>
-          <span className="text-body-sm opacity-90">
+      <div className="w-full max-w-md bg-canvas border border-hairline rounded-3xl shadow-sm overflow-hidden mt-4">
+        {/* Cliente */}
+        <div className="px-6 pt-5 text-center">
+          <span className="text-body-sm text-body">
             {comanda.cliente?.nome || "Cliente"}
           </span>
         </div>
