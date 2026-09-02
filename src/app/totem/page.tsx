@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { TextInput } from "@/components/shared/text-input";
-import { Scissors, ShoppingBag, PlusCircle, Search, ArrowLeft, AlertCircle } from "lucide-react";
+import { ShoppingBag, PlusCircle, Search, ArrowLeft, AlertCircle } from "lucide-react";
 import { setCliente } from "@/hooks/use-comanda";
 import { useTotemSession } from "@/hooks/use-totem-session";
 import { formatCPF } from "@/lib/totem-utils";
@@ -121,10 +121,12 @@ export default function TotemPage() {
       <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-canvas">
         <div className="w-full max-w-4xl text-center">
           <div className="mb-16">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-brand-primary mb-6">
-              <Scissors className="w-10 h-10 text-on-primary" />
-            </div>
-            <h1 className="text-display-lg font-cal text-ink mb-4">Bem-vindo à Barbearia</h1>
+            <img
+              src="/logo.jpeg"
+              alt="DOMETTS Barber & Shop"
+              className="block mx-auto w-32 h-32 rounded-full object-cover border-2 border-yellow-500 mb-6"
+            />
+            <h1 className="text-display-lg text-ink mb-4">Bem vindo a Dometts</h1>
             <p className="text-title-md text-body max-w-lg mx-auto">
               Escolha como deseja prosseguir com seu atendimento
             </p>
@@ -188,7 +190,7 @@ export default function TotemPage() {
         </button>
 
         <div className="mb-12">
-          <h1 className="text-display-md font-cal text-ink mb-2">Identificação</h1>
+          <h1 className="text-display-md text-ink mb-2">Identificação</h1>
           <p className="text-body-md text-body max-w-sm mx-auto">
             Informe seu CPF para iniciar seu atendimento
           </p>

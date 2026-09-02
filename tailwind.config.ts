@@ -10,8 +10,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        cal: ["Cal Sans", "Inter", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", "Oxygen", "Ubuntu", "Cantarell", '"Fira Sans"', '"Droid Sans"', '"Helvetica Neue"', "sans-serif"],
-        "cal-body": ["Inter", "Cal Sans", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", "Oxygen", "Ubuntu", "Cantarell", '"Fira Sans"', '"Droid Sans"', '"Helvetica Neue"', "sans-serif"],
+        cal: ["var(--font-inter)", "Inter", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", "Oxygen", "Ubuntu", "Cantarell", '"Fira Sans"', '"Droid Sans"', '"Helvetica Neue"', "sans-serif"],
+        "cal-body": ["var(--font-inter)", "Inter", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", "Oxygen", "Ubuntu", "Cantarell", '"Fira Sans"', '"Droid Sans"', '"Helvetica Neue"', "sans-serif"],
+        display: ["var(--font-playfair)", "'Playfair Display'", "Georgia", "serif"],
       },
       colors: {
         // ─── DOMETTS Barber & Shop — paleta escura premium ───────────────
