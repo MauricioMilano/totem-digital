@@ -8,9 +8,12 @@ import { TextInput } from "@/components/shared/text-input";
 import { toast } from "sonner";
 import { ArrowLeft, UserPlus } from "lucide-react";
 import { Suspense } from "react";
-import { setCliente, setCustomerStatus } from "@/hooks/use-comanda";
+import { setCliente } from "@/hooks/use-comanda";
 import { useTotemSession } from "@/hooks/use-totem-session";
 import { formatCPF, formatPhone } from "@/lib/totem-utils";
+import { GuestForm } from "@/components/totem/guest-form";
+
+type Step = "form" | "guest";
 
 function NovoClienteForm() {
   const router = useRouter();
@@ -18,15 +21,15 @@ function NovoClienteForm() {
   const cpfFromUrl = searchParams.get("cpf") || "";
   const { clearTotemSession, updateLastActivity } = useTotemSession();
 
+  const [step, setStep] = useState<Step>("form");
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function handleGuestClick() {
+  function handleGuestClick() {
     updateLastActivity();
-    setCustomerStatus("GUEST");
-    router.push("/totem/servicos");
+    setStep("guest");
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -64,6 +67,18 @@ function NovoClienteForm() {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (step === "guest") {
+    return (
+      <GuestForm
+        onBack={() => setStep("form")}
+        onCancel={() => {
+          clearTotemSession();
+          router.push("/totem");
+        }}
+      />
+    );
   }
 
   return (

@@ -6,7 +6,7 @@ import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { TextInput } from "@/components/shared/text-input";
 import { Scissors, ShoppingBag, PlusCircle, Search, ArrowLeft, AlertCircle } from "lucide-react";
-import { setCustomerStatus, setCliente } from "@/hooks/use-comanda";
+import { setCliente } from "@/hooks/use-comanda";
 import { useTotemSession } from "@/hooks/use-totem-session";
 import { formatCPF } from "@/lib/totem-utils";
 import { 
@@ -17,10 +17,11 @@ import {
   DialogDescription,
   DialogFooter
 } from "@/components/ui/dialog";
+import { GuestForm } from "@/components/totem/guest-form";
 
 export default function TotemPage() {
   const router = useRouter();
-  const [step, setStep] = useState<"selection" | "identification">("selection");
+  const [step, setStep] = useState<"selection" | "identification" | "guest">("selection");
   const [cpf, setCpf] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -49,9 +50,8 @@ export default function TotemPage() {
     checkActiveComanda();
   }, []);
 
-  async function handleGuestClick() {
-    setCustomerStatus("GUEST");
-    router.push("/totem/servicos");
+  function handleGuestClick() {
+    setStep("guest");
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -105,6 +105,15 @@ export default function TotemPage() {
   function handleViewExisting() {
     setShowMergeModal(false);
     router.push("/totem/minha-comanda");
+  }
+
+  if (step === "guest") {
+    return (
+      <GuestForm
+        onBack={() => setStep("identification")}
+        onCancel={() => router.push("/totem")}
+      />
+    );
   }
 
   if (step === "selection") {
