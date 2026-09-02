@@ -6,7 +6,24 @@ import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { toast } from "sonner";
 import { ArrowLeft, ShoppingBag, CreditCard } from "lucide-react";
-import { useTotemSession } from "@/hooks/use-totem-session";
+import { useTotemSession, getCliente, getComandaId } from "@/hooks/use-totem-session";
+
+async function resolveComanda() {
+  const comandaId = getComandaId();
+  if (comandaId) {
+    const res = await fetch(`/api/comandas/${comandaId}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.status === "ABERTA") return data;
+    }
+  }
+  const clienteId = getCliente();
+  if (clienteId && clienteId !== "guest") {
+    const res = await fetch(`/api/comandas/totem/${clienteId}`);
+    if (res.ok) return res.json();
+  }
+  return null;
+}
 import { FlowStepper } from "@/components/shared/flow-stepper";
 
 interface ComandaItem {
@@ -26,27 +43,23 @@ interface Comanda {
 
 export default function MinhaComandaPage() {
   const router = useRouter();
-  const { getCliente } = useTotemSession();
+  const { getCliente, getComandaId } = useTotemSession();
   const [comanda, setComanda] = useState<Comanda | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchComanda() {
-      const clienteId = getCliente();
-      if (!clienteId) {
-        toast.error("Você precisa estar identificado para ver sua comanda");
-        router.push("/totem");
-        return;
-      }
-
       try {
-        const res = await fetch(`/api/comandas/totem/${clienteId}`);
-        if (!res.ok) throw new Error();
-        const data = await res.json();
+        const data = await resolveComanda();
+        if (!data) {
+          toast.error("Nenhuma comanda aberta encontrada");
+          router.push("/totem/minha-conta");
+          return;
+        }
         setComanda(data);
       } catch {
         toast.error("Nenhuma comanda aberta encontrada");
-        router.push("/totem");
+        router.push("/totem/minha-conta");
       } finally {
         setLoading(false);
       }

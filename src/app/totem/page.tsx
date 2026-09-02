@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { TextInput } from "@/components/shared/text-input";
-import { ShoppingBag, PlusCircle, Search, ArrowLeft, AlertCircle } from "lucide-react";
+import { PlusCircle, Search, ArrowLeft, AlertCircle } from "lucide-react";
 import { setCliente } from "@/hooks/use-comanda";
 import { useTotemSession } from "@/hooks/use-totem-session";
 import { formatCPF } from "@/lib/totem-utils";
@@ -25,30 +25,8 @@ export default function TotemPage() {
   const [cpf, setCpf] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [hasActiveComanda, setHasActiveComanda] = useState(false);
   const [activeComandaData, setActiveComandaData] = useState<any>(null);
   const [showMergeModal, setShowMergeModal] = useState(false);
-
-  const { getCliente } = useTotemSession();
-
-  useEffect(() => {
-    async function checkActiveComanda() {
-      const clienteId = getCliente();
-      if (clienteId && clienteId !== "guest") {
-        try {
-          const res = await fetch(`/api/comandas/totem/${clienteId}`);
-          if (res.ok) {
-            const data = await res.json();
-            setHasActiveComanda(true);
-            setActiveComandaData(data);
-          }
-        } catch (e) {
-          console.error("Error checking active comanda", e);
-        }
-      }
-    }
-    checkActiveComanda();
-  }, []);
 
   function handleGuestClick() {
     setStep("guest");
@@ -149,7 +127,7 @@ export default function TotemPage() {
 
             {/* Ver Comandas Card */}
             <button
-              onClick={() => router.push("/totem/comandas")}
+              onClick={() => router.push("/totem/minha-conta")}
               className="flex flex-col items-center p-12 bg-surface-card border border-hairline rounded-lg hover:border-brand-primary hover:shadow-lg transition-all group"
             >
               <div className="w-20 h-20 rounded-full bg-brand-primary text-on-primary flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
@@ -161,18 +139,6 @@ export default function TotemPage() {
               </p>
             </button>
           </div>
-
-          {hasActiveComanda && (
-            <div className="mt-12">
-              <ButtonSecondary 
-                onClick={() => router.push("/totem/minha-comanda")} 
-                className="flex items-center justify-center gap-2 mx-auto"
-              >
-                <ShoppingBag className="w-5 h-5" />
-                Continuar com minha comanda aberta
-              </ButtonSecondary>
-            </div>
-          )}
         </div>
       </div>
     );

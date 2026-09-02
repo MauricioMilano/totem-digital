@@ -11,7 +11,6 @@ import {
   getTotal,
   removeItem,
   updateQuantidade,
-  limparComanda,
   hydrateComandaFromStorage,
   subscribeToComanda,
 } from "@/hooks/use-comanda";
@@ -108,7 +107,9 @@ export default function ResumoPage() {
         setComandaId(comanda.id);
       }
 
-      limparComanda();
+      // Do NOT clear the session here: the payment page resolves the comanda
+      // via the saved comandaId (guests have no cliente). The cart resets on
+      // the next identification step.
       router.push("/totem/pagamento");
     } catch {
       toast.error("Erro ao processar comanda. Tente novamente.");

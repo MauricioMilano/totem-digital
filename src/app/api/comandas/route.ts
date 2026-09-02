@@ -2,6 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { resolveItemPrices, validateAndDecrementStock } from "@/lib/comandas-utils";
 
+// Characters without ambiguous ones (0/O, 1/I/L) so guests can read them aloud.
+const RECIBO_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+
+function generateCodigoRecibo(): string {
+  let code = "";
+  for (let i = 0; i < 6; i++) {
+    code += RECIBO_ALPHABET[Math.floor(Math.random() * RECIBO_ALPHABET.length)];
+  }
+  return code;
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const status = searchParams.get("status");
@@ -60,9 +71,13 @@ export async function POST(request: NextRequest) {
 
       const total = resolvedItens.reduce((acc, item) => acc + item.total, 0);
 
+      // Guests have no clienteId — give them a receipt code so they can find their comanda later.
+      const codigoRecibo = !clienteId ? generateCodigoRecibo() : null;
+
       return tx.comanda.create({
         data: {
           clienteId,
+          codigoRecibo,
           formaPagamentoId: formaPagamentoId || null,
           quantidadeParcelas: quantidadeParcelas || 1,
           total,

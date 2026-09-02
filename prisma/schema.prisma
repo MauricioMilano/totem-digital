@@ -130,6 +130,7 @@ model Comanda {
   status             StatusComanda   @default(ABERTA)
   total              Decimal         @default(0) @db.Decimal(10, 2)
   observacao         String?
+  codigoRecibo       String?         @unique
   fechadaEm          DateTime?
   pagaEm             DateTime?
   createdAt          DateTime        @default(now())
