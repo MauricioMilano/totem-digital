@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { TextInput } from "@/components/shared/text-input";
-import { ArrowLeft, Search, User, Clock } from "lucide-react";
+import { Search, User, Clock } from "lucide-react";
+import { BackButton } from "@/components/shared/back-button";
 import { toast } from "sonner";
 import { setCliente } from "@/hooks/use-comanda";
 
@@ -60,13 +61,7 @@ export default function ComandasAtivasPage() {
       {/* Header */}
       <div className="px-6 py-6 border-b border-hairline bg-canvas sticky top-0 z-10 shadow-sm">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <button
-            onClick={() => router.push("/totem")}
-            className="flex items-center gap-2 text-body-md text-body hover:text-ink transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Voltar
-          </button>
+          <BackButton label="Voltar" onClick={() => router.push("/totem")} />
           <h1 className="text-title-md font-cal text-ink">Comandas Ativas</h1>
           <div className="w-16" /> {/* Spacer */}
         </div>

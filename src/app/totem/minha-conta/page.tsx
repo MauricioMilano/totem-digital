@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { TextInput } from "@/components/shared/text-input";
-import { ArrowLeft, Search, Ticket } from "lucide-react";
+import { Search, Ticket } from "lucide-react";
+import { BackButton } from "@/components/shared/back-button";
 import { setCliente, setCustomerStatus } from "@/hooks/use-comanda";
 import { setComandaId } from "@/hooks/use-totem-session";
 
@@ -59,13 +60,7 @@ export default function MinhaContaPage() {
       {/* Header */}
       <div className="px-6 py-6 border-b border-hairline bg-canvas sticky top-0 z-10 shadow-sm">
         <div className="max-w-md mx-auto flex items-center justify-between">
-          <button
-            onClick={() => router.push("/totem")}
-            className="flex items-center gap-2 text-body-md text-body hover:text-ink transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Voltar
-          </button>
+          <BackButton label="Voltar" onClick={() => router.push("/totem")} />
           <h1 className="text-title-md font-cal text-ink">Minha Conta</h1>
           <div className="w-16" />
         </div>

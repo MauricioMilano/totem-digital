@@ -6,7 +6,8 @@ import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { TextInput } from "@/components/shared/text-input";
 import { toast } from "sonner";
-import { ArrowLeft, UserPlus } from "lucide-react";
+import { UserPlus } from "lucide-react";
+import { BackButton } from "@/components/shared/back-button";
 import { Suspense } from "react";
 import { setCliente } from "@/hooks/use-comanda";
 import { useTotemSession } from "@/hooks/use-totem-session";
@@ -84,13 +85,7 @@ function NovoClienteForm() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-md">
-        <button
-          onClick={() => router.push("/totem")}
-          className="flex items-center gap-2 text-body-md text-body hover:text-ink mb-8 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Voltar
-        </button>
+        <BackButton label="Voltar" onClick={() => router.push("/totem")} className="mb-8" />
 
         <div className="mb-8 text-center">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-surface-soft mb-4">

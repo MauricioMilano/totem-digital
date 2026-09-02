@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { toast } from "sonner";
-import { ArrowLeft, ShoppingBag, CreditCard } from "lucide-react";
+import { ShoppingBag, CreditCard } from "lucide-react";
+import { BackButton } from "@/components/shared/back-button";
 import { useTotemSession, getCliente, getComandaId } from "@/hooks/use-totem-session";
 
 async function resolveComanda() {
@@ -81,13 +82,7 @@ export default function MinhaComandaPage() {
   return (
     <div className="min-h-screen flex flex-col items-center px-4 py-6 bg-surface-soft">
       {/* Back button */}
-      <button
-        onClick={() => router.push("/totem")}
-        className="flex items-center gap-2 text-body-md text-body hover:text-ink transition-colors mb-6 self-start"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        Voltar
-      </button>
+      <BackButton label="Voltar" onClick={() => router.push("/totem")} className="mb-6 self-start" />
 
       <div className="w-full max-w-md bg-canvas border border-hairline rounded-3xl shadow-sm overflow-hidden">
         {/* Header */}

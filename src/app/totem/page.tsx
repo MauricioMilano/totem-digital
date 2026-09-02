@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { TextInput } from "@/components/shared/text-input";
-import { PlusCircle, Search, ArrowLeft, AlertCircle } from "lucide-react";
+import { PlusCircle, Search, AlertCircle } from "lucide-react";
+import { BackButton } from "@/components/shared/back-button";
 import { setCliente } from "@/hooks/use-comanda";
 import { useTotemSession } from "@/hooks/use-totem-session";
 import { formatCPF } from "@/lib/totem-utils";
@@ -177,13 +178,11 @@ export default function TotemPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-canvas">
       <div className="w-full max-w-md text-center">
-        <button 
+        <BackButton
+          label="Voltar para o início"
           onClick={() => setStep("selection")}
-          className="mb-8 flex items-center gap-2 text-body-md text-body hover:text-ink transition-colors mx-auto"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Voltar para o início
-        </button>
+          className="mb-8 mx-auto"
+        />
 
         <div className="mb-12">
           <h1 className="text-display-md text-ink mb-2">Identificação</h1>

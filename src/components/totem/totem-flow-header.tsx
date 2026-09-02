@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Hourglass } from "lucide-react";
+import { Hourglass } from "lucide-react";
+import { BackButton } from "@/components/shared/back-button";
 import { FlowStepper } from "@/components/shared/flow-stepper";
 import { useTotemSession } from "@/hooks/use-totem-session";
 import { limparComanda } from "@/hooks/use-comanda";
@@ -57,18 +58,12 @@ export function TotemFlowHeader({ current, backLabel, onBack }: TotemFlowHeaderP
     <>
       <div className="px-6 py-4 border-b border-hairline">
         <div className="mb-4 flex items-center justify-between gap-2">
-          <button
-            onClick={onBack}
-            className="flex items-center gap-2 text-body-md text-body hover:text-ink transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            {backLabel}
-          </button>
+          <BackButton label={backLabel} onClick={onBack} />
 
           <button
             onClick={() => setShowPauseDialog(true)}
             aria-label="Continuar depois"
-            className="flex items-center gap-2 text-body-md text-body hover:text-ink transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-brand-primary/40 text-body-md text-body hover:text-ink transition-colors duration-150 hover:border-brand-primary hover:bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
             <Hourglass className="w-4 h-4" />
             Continuar depois
