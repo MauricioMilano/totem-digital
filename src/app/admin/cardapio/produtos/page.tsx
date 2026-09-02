@@ -100,7 +100,7 @@ export default function ProdutosPage() {
     setShowForm(true);
   }
 
-  if (loading) return <div className="text-body-md text-muted p-8">Carregando...</div>;
+  if (loading) return <div className="text-body-md text-muted-foreground p-8">Carregando...</div>;
 
   return (
     <div className="space-y-6">

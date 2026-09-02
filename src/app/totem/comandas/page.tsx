@@ -84,7 +84,7 @@ export default function ComandasAtivasPage() {
         </div>
 
         {loading ? (
-          <div className="text-center py-20 text-body-md text-muted">Carregando comandas...</div>
+          <div className="text-center py-20 text-body-md text-muted-foreground">Carregando comandas...</div>
         ) : filteredComandas.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {filteredComandas.map((comanda) => (

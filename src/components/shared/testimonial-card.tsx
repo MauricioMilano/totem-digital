@@ -23,7 +23,7 @@ export function TestimonialCard({ avatar, name, role, quote, className }: Testim
           <span className="text-title-sm font-cal-body font-semibold text-ink">
             {name}
           </span>
-          <span className="text-body-sm font-cal-body font-normal text-muted">
+          <span className="text-body-sm font-cal-body font-normal text-muted-foreground">
             {role}
           </span>
         </div>

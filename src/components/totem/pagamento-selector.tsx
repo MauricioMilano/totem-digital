@@ -54,16 +54,16 @@ export function PagamentoSelector({
   const selectedForma = formas.find((f) => f.id === formaPagamentoId);
 
   if (loading) {
-    return <div className="text-body-md text-muted py-4">Carregando formas de pagamento...</div>;
+    return <div className="text-body-md text-muted-foreground py-4">Carregando formas de pagamento...</div>;
   }
 
   if (formas.length === 0) {
-    return <div className="text-body-md text-muted py-4">Nenhuma forma de pagamento disponível</div>;
+    return <div className="text-body-md text-muted-foreground py-4">Nenhuma forma de pagamento disponível</div>;
   }
 
   return (
     <div className="space-y-3">
-      <p className="text-caption text-muted uppercase tracking-wide mb-2">
+      <p className="text-caption text-muted-foreground uppercase tracking-wide mb-2">
         Forma de Pagamento
       </p>
 
@@ -99,7 +99,7 @@ export function PagamentoSelector({
                     {forma.nome}
                   </span>
                   {forma.descricao && (
-                    <span className="text-caption text-muted ml-2">
+                    <span className="text-caption text-muted-foreground ml-2">
                       {forma.descricao}
                     </span>
                   )}

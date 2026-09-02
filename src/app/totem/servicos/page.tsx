@@ -82,7 +82,7 @@ export default function ServicosPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-body-md text-muted">Carregando...</div>
+        <div className="text-body-md text-muted-foreground">Carregando...</div>
       </div>
     );
   }
@@ -138,7 +138,7 @@ export default function ServicosPage() {
                     {servico.descricao && (
                       <p className="text-body-md text-body mt-0.5">{servico.descricao}</p>
                     )}
-                    <p className="text-caption text-muted mt-1">{servico.duracaoMin} min</p>
+                    <p className="text-caption text-muted-foreground mt-1">{servico.duracaoMin} min</p>
                   </div>
                   <div className="flex items-center gap-3 ml-4">
                     <span className="text-title-sm text-ink whitespace-nowrap">
@@ -174,7 +174,7 @@ export default function ServicosPage() {
               <label htmlFor="maioridade" className="text-body-md text-body cursor-pointer block">
                 Tenho mais de 18 anos e quero ver o cardápio de bebidas alcoólicas
               </label>
-              <p className="text-caption text-muted mt-1">
+              <p className="text-caption text-muted-foreground mt-1">
                 Bebidas alcólicas só aparecerão na próxima etapa se esta opção estiver marcada.
               </p>
             </div>

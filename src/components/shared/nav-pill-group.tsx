@@ -37,7 +37,7 @@ export function NavPillGroup({
               "px-3.5 py-2 rounded-pill text-nav-link font-cal-body font-medium leading-relaxed transition-colors",
               isActive
                 ? "bg-canvas text-ink shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
-                : "text-muted hover:text-ink"
+                : "text-muted-foreground hover:text-ink"
             )}
           >
             {segment.label}

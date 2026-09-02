@@ -1,8 +1,6 @@
 import { cn } from "@/lib/utils";
 
-interface FlowStepperStep {
-  label: string;
-}
+type FlowStepperStep = string | { label: string };
 
 interface FlowStepperProps {
   /** Ordem das etapas (Serviços, Bebidas, Produtos, Resumo...). */
@@ -31,6 +29,7 @@ export function FlowStepper({ steps, current, className }: FlowStepperProps) {
         const stepNumber = index + 1;
         const isCurrent = stepNumber === current;
         const isCompleted = stepNumber < current;
+        const label = typeof step === "string" ? step : step.label;
 
         return (
           <div key={stepNumber} className="flex flex-col items-center gap-1 flex-1">
@@ -53,7 +52,7 @@ export function FlowStepper({ steps, current, className }: FlowStepperProps) {
                 isCurrent || isCompleted ? "text-ink font-bold" : "text-body"
               )}
             >
-              {step.label}
+              {label}
             </span>
           </div>
         );

@@ -155,7 +155,7 @@ export default function ResumoPage() {
 
         {/* Itens */}
         <div className="mb-8">
-          <p className="text-caption text-muted uppercase tracking-wide mb-3">
+          <p className="text-caption text-muted-foreground uppercase tracking-wide mb-3">
             Itens
           </p>
           <div className="space-y-2">
@@ -166,7 +166,7 @@ export default function ResumoPage() {
               >
                 <div className="flex-1">
                   <p className="text-body-md text-ink">{item.nomeItem}</p>
-                  <p className="text-caption text-muted">
+                  <p className="text-caption text-muted-foreground">
                     R$ {item.precoUnit.toFixed(2)} cada
                   </p>
                 </div>
@@ -222,7 +222,7 @@ export default function ResumoPage() {
           </div>
           {state.quantidadeParcelas > 1 && (
             <div className="flex justify-end mt-1">
-              <span className="text-caption text-muted">
+              <span className="text-caption text-muted-foreground">
                 {state.quantidadeParcelas}x de R$ {(total / state.quantidadeParcelas).toFixed(2)}
               </span>
             </div>

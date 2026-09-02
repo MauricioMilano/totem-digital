@@ -85,7 +85,7 @@ export default function PagamentoPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-body-md text-muted">Carregando...</div>
+        <div className="text-body-md text-muted-foreground">Carregando...</div>
       </div>
     );
   }
@@ -119,7 +119,7 @@ export default function PagamentoPage() {
 
         <div className="p-8 text-center space-y-6">
           <div>
-            <p className="text-body-md text-muted mb-2">Valor Total a Pagar</p>
+            <p className="text-body-md text-muted-foreground mb-2">Valor Total a Pagar</p>
             <p className="text-display-lg text-ink font-black">
               R$ {Number(comanda.total).toFixed(2)}
             </p>

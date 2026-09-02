@@ -114,7 +114,7 @@ export default function BebidasPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-body-md text-muted">Carregando...</div>
+        <div className="text-body-md text-muted-foreground">Carregando...</div>
       </div>
     );
   }
@@ -181,7 +181,7 @@ export default function BebidasPage() {
               >
                 <div className="flex-1">
                   <h3 className="text-body-md font-medium text-ink">{bebida.nome}</h3>
-                  <p className="text-caption text-muted">
+                  <p className="text-caption text-muted-foreground">
                     {bebida.volumeMl ? `${bebida.volumeMl}ml` : ""}
                     {bebida.possuiAlcool && " · Alcoólica"}
                   </p>
@@ -221,7 +221,7 @@ export default function BebidasPage() {
             );
           })}
           {categoriasFiltradas.length === 0 && (
-            <div className="text-center py-8 text-body-md text-muted">
+            <div className="text-center py-8 text-body-md text-muted-foreground">
               Nenhuma bebida disponível
             </div>
           )}

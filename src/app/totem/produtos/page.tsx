@@ -180,7 +180,7 @@ export default function ProdutosPage() {
                 <div className="flex-1">
                   <h3 className="text-body-md font-medium text-ink">{produto.nome}</h3>
                   {produto.descricao && (
-                    <p className="text-caption text-muted">{produto.descricao}</p>
+                    <p className="text-caption text-muted-foreground">{produto.descricao}</p>
                   )}
                 </div>
                 <div className="flex items-center gap-4">
@@ -216,7 +216,7 @@ export default function ProdutosPage() {
             );
           })}
           {categoriasFiltradas.length === 0 && (
-            <div className="text-center py-8 text-body-md text-muted">
+            <div className="text-center py-8 text-body-md text-muted-foreground">
               Nenhum produto disponível
             </div>
           )}

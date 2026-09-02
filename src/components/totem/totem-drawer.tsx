@@ -142,14 +142,14 @@ export function TotemDrawer() {
 
         <div className="p-6 max-h-[60vh] overflow-y-auto">
           {state.itens.length === 0 ? (
-            <p className="text-center py-10 text-body-md text-muted">Seu carrinho está vazio.</p>
+            <p className="text-center py-10 text-body-md text-muted-foreground">Seu carrinho está vazio.</p>
           ) : (
             <div className="space-y-4">
               {state.itens.map((item, index) => (
                 <div key={`${item.tipo}-${item.id}-${index}`} className="flex items-center justify-between py-3 border-b border-hairline last:border-0">
                   <div className="flex-1">
                     <h4 className="text-title-sm text-ink">{item.nomeItem}</h4>
-                    <p className="text-caption text-muted">
+                    <p className="text-caption text-muted-foreground">
                       R$ {item.precoUnit.toFixed(2)} cada
                     </p>
                   </div>
