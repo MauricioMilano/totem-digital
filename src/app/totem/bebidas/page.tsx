@@ -33,12 +33,33 @@ export default function BebidasPage() {
   const [bebidas, setBebidas] = useState<Bebida[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [categoriaAtiva, setCategoriaAtiva] = useState<string>("todas");
-  const [quantidades, setQuantidades] = useState<Record<string, number>>({});
+  // Modo edição: se veio de "Adicionar Itens à Conta Existente", o sessionStorage
+  // traz as quantidades que a comanda aberta já tinha. Lido na montagem (a chave é
+  // removida no efeito abaixo); como a tela mostra "Carregando..." até o fetch,
+  // ler aqui não causa mismatch de hidratação.
+  const [quantidades, setQuantidades] = useState<Record<string, number>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      return JSON.parse(sessionStorage.getItem("totem-resume-bebidas") || "{}");
+    } catch {
+      return {};
+    }
+  });
   const [loading, setLoading] = useState(true);
   const maioridade = getComandaState().maioridade;
-  // Modo edição: id da comanda aberta e as quantidades de bebida que ela já tinha.
-  const [editingComandaId, setEditingComandaId] = useState<string | null>(null);
-  const [existingBebidas, setExistingBebidas] = useState<Record<string, number>>({});
+  // Id da comanda aberta (modo edição), lido do sessionStorage na montagem.
+  const [editingComandaId] = useState<string | null>(() =>
+    typeof window !== "undefined" ? sessionStorage.getItem("totem-resume-comanda") : null
+  );
+  // Quantidades originais da comanda aberta (para saber o que desmarcar/reduzir).
+  const [existingBebidas] = useState<Record<string, number>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      return JSON.parse(sessionStorage.getItem("totem-resume-bebidas") || "{}");
+    } catch {
+      return {};
+    }
+  });
 
   useEffect(() => {
     hydrateComandaFromStorage();
@@ -49,27 +70,9 @@ export default function BebidasPage() {
       return;
     }
 
-    // Se vier de "Adicionar Itens à Conta Existente", entra em modo edição:
-    // pré-preenche as quantidades que a comanda aberta já tinha e guarda o id
-    // da comanda para poder removê-las (desmarcar) ou adicionar novas.
-    if (typeof window !== "undefined") {
-      const rawBebidas = sessionStorage.getItem("totem-resume-bebidas");
-      const rawComanda = sessionStorage.getItem("totem-resume-comanda");
-      if (rawBebidas || rawComanda) {
-        // Remove apenas a chave de itens; mantém a da comanda para a etapa
-        // seguinte (produtos) continuar em modo edição.
-        sessionStorage.removeItem("totem-resume-bebidas");
-        let existing: Record<string, number> = {};
-        try {
-          existing = rawBebidas ? JSON.parse(rawBebidas) : {};
-        } catch {
-          /* ignora valor inválido */
-        }
-        setQuantidades(existing);
-        setExistingBebidas(existing);
-        if (rawComanda) setEditingComandaId(rawComanda);
-      }
-    }
+    // Remove a chave de itens (já lida na montagem); mantém a da comanda para a
+    // etapa seguinte (produtos) continuar em modo edição.
+    sessionStorage.removeItem("totem-resume-bebidas");
 
     async function load() {
       try {

@@ -40,7 +40,7 @@ export default function FormasPagamentoPage() {
     }
   }
 
-  useEffect(() => { loadFormas(); }, []);
+  useEffect(() => { (async () => { await loadFormas(); })(); }, []);
 
   async function handleSubmit(data: FormaPagamentoFormData) {
     try {

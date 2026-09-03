@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CreditCard, Banknote, Smartphone } from "lucide-react";
 
 interface FormaPagamento {
@@ -37,14 +37,24 @@ export function PagamentoSelector({
   const [formas, setFormas] = useState<FormaPagamento[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Refs para acessar os valores mais recentes sem re-executar o efeito de fetch
+  // (evita refetch quando formaPagamentoId muda após a auto-seleção).
+  const onSelectFormaRef = useRef(onSelectForma);
+  const formaPagamentoIdRef = useRef(formaPagamentoId);
+
+  useEffect(() => {
+    onSelectFormaRef.current = onSelectForma;
+    formaPagamentoIdRef.current = formaPagamentoId;
+  });
+
   useEffect(() => {
     fetch("/api/formas-pagamento")
       .then((res) => res.json())
       .then((data) => {
         setFormas(data);
         // Auto-select first if none selected
-        if (!formaPagamentoId && data.length > 0) {
-          onSelectForma(data[0].id, data[0].nome, data[0].maximoParcelas);
+        if (!formaPagamentoIdRef.current && data.length > 0) {
+          onSelectFormaRef.current(data[0].id, data[0].nome, data[0].maximoParcelas);
         }
       })
       .catch(console.error)

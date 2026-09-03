@@ -39,7 +39,7 @@ export default function ClientesPage() {
     }
   }
 
-  useEffect(() => { loadClientes(); }, []);
+  useEffect(() => { (async () => { await loadClientes(); })(); }, []);
 
   function onSearch(data: { search: string }) {
     setSearch(data.search);

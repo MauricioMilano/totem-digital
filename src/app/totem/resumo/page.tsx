@@ -43,7 +43,7 @@ export default function ResumoPage() {
     return () => {
       unsubscribe();
     };
-  }, [router]);
+  }, [router, getCliente]);
 
   const total = getTotal();
 

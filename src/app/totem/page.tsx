@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { TextInput } from "@/components/shared/text-input";
 import { PlusCircle, Search, AlertCircle } from "lucide-react";
-import { setCliente } from "@/hooks/use-comanda";
+import { setCliente, limparComanda } from "@/hooks/use-comanda";
 import { useTotemSession } from "@/hooks/use-totem-session";
 import { formatCPF } from "@/lib/totem-utils";
 import { 
@@ -31,6 +32,11 @@ export default function TotemPage() {
 
   function handleGuestClick() {
     setStep("guest");
+  }
+
+  function handleNewOrder() {
+    limparComanda();
+    setStep("identification");
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -130,9 +136,11 @@ export default function TotemPage() {
       <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-canvas">
         <div className="w-full max-w-4xl text-center">
           <div className="mb-16">
-            <img
+            <Image
               src="/logo.jpeg"
               alt="DOMETTS Barber & Shop"
+              width={128}
+              height={128}
               className="block mx-auto w-32 h-32 rounded-full object-cover border-2 border-yellow-500 mb-6"
             />
             <h1 className="text-display-lg text-ink mb-4">Bem vindo a Dometts</h1>
@@ -144,7 +152,7 @@ export default function TotemPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Abrir Comanda Card */}
             <button
-              onClick={() => setStep("identification")}
+              onClick={handleNewOrder}
               className="flex flex-col items-center p-12 bg-surface-card border border-hairline rounded-lg hover:border-brand-primary hover:shadow-lg transition-all group"
             >
               <div className="w-20 h-20 rounded-full bg-brand-primary text-on-primary flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">

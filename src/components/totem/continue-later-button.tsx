@@ -69,7 +69,7 @@ export function ContinueLaterButton({ className }: ContinueLaterButtonProps) {
             <DialogTitle className="text-display-sm font-cal text-ink">Continuar depois?</DialogTitle>
             <DialogDescription className="text-body-md text-body pt-2">
               Você será levado de volta ao início. Sua comanda continua aberta e você pode
-              retomar quando quiser pela aba "Minha Conta".
+              retomar quando quiser pela aba &ldquo;Minha Conta&rdquo;.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex-col gap-3 sm:flex-row-reverse mt-6">

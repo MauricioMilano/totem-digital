@@ -25,11 +25,32 @@ export default function ServicosPage() {
   const { getCliente, clearTotemSession, updateLastActivity } = useTotemSession();
   const [servicos, setServicos] = useState<Servico[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selected, setSelected] = useState<string[]>([]);
+  // Modo edição: se veio de "Adicionar Itens à Conta Existente", o sessionStorage
+  // traz os ids dos serviços que a comanda aberta já tinha. Lido na montagem (a
+  // chave é removida no efeito abaixo); como a tela mostra "Carregando..." até o
+  // fetch, ler aqui não causa mismatch de hidratação.
+  const [selected, setSelected] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(sessionStorage.getItem("totem-resume-servicos") || "[]");
+    } catch {
+      return [];
+    }
+  });
   const [maioridade, setMaioridadeLocal] = useState(false);
-  // Modo edição: id da comanda aberta e os ids de serviço que ela já tinha.
-  const [editingComandaId, setEditingComandaId] = useState<string | null>(null);
-  const [existingServiceIds, setExistingServiceIds] = useState<string[]>([]);
+  // Id da comanda aberta (modo edição), lido do sessionStorage na montagem.
+  const [editingComandaId] = useState<string | null>(() =>
+    typeof window !== "undefined" ? sessionStorage.getItem("totem-resume-comanda") : null
+  );
+  // Ids originais dos serviços da comanda aberta (para saber o que desmarcar).
+  const [existingServiceIds] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(sessionStorage.getItem("totem-resume-servicos") || "[]");
+    } catch {
+      return [];
+    }
+  });
 
   useEffect(() => {
     hydrateComandaFromStorage();
@@ -40,34 +61,16 @@ export default function ServicosPage() {
       return;
     }
 
-    // Se vier de "Adicionar Itens à Conta Existente", entra em modo edição:
-    // pré-seleciona os serviços que a comanda aberta já possuía e guarda o id
-    // da comanda para poder removê-los (desmarcar) ou adicionar novos.
-    if (typeof window !== "undefined") {
-      const rawServicos = sessionStorage.getItem("totem-resume-servicos");
-      const rawComanda = sessionStorage.getItem("totem-resume-comanda");
-      if (rawServicos || rawComanda) {
-        // Remove apenas a chave de itens; mantém a chave da comanda para as
-        // etapas seguintes (bebidas/produtos) continuarem em modo edição.
-        sessionStorage.removeItem("totem-resume-servicos");
-        let existingIds: string[] = [];
-        try {
-          existingIds = rawServicos ? JSON.parse(rawServicos) : [];
-        } catch {
-          /* ignora valor inválido */
-        }
-        setSelected(existingIds);
-        setExistingServiceIds(existingIds);
-        if (rawComanda) setEditingComandaId(rawComanda);
-      }
-    }
+    // Remove a chave de itens (já lida na montagem); mantém a da comanda para as
+    // etapas seguintes (bebidas/produtos) continuarem em modo edição.
+    sessionStorage.removeItem("totem-resume-servicos");
 
     fetch("/api/servicos")
       .then((res) => res.json())
       .then((data) => setServicos(data))
       .catch(() => toast.error("Erro ao carregar serviços"))
       .finally(() => setLoading(false));
-  }, [router]);
+  }, [router, getCliente]);
 
   function toggleServico(id: string) {
     setSelected((prev) =>

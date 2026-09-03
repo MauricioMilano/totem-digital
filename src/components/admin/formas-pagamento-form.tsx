@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { ButtonPrimary } from "@/components/shared/button-primary";
@@ -49,7 +49,8 @@ export function FormasPagamentoForm({
     },
   });
 
-  const permiteParcelamento = form.watch("permiteParcelamento");
+  const permiteParcelamento = useWatch({ control: form.control, name: "permiteParcelamento" });
+  const maximoParcelasValue = useWatch({ control: form.control, name: "maximoParcelas" });
 
   useEffect(() => {
     if (editingForma) {
@@ -91,7 +92,7 @@ export function FormasPagamentoForm({
                 }
               }}
               className={`px-3 py-2 rounded-pill text-body-md border transition-colors ${
-                form.watch("maximoParcelas") === String(num)
+                maximoParcelasValue === String(num)
                   ? "bg-brand-primary text-on-primary border-brand-primary"
                   : "bg-canvas text-ink border-hairline hover:border-border-strong"
               }`}

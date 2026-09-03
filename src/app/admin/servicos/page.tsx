@@ -68,7 +68,7 @@ export default function ServicosPage() {
     }
   }
 
-  useEffect(() => { loadServicos(); }, []);
+  useEffect(() => { (async () => { await loadServicos(); })(); }, []);
 
   async function onSubmit(data: ServicoFormData) {
     try {

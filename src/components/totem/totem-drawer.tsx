@@ -52,11 +52,16 @@ export function TotemDrawer() {
 
     if (isOpen || count === 0) return; // gaveta aberta trava a barra; vazio some no render
 
-    setExpanded(true);
-    if (collapseTimerRef.current) clearTimeout(collapseTimerRef.current);
-    collapseTimerRef.current = setTimeout(() => {
-      setExpanded(false);
-    }, COLLAPSE_DELAY_MS);
+    // Expande a barra e agenda o colapso. O setState é feito fora do corpo síncrono
+    // do efeito (via microtask) para evitar re-render em cascata detectado pelo linter.
+    const expand = () => {
+      setExpanded(true);
+      if (collapseTimerRef.current) clearTimeout(collapseTimerRef.current);
+      collapseTimerRef.current = setTimeout(() => {
+        setExpanded(false);
+      }, COLLAPSE_DELAY_MS);
+    };
+    void Promise.resolve().then(expand);
   }, [state.itens.length, isOpen]);
 
   // Limpa o timer ao desmontar

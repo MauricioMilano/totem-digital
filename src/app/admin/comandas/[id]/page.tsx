@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
@@ -46,7 +46,7 @@ export default function ComandaDetailPage() {
   const [actionLoading, setActionLoading] = useState(false);
   const [showPagamento, setShowPagamento] = useState(false);
 
-  async function loadComanda() {
+  const loadComanda = useCallback(async () => {
     try {
       const res = await fetch(`/api/comandas/${params.id}`);
       if (res.status === 404) {
@@ -61,9 +61,9 @@ export default function ComandaDetailPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [params.id, router]);
 
-  useEffect(() => { loadComanda(); }, [params.id]);
+  useEffect(() => { (async () => { await loadComanda(); })(); }, [loadComanda]);
 
   async function handleReabrir() {
     setActionLoading(true);

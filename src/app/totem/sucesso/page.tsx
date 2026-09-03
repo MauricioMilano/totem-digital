@@ -9,17 +9,16 @@ import { useTotemSession } from "@/hooks/use-totem-session";
 export default function SucessoPage() {
   const router = useRouter();
   const { getComandaId, clearTotemSession } = useTotemSession();
-  const [comandaId, setComandaIdState] = useState<string | null>(null);
+  // Lê o id da comanda uma única vez (montagem); o efeito só redireciona/limpa.
+  const [comandaId] = useState<string | null>(() => getComandaId());
 
   useEffect(() => {
-    const id = getComandaId();
-    if (!id) {
+    if (!comandaId) {
       router.push("/totem");
       return;
     }
-    setComandaIdState(id);
     clearTotemSession();
-  }, [router, getComandaId, clearTotemSession]);
+  }, [comandaId, router, clearTotemSession]);
 
   function handleNovaComanda() {
     clearTotemSession();

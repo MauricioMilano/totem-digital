@@ -33,11 +33,32 @@ export default function ProdutosPage() {
   const [categorias, setCategorias] = useState<Categoria[]>(
 []);
   const [categoriaAtiva, setCategoriaAtiva] = useState<string>("todas");
-  const [quantidades, setQuantidades] = useState<Record<string, number>>({});
+  // Modo edição: se veio de "Adicionar Itens à Conta Existente", o sessionStorage
+  // traz as quantidades que a comanda aberta já tinha. Lido na montagem (a chave é
+  // removida no efeito abaixo); como a tela mostra "Carregando..." até o fetch,
+  // ler aqui não causa mismatch de hidratação.
+  const [quantidades, setQuantidades] = useState<Record<string, number>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      return JSON.parse(sessionStorage.getItem("totem-resume-produtos") || "{}");
+    } catch {
+      return {};
+    }
+  });
   const [loading, setLoading] = useState(true);
-  // Modo edição: id da comanda aberta e as quantidades de produto que ela já tinha.
-  const [editingComandaId, setEditingComandaId] = useState<string | null>(null);
-  const [existingProdutos, setExistingProdutos] = useState<Record<string, number>>({});
+  // Id da comanda aberta (modo edição), lido do sessionStorage na montagem.
+  const [editingComandaId] = useState<string | null>(() =>
+    typeof window !== "undefined" ? sessionStorage.getItem("totem-resume-comanda") : null
+  );
+  // Quantidades originais da comanda aberta (para saber o que desmarcar/reduzir).
+  const [existingProdutos] = useState<Record<string, number>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      return JSON.parse(sessionStorage.getItem("totem-resume-produtos") || "{}");
+    } catch {
+      return {};
+    }
+  });
 
   useEffect(() => {
     hydrateComandaFromStorage();
@@ -48,27 +69,10 @@ export default function ProdutosPage() {
       return;
     }
 
-    // Se vier de "Adicionar Itens à Conta Existente", entra em modo edição:
-    // pré-preenche as quantidades que a comanda aberta já tinha e guarda o id
-    // da comanda para poder removê-las (desmarcar) ou adicionar novos.
-    if (typeof window !== "undefined") {
-      const rawProdutos = sessionStorage.getItem("totem-resume-produtos");
-      const rawComanda = sessionStorage.getItem("totem-resume-comanda");
-      if (rawProdutos || rawComanda) {
-        // Última etapa do fluxo: remove também a chave da comanda aberta.
-        sessionStorage.removeItem("totem-resume-produtos");
-        sessionStorage.removeItem("totem-resume-comanda");
-        let existing: Record<string, number> = {};
-        try {
-          existing = rawProdutos ? JSON.parse(rawProdutos) : {};
-        } catch {
-          /* ignora valor inválido */
-        }
-        setQuantidades(existing);
-        setExistingProdutos(existing);
-        if (rawComanda) setEditingComandaId(rawComanda);
-      }
-    }
+    // Última etapa do fluxo: remove as chaves de itens e da comanda aberta
+    // (ambas já lidas na montagem).
+    sessionStorage.removeItem("totem-resume-produtos");
+    sessionStorage.removeItem("totem-resume-comanda");
 
     async function load() {
       try {
@@ -85,7 +89,7 @@ export default function ProdutosPage() {
       }
     }
     load();
-  }, [router]);
+  }, [router, getCliente]);
 
   function addQuantidade(id: string) {
     setQuantidades((prev) => ({ ...prev, [id]: (prev[id] || 0) + 1 }));

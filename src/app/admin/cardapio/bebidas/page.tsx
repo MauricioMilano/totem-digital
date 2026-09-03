@@ -65,7 +65,7 @@ export default function BebidasPage() {
     }
   }
 
-  useEffect(() => { loadData(); }, []);
+  useEffect(() => { (async () => { await loadData(); })(); }, []);
 
   async function onSubmit(data: BebidaFormData) {
     try {

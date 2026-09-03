@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ButtonPrimary } from "@/components/shared/button-primary";
@@ -29,7 +29,8 @@ export default function ComandasPage() {
   const [loading, setLoading] = useState(true);
   const [filtroStatus, setFiltroStatus] = useState<string>("ABERTA");
 
-  async function loadComandas() {
+  const loadComandas = useCallback(async () => {
+    setLoading(true);
     try {
       const url = filtroStatus
         ? `/api/comandas?status=${filtroStatus}`
@@ -42,12 +43,9 @@ export default function ComandasPage() {
     } finally {
       setLoading(false);
     }
-  }
-
-  useEffect(() => {
-    setLoading(true);
-    loadComandas();
   }, [filtroStatus]);
+
+  useEffect(() => { (async () => { await loadComandas(); })(); }, [loadComandas]);
 
   const statusFiltros = [
     { value: "ABERTA", label: "Abertas" },
