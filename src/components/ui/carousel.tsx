@@ -65,17 +65,12 @@ const Carousel = React.forwardRef<
       },
       plugins
     )
-    const [canScrollPrev, setCanScrollPrev] = React.useState(false)
-    const [canScrollNext, setCanScrollNext] = React.useState(false)
+    // Scroll availability is derived from the embla api on each render and
+    // refreshed through event callbacks (never set synchronously in an effect).
+    const [, refresh] = React.useState(0)
 
-    const onSelect = React.useCallback((api: CarouselApi) => {
-      if (!api) {
-        return
-      }
-
-      setCanScrollPrev(api.canScrollPrev())
-      setCanScrollNext(api.canScrollNext())
-    }, [])
+    const canScrollPrev = api ? api.canScrollPrev() : false
+    const canScrollNext = api ? api.canScrollNext() : false
 
     const scrollPrev = React.useCallback(() => {
       api?.scrollPrev()
@@ -111,14 +106,15 @@ const Carousel = React.forwardRef<
         return
       }
 
-      onSelect(api)
-      api.on("reInit", onSelect)
-      api.on("select", onSelect)
+      const refreshScroll = () => refresh((c) => c + 1)
+      api.on("reInit", refreshScroll)
+      api.on("select", refreshScroll)
 
       return () => {
-        api?.off("select", onSelect)
+        api?.off("reInit", refreshScroll)
+        api?.off("select", refreshScroll)
       }
-    }, [api, onSelect])
+    }, [api])
 
     return (
       <CarouselContext.Provider
