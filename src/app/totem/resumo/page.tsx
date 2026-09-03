@@ -16,6 +16,7 @@ import {
   subscribeToComanda,
 } from "@/hooks/use-comanda";
 import { useTotemSession } from "@/hooks/use-totem-session";
+import { CART_PILL_SAFE_PADDING } from "@/lib/totem-utils";
 import { toast } from "sonner";
 import { Trash2, Minus, Plus } from "lucide-react";
 
@@ -146,8 +147,8 @@ export default function ResumoPage() {
         <FlowStepper steps={FLOW_STEPS} current={4} />
       </div>
 
-      {/* pb-20 reserva espaço para a pill do carrinho fixa no rodapé */}
-      <div className="flex-1 max-w-2xl mx-auto w-full px-4 py-8 pb-20">
+      {/* CART_PILL_SAFE_PADDING reserva espaço para a pill do carrinho fixa no rodapé */}
+      <div className={`flex-1 max-w-2xl mx-auto w-full px-4 py-8 ${CART_PILL_SAFE_PADDING}`}>
         <div className="text-center mb-8">
           <h1 className="text-display-md text-ink mb-1">Resumo da Comanda</h1>
           <p className="text-body-md text-body">

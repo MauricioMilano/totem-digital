@@ -1,3 +1,6 @@
+
+export const CART_PILL_SAFE_PADDING = "pb-24";
+
 export async function getActiveComandaId(clienteId: string): Promise<string | null> {
   try {
     const res = await fetch(`/api/comandas/totem/${clienteId}`);

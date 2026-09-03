@@ -8,6 +8,7 @@ import { TotemHeader } from "@/components/totem/totem-header";
 import { FlowStepper, FLOW_STEPS } from "@/components/shared/flow-stepper";
 import { addItem, getComandaState, setMaioridade, hydrateComandaFromStorage } from "@/hooks/use-comanda";
 import { useTotemSession } from "@/hooks/use-totem-session";
+import { CART_PILL_SAFE_PADDING } from "@/lib/totem-utils";
 import { toast } from "sonner";
 import { Check, Scissors, ChevronRight } from "lucide-react";
 
@@ -185,8 +186,8 @@ export default function ServicosPage() {
         <FlowStepper steps={FLOW_STEPS} current={1} />
       </div>
 
-      {/* pb-20 reserva espaço para a pill do carrinho fixa no rodapé */}
-      <div className="flex-1 max-w-2xl mx-auto w-full px-4 py-12 pb-20">
+      {/* CART_PILL_SAFE_PADDING reserva espaço para a pill do carrinho fixa no rodapé */}
+      <div className={`flex-1 max-w-2xl mx-auto w-full px-4 py-12 ${CART_PILL_SAFE_PADDING}`}>
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-surface-soft mb-4">
             <Scissors className="w-6 h-6 text-ink" />

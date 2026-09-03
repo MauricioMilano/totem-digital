@@ -9,6 +9,7 @@ import { TotemHeader } from "@/components/totem/totem-header";
 import { FlowStepper, FLOW_STEPS } from "@/components/shared/flow-stepper";
 import { toast } from "sonner";
 import { CreditCard } from "lucide-react";
+import { CART_PILL_SAFE_PADDING } from "@/lib/totem-utils";
 import { useTotemSession, getCliente, getComandaId } from "@/hooks/use-totem-session";
 
 async function resolveComanda() {
@@ -107,7 +108,9 @@ export default function PagamentoPage() {
   if (!comanda) return null;
 
   return (
-    <div className="min-h-screen flex flex-col items-center px-4 py-6 bg-surface-soft">
+    // CART_PILL_SAFE_PADDING: a pill do carrinho flutua sobre esta página (z-40);
+    // sem reserva, cobriria "Confirmar Pagamento"/"Voltar ao pedido"
+    <div className={`min-h-screen flex flex-col items-center px-4 py-6 bg-surface-soft ${CART_PILL_SAFE_PADDING}`}>
       {/* Header padronizado (stepper separado, logo abaixo) */}
       <div className="w-full max-w-md mb-3">
         <TotemHeader
