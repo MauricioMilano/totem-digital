@@ -13,15 +13,6 @@ enum StatusComanda {
   CANCELADA
 }
 
-enum CategoriaServico {
-  CORTE
-  BARBA
-  HIDRATACAO
-  SOBRANCELHA
-  COMBO
-  OUTRO
-}
-
 model Usuario {
   id        String   @id @default(cuid())
   nome      String
@@ -56,17 +47,28 @@ model FormaPagamento {
   comandas            Comanda[]
 }
 
+model CategoriaServico {
+  id        String   @id @default(cuid())
+  nome      String   @unique
+  descricao String?
+  sortOrder Int      @default(0)
+  servicos  Servico[]
+}
+
 model Servico {
   id          String           @id @default(cuid())
   nome        String
   descricao   String?
-  categoria   CategoriaServico @default(CORTE)
+  categoriaId String
+  categoria   CategoriaServico @relation(fields: [categoriaId], references: [id])
   preco       Decimal          @db.Decimal(10, 2)
   duracaoMin  Int              @default(30)
   ativo       Boolean          @default(true)
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
   itens       ItemComanda[]
+
+  @@index([categoriaId])
 }
 
 model CategoriaBebida {

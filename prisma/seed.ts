@@ -1,4 +1,4 @@
-import { PrismaClient, CategoriaServico, StatusComanda } from "@prisma/client";
+import { PrismaClient, StatusComanda } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -52,19 +52,48 @@ async function main() {
   }
   console.log("✅ Categorias de produto criadas");
 
+  // ─── Categorias de Serviço ───
+  const catServicos = [
+    { nome: "Cortes", descricao: "Cortes de cabelo", sortOrder: 1 },
+    { nome: "Barba", descricao: "Serviços de barba", sortOrder: 2 },
+    { nome: "Hidratação", descricao: "Tratamentos e hidratação", sortOrder: 3 },
+    { nome: "Sobrancelha", descricao: "Design de sobrancelha", sortOrder: 4 },
+    { nome: "Combos", descricao: "Combinações de serviços", sortOrder: 5 },
+    { nome: "Outros", descricao: "Demais serviços", sortOrder: 6 },
+  ];
+  for (const cat of catServicos) {
+    await prisma.categoriaServico.upsert({
+      where: { nome: cat.nome },
+      update: {},
+      create: cat,
+    });
+  }
+  console.log("✅ Categorias de serviço criadas");
+
+  const catPorNome = Object.fromEntries(
+    await Promise.all(
+      catServicos.map(async (c) => {
+        const cat = await prisma.categoriaServico.findUniqueOrThrow({ where: { nome: c.nome } });
+        return [c.nome, cat.id];
+      })
+    )
+  );
+
   // ─── Serviços ───
   const servicos = [
-    { nome: "Corte Masculino", descricao: "Corte tesoura e máquina", categoria: CategoriaServico.CORTE, preco: 50.0, duracaoMin: 40 },
-    { nome: "Corte Degradê", descricao: "Corte degradê com tesoura e máquina", categoria: CategoriaServico.CORTE, preco: 65.0, duracaoMin: 50 },
-    { nome: "Barba Completa", descricao: "Barba com navalha e toalha quente", categoria: CategoriaServico.BARBA, preco: 35.0, duracaoMin: 30 },
-    { nome: "Corte + Barba", descricao: "Combo corte + barba", categoria: CategoriaServico.COMBO, preco: 75.0, duracaoMin: 60 },
-    { nome: "Hidratação Capilar", descricao: "Hidratação profunda", categoria: CategoriaServico.HIDRATACAO, preco: 45.0, duracaoMin: 30 },
-    { nome: "Sobrancelha", descricao: "Design de sobrancelha", categoria: CategoriaServico.SOBRANCELHA, preco: 20.0, duracaoMin: 15 },
-    { nome: "Corte Infantil", descricao: "Corte para crianças até 12 anos", categoria: CategoriaServico.CORTE, preco: 40.0, duracaoMin: 30 },
-    { nome: "Combo Plus", descricao: "Corte + Barba + Hidratação", categoria: CategoriaServico.COMBO, preco: 110.0, duracaoMin: 80 },
+    { nome: "Corte Masculino", descricao: "Corte tesoura e máquina", categoria: "Cortes", preco: 50.0, duracaoMin: 40 },
+    { nome: "Corte Degradê", descricao: "Corte degradê com tesoura e máquina", categoria: "Cortes", preco: 65.0, duracaoMin: 50 },
+    { nome: "Barba Completa", descricao: "Barba com navalha e toalha quente", categoria: "Barba", preco: 35.0, duracaoMin: 30 },
+    { nome: "Corte + Barba", descricao: "Combo corte + barba", categoria: "Combos", preco: 75.0, duracaoMin: 60 },
+    { nome: "Hidratação Capilar", descricao: "Hidratação profunda", categoria: "Hidratação", preco: 45.0, duracaoMin: 30 },
+    { nome: "Sobrancelha", descricao: "Design de sobrancelha", categoria: "Sobrancelha", preco: 20.0, duracaoMin: 15 },
+    { nome: "Corte Infantil", descricao: "Corte para crianças até 12 anos", categoria: "Cortes", preco: 40.0, duracaoMin: 30 },
+    { nome: "Combo Plus", descricao: "Corte + Barba + Hidratação", categoria: "Combos", preco: 110.0, duracaoMin: 80 },
   ];
-  for (const servico of servicos) {
-    await prisma.servico.create({ data: servico });
+  for (const { categoria, ...dadosServico } of servicos) {
+    await prisma.servico.create({
+      data: { ...dadosServico, categoriaId: catPorNome[categoria] },
+    });
   }
   console.log(`✅ ${servicos.length} serviços criados`);
 

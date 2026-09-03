@@ -13,7 +13,7 @@ import { Plus, Pencil, Trash2, Scissors } from "lucide-react";
 const servicoSchema = z.object({
   nome: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
   descricao: z.string().optional(),
-  categoria: z.string(),
+  categoriaId: z.string().min(1, "Categoria é obrigatória"),
   preco: z.string().min(1, "Preço é obrigatório"),
   duracaoMin: z.string().optional(),
 });
@@ -24,23 +24,21 @@ interface Servico {
   id: string;
   nome: string;
   descricao: string | null;
-  categoria: string;
+  categoriaId: string;
+  categoria: { id: string; nome: string };
   preco: number;
   duracaoMin: number;
   ativo: boolean;
 }
 
-const categorias = [
-  { value: "CORTE", label: "Corte" },
-  { value: "BARBA", label: "Barba" },
-  { value: "HIDRATACAO", label: "Hidratação" },
-  { value: "SOBRANCELHA", label: "Sobrancelha" },
-  { value: "COMBO", label: "Combo" },
-  { value: "OUTRO", label: "Outro" },
-];
+interface Categoria {
+  id: string;
+  nome: string;
+}
 
 export default function ServicosPage() {
   const [servicos, setServicos] = useState<Servico[]>([]);
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -50,7 +48,7 @@ export default function ServicosPage() {
     defaultValues: {
       nome: "",
       descricao: "",
-      categoria: "CORTE",
+      categoriaId: "",
       preco: "",
       duracaoMin: "30",
     },
@@ -58,9 +56,16 @@ export default function ServicosPage() {
 
   async function loadServicos() {
     try {
-      const res = await fetch("/api/servicos?todas=true");
-      const data = await res.json();
-      setServicos(data);
+      const [servicosRes, catRes] = await Promise.all([
+        fetch("/api/servicos?todas=true"),
+        fetch("/api/cardapio/categorias-servico"),
+      ]);
+      setServicos(await servicosRes.json());
+      const cats = await catRes.json();
+      setCategorias(cats);
+      if (!form.getValues().categoriaId && cats.length > 0) {
+        form.setValue("categoriaId", cats[0].id);
+      }
     } catch {
       toast.error("Erro ao carregar serviços");
     } finally {
@@ -111,7 +116,7 @@ export default function ServicosPage() {
     form.reset({
       nome: servico.nome,
       descricao: servico.descricao || "",
-      categoria: servico.categoria,
+      categoriaId: servico.categoriaId,
       preco: String(servico.preco),
       duracaoMin: String(servico.duracaoMin),
     });
@@ -133,7 +138,7 @@ export default function ServicosPage() {
           <h1 className="text-display-md text-ink">Serviços</h1>
           <p className="text-body-md text-body mt-1">Gerencie os serviços oferecidos</p>
         </div>
-        <ButtonPrimary onClick={() => { setShowForm(true); setEditingId(null); form.reset({ nome: "", descricao: "", categoria: "CORTE", preco: "", duracaoMin: "30" }); }}>
+        <ButtonPrimary onClick={() => { setShowForm(true); setEditingId(null); form.reset({ nome: "", descricao: "", categoriaId: categorias[0]?.id || "", preco: "", duracaoMin: "30" }); }}>
           <Plus className="w-4 h-4" />
           Novo Serviço
         </ButtonPrimary>
@@ -154,11 +159,11 @@ export default function ServicosPage() {
             <div className="flex flex-col gap-1.5">
               <label className="text-caption text-body">Categoria</label>
               <select
-                {...form.register("categoria")}
+                {...form.register("categoriaId")}
                  className="w-full h-11 px-4 py-3 bg-canvas text-ink text-body-md border border-border rounded-pill focus:outline-none focus:border-border focus:ring-2 focus:ring-primary"
               >
                 {categorias.map((cat) => (
-                  <option key={cat.value} value={cat.value}>{cat.label}</option>
+                  <option key={cat.id} value={cat.id}>{cat.nome}</option>
                 ))}
               </select>
             </div>
@@ -190,7 +195,7 @@ export default function ServicosPage() {
             {servicos.map((servico) => (
               <tr key={servico.id} className="border-b border-hairline last:border-0">
                 <td className="px-4 py-3 text-ink">{servico.nome}</td>
-                <td className="px-4 py-3 text-body">{categorias.find(c => c.value === servico.categoria)?.label || servico.categoria}</td>
+                <td className="px-4 py-3 text-body">{servico.categoria?.nome || "—"}</td>
                 <td className="px-4 py-3 text-right text-ink">R$ {Number(servico.preco).toFixed(2)}</td>
                 <td className="px-4 py-3 text-center text-body">{servico.duracaoMin} min</td>
                 <td className="px-4 py-3 text-center">

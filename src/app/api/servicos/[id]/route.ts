@@ -14,11 +14,12 @@ export async function PUT(
       data: {
         nome: body.nome,
         descricao: body.descricao,
-        categoria: body.categoria,
+        categoriaId: body.categoriaId,
         preco: body.preco ? parseFloat(body.preco) : undefined,
         duracaoMin: body.duracaoMin,
         ativo: body.ativo,
       },
+      include: { categoria: true },
     });
 
     return NextResponse.json(servico);

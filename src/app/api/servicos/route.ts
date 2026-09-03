@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { CategoriaServico } from "@prisma/client";
 
 export async function GET() {
   const servicos = await prisma.servico.findMany({
     where: { ativo: true },
+    include: { categoria: true },
     orderBy: { nome: "asc" },
   });
 
@@ -14,11 +14,11 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { nome, descricao, categoria, preco, duracaoMin } = body;
+    const { nome, descricao, categoriaId, preco, duracaoMin } = body;
 
-    if (!nome || !preco) {
+    if (!nome || !preco || !categoriaId) {
       return NextResponse.json(
-        { error: "Nome e preço são obrigatórios" },
+        { error: "Nome, preço e categoria são obrigatórios" },
         { status: 400 }
       );
     }
@@ -27,10 +27,11 @@ export async function POST(request: NextRequest) {
       data: {
         nome,
         descricao,
-        categoria: categoria as CategoriaServico || "CORTE",
+        categoriaId,
         preco: parseFloat(preco),
         duracaoMin: duracaoMin || 30,
       },
+      include: { categoria: true },
     });
 
     return NextResponse.json(servico, { status: 201 });

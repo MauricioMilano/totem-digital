@@ -15,15 +15,23 @@ interface Servico {
   id: string;
   nome: string;
   descricao: string | null;
-  categoria: string;
+  categoriaId: string;
+  categoria: { id: string; nome: string };
   preco: number;
   duracaoMin: number;
+}
+
+interface Categoria {
+  id: string;
+  nome: string;
 }
 
 export default function ServicosPage() {
   const router = useRouter();
   const { getCliente, clearTotemSession, updateLastActivity } = useTotemSession();
   const [servicos, setServicos] = useState<Servico[]>([]);
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [categoriaAtiva, setCategoriaAtiva] = useState<string>("todas");
   const [loading, setLoading] = useState(true);
   // Modo edição: se veio de "Adicionar Itens à Conta Existente", o sessionStorage
   // traz os ids dos serviços que a comanda aberta já tinha. Lido na montagem (a
@@ -65,11 +73,21 @@ export default function ServicosPage() {
     // etapas seguintes (bebidas/produtos) continuarem em modo edição.
     sessionStorage.removeItem("totem-resume-servicos");
 
-    fetch("/api/servicos")
-      .then((res) => res.json())
-      .then((data) => setServicos(data))
-      .catch(() => toast.error("Erro ao carregar serviços"))
-      .finally(() => setLoading(false));
+    async function load() {
+      try {
+        const [servicosRes, catRes] = await Promise.all([
+          fetch("/api/servicos"),
+          fetch("/api/cardapio/categorias-servico"),
+        ]);
+        setServicos(await servicosRes.json());
+        setCategorias(await catRes.json());
+      } catch {
+        toast.error("Erro ao carregar serviços");
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
   }, [router, getCliente]);
 
   function toggleServico(id: string) {
@@ -138,6 +156,10 @@ export default function ServicosPage() {
     }
   }
 
+  const servicosFiltrados = categoriaAtiva === "todas"
+    ? servicos
+    : servicos.filter((s) => s.categoriaId === categoriaAtiva);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -175,8 +197,35 @@ export default function ServicosPage() {
           </p>
         </div>
 
+        {/* Category filter */}
+        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+          <button
+            onClick={() => setCategoriaAtiva("todas")}
+            className={`px-4 py-2 rounded-lg whitespace-nowrap text-body-md transition-colors ${
+              categoriaAtiva === "todas"
+                ? "bg-brand-primary text-on-primary"
+                : "bg-surface-soft text-body hover:text-ink"
+            }`}
+          >
+            Todas
+          </button>
+          {categorias.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setCategoriaAtiva(cat.id)}
+              className={`px-4 py-2 rounded-lg whitespace-nowrap text-body-md transition-colors ${
+                categoriaAtiva === cat.id
+                  ? "bg-brand-primary text-on-primary"
+                  : "bg-surface-soft text-body hover:text-ink"
+              }`}
+            >
+              {cat.nome}
+            </button>
+          ))}
+        </div>
+
         <div className="space-y-3 mb-8">
-          {servicos.map((servico) => {
+          {servicosFiltrados.map((servico) => {
             const isSelected = selected.includes(servico.id);
             return (
               <button
@@ -214,6 +263,11 @@ export default function ServicosPage() {
               </button>
             );
           })}
+          {servicosFiltrados.length === 0 && (
+            <div className="text-center py-8 text-body-md text-muted-foreground">
+              Nenhum serviço disponível
+            </div>
+          )}
         </div>
 
         {/* Maioridade */}
