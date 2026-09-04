@@ -63,6 +63,13 @@ O arquivo `.env` já está configurado para desenvolvimento:
 DATABASE_URL="postgresql://barbearia:barbearia123@localhost:5433/barbearia_comanda"
 NEXTAUTH_SECRET="super-secret-key-change-in-production-123456"
 NEXTAUTH_URL="http://localhost:3000"
+
+# Integração Trinks (API de agendamento) — https://api.trinks.com
+# ⚠️ A API provisionada tem limite de 5000 requests/mês; as rotas devem minimizar chamadas.
+TRINKS_API_KEY="seu-token-aqui"
+TRINKS_ESTABELECIMENTO_ID=1253
+# Trava de segurança: com "true", mutações (PATCH/PUT) são simuladas sem disparar request à API.
+TRINKS_DRY_RUN=false
 ```
 
 ### 4. Rodar migrations e seed
