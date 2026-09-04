@@ -47,6 +47,7 @@ Confere se a implementação realmente satisfaz os **Critérios de aceite** da t
    - **Tudo ✅ + build ok** → `workitem update` com `state` = Done (`3f1dcfed-...`) e comente o resultado (obrigatório, prefixo `[validate-task]`).
    - **Qualquer ❌** → `workitem update` com `state` = Todo (`6a4eaf7d-...`) e atualize a descrição adicionando uma seção `<h2>Pendências de validação</h2>` listando os itens que falharam, para `/execute-task` retomar.
 6. **Reportar** ao usuário: tabela/checklist dos critérios (passou/falhou), resultado do build/testes, evidência visual e o estado final da task no Plane.
+7. **Condição final:** se a task foi movida para Done, o ciclo de validação está completo. Ofereça de fazer commit do resultado com `git-commit-diff` (opcionalmente com mensagem de commit), já previamente aprovado.
 
 ## Regras
 - Só marca **Done** quando TODOS os critérios passam E o typecheck/testes estão verdes.
