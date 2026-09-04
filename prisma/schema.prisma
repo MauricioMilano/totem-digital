@@ -141,6 +141,9 @@ model Comanda {
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
   itens              ItemComanda[]
+
+  // Relação 1:1 com o espelho Trinks (o FK vive em AgendamentoTrinks.comandaId)
+  agendamentoTrinks  AgendamentoTrinks?
 }
 
 model ItemComanda {
@@ -161,4 +164,36 @@ model ItemComanda {
   quantidade Int      @default(1)
   total      Decimal  @db.Decimal(10, 2)
   createdAt  DateTime @default(now())
+}
+
+// Espelho local do agendamento Trinks (Integração Trinks).
+// A relação 1:1 com Comanda fica completa pela chave comandaId @unique aqui.
+model AgendamentoTrinks {
+  id             String   @id @default(cuid())
+  trinksId       Int      @unique // IdDoAgendamento
+  clienteCpf     String? // chave de união
+  clienteNome    String?
+  clienteTrinksId Int? // IdDoClienteNoEstabelecimento
+  profissionalId Int?
+  servicoNome    String?
+  precoServico   Decimal  @default(0) @db.Decimal(10, 2)
+  duracaoMin     Int?
+  dataInicio     DateTime
+  dataFim        DateTime
+  status         String // Confirmado, Pendente, Cancelado, EmAtendimento, Finalizado, ClienteFaltou
+  origem         String?
+  observacao     String?
+
+  // Ligação com a comanda (1:1)
+  comandaId      String?  @unique
+  comanda        Comanda? @relation(fields: [comandaId], references: [id])
+
+  // Histórico de reagendamento (JSON array de alterações)
+  historico      Json? // [{ action, oldStart, newStart, timestamp }]
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([clienteCpf])
+  @@index([dataInicio])
 }
