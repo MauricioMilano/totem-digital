@@ -6,11 +6,14 @@ import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { TotemHeader } from "@/components/totem/totem-header";
 import { FlowStepper, FLOW_STEPS } from "@/components/shared/flow-stepper";
+import { CategoryChips } from "@/components/totem/category-chips";
+import { MenuItemCard } from "@/components/totem/menu-item-card";
+import { MenuSkeleton } from "@/components/totem/menu-skeleton";
 import { addItem, getComandaState, setMaioridade, hydrateComandaFromStorage } from "@/hooks/use-comanda";
 import { useTotemSession } from "@/hooks/use-totem-session";
 import { CART_PILL_SAFE_PADDING } from "@/lib/totem-utils";
 import { toast } from "sonner";
-import { Check, Scissors, ChevronRight } from "lucide-react";
+import { Scissors, ChevronRight, Clock, BadgeCheck } from "lucide-react";
 
 interface Servico {
   id: string;
@@ -20,6 +23,7 @@ interface Servico {
   categoria: { id: string; nome: string };
   preco: number;
   duracaoMin: number;
+  imagem: string | null;
 }
 
 interface Categoria {
@@ -163,8 +167,18 @@ export default function ServicosPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-body-md text-muted-foreground">Carregando...</div>
+      <div className="min-h-screen flex flex-col">
+        <TotemHeader
+          backLabel="Trocar cliente"
+          showContinueLater
+          onBack={() => {
+            clearTotemSession();
+            router.push("/totem");
+          }}
+        />
+        <div className={`flex-1 max-w-3xl mx-auto w-full px-4 py-8 ${CART_PILL_SAFE_PADDING}`}>
+          <MenuSkeleton rows={5} />
+        </div>
       </div>
     );
   }
@@ -187,7 +201,7 @@ export default function ServicosPage() {
       </div>
 
       {/* CART_PILL_SAFE_PADDING reserva espaço para a pill do carrinho fixa no rodapé */}
-      <div className={`flex-1 max-w-2xl mx-auto w-full px-4 py-12 ${CART_PILL_SAFE_PADDING}`}>
+      <div className={`flex-1 max-w-3xl mx-auto w-full px-4 py-8 ${CART_PILL_SAFE_PADDING}`}>
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-surface-soft mb-4">
             <Scissors className="w-6 h-6 text-ink" />
@@ -198,98 +212,52 @@ export default function ServicosPage() {
           </p>
         </div>
 
-        {/* Category filter */}
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-          <button
-            onClick={() => setCategoriaAtiva("todas")}
-            className={`px-4 py-2 rounded-lg whitespace-nowrap text-body-md transition-colors ${
-              categoriaAtiva === "todas"
-                ? "bg-brand-primary text-on-primary"
-                : "bg-surface-soft text-body hover:text-ink"
-            }`}
-          >
-            Todas
-          </button>
-          {categorias.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setCategoriaAtiva(cat.id)}
-              className={`px-4 py-2 rounded-lg whitespace-nowrap text-body-md transition-colors ${
-                categoriaAtiva === cat.id
-                  ? "bg-brand-primary text-on-primary"
-                  : "bg-surface-soft text-body hover:text-ink"
-              }`}
-            >
-              {cat.nome}
-            </button>
-          ))}
-        </div>
+<CategoryChips categories={categorias} activeId={categoriaAtiva} onChange={setCategoriaAtiva} />
 
-        <div className="space-y-3 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
           {servicosFiltrados.map((servico) => {
             const isSelected = selected.includes(servico.id);
             return (
-              <button
+              <MenuItemCard
                 key={servico.id}
-                onClick={() => toggleServico(servico.id)}
-                className={`w-full text-left p-5 rounded-lg border transition-all ${
-                  isSelected
-                    ? "border-brand-primary bg-brand-primary/5 ring-1 ring-brand-primary"
-                    : "border-hairline bg-canvas hover:border-border-strong"
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <h3 className="text-title-sm text-ink">{servico.nome}</h3>
-                    {servico.descricao && (
-                      <p className="text-body-md text-body mt-0.5">{servico.descricao}</p>
-                    )}
-                    <p className="text-caption text-muted-foreground mt-1">{servico.duracaoMin} min</p>
-                  </div>
-                  <div className="flex items-center gap-3 ml-4">
-                    <span className="text-title-sm text-ink whitespace-nowrap">
-                      R$ {Number(servico.preco).toFixed(2)}
-                    </span>
-                    <div
-                      className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors ${
-                        isSelected
-                          ? "bg-brand-primary border-brand-primary"
-                          : "border-hairline"
-                      }`}
-                    >
-                      {isSelected && <Check className="w-4 h-4 text-on-primary" />}
-                    </div>
-                  </div>
-                </div>
-              </button>
+                name={servico.nome}
+                price={Number(servico.preco)}
+                description={servico.descricao}
+                image={servico.imagem}
+                meta={[{ icon: Clock, label: `${servico.duracaoMin} min` }]}
+                variant="select"
+                selected={isSelected}
+                onSelect={() => toggleServico(servico.id)}
+              />
             );
           })}
-          {servicosFiltrados.length === 0 && (
-            <div className="text-center py-8 text-body-md text-muted-foreground">
-              Nenhum serviço disponível
-            </div>
-          )}
         </div>
+        {servicosFiltrados.length === 0 && (
+          <div className="text-center py-8 text-body-md text-muted-foreground mb-8">
+            Nenhum serviço disponível
+          </div>
+        )}
 
-        {/* Maioridade */}
-        <div className="mb-8 p-4 bg-surface-soft rounded-lg">
-          <div className="flex items-start gap-3">
+        {/* Maioridade — card destacado */}
+        <div className="mb-8 p-5 rounded-xl border border-brand-primary/40 bg-gradient-to-br from-surface-card to-surface-soft">
+          <label htmlFor="maioridade" className="flex items-start gap-3 cursor-pointer group min-h-[44px]">
             <input
               type="checkbox"
               id="maioridade"
               checked={maioridade}
               onChange={(e) => setMaioridadeLocal(e.target.checked)}
-              className="w-5 h-5 mt-0.5 rounded border-hairline"
+              className="w-6 h-6 mt-0.5 rounded border-border-strong accent-[#DCC39E]"
             />
             <div>
-              <label htmlFor="maioridade" className="text-body-md text-body cursor-pointer block">
-                Tenho mais de 18 anos e quero ver o cardápio de bebidas alcoólicas
-              </label>
-              <p className="text-caption text-muted-foreground mt-1">
-                Bebidas alcólicas só aparecerão na próxima etapa se esta opção estiver marcada.
+              <span className="flex items-center gap-2 text-title-sm text-ink">
+                <BadgeCheck className="w-4 h-4 text-brand-primary" />
+                Tenho 18 anos ou mais
+              </span>
+              <p className="text-body-md text-body mt-1">
+                Marque para liberar o cardápio de bebidas alcoólicas na próxima etapa.
               </p>
             </div>
-          </div>
+          </label>
         </div>
 
         <div className="flex gap-3">

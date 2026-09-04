@@ -63,6 +63,7 @@ model Servico {
   categoria   CategoriaServico @relation(fields: [categoriaId], references: [id])
   preco       Decimal          @db.Decimal(10, 2)
   duracaoMin  Int              @default(30)
+  imagem      String?
   ativo       Boolean          @default(true)
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
@@ -90,6 +91,7 @@ model Bebida {
   categoria     CategoriaBebida @relation(fields: [categoriaId], references: [id])
   possuiAlcool  Boolean         @default(false)
   volumeMl      Int?
+  imagem        String?
   ativo         Boolean         @default(true)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
@@ -114,6 +116,7 @@ model Produto {
   categoriaId   String
   categoria     CategoriaProduto @relation(fields: [categoriaId], references: [id])
   quantidade    Int              @default(0)
+  imagem        String?
   ativo         Boolean          @default(true)
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt

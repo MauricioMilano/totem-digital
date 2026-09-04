@@ -4,14 +4,16 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
-import { Skeleton } from "@/components/ui/skeleton";
 import { TotemHeader } from "@/components/totem/totem-header";
 import { FlowStepper, FLOW_STEPS } from "@/components/shared/flow-stepper";
+import { CategoryChips } from "@/components/totem/category-chips";
+import { MenuItemCard } from "@/components/totem/menu-item-card";
+import { MenuSkeleton } from "@/components/totem/menu-skeleton";
 import { addItem, hydrateComandaFromStorage } from "@/hooks/use-comanda";
 import { useTotemSession } from "@/hooks/use-totem-session";
 import { CART_PILL_SAFE_PADDING } from "@/lib/totem-utils";
 import { toast } from "sonner";
-import { Package, Plus, Minus, ChevronRight } from "lucide-react";
+import { Package, ChevronRight } from "lucide-react";
 
 interface Produto {
   id: string;
@@ -20,6 +22,7 @@ interface Produto {
   preco: number;
   categoriaId: string;
   categoria: { id: string; nome: string };
+  imagem: string | null;
 }
 
 interface Categoria {
@@ -177,17 +180,14 @@ export default function ProdutosPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col px-4 py-8">
-        <div className="space-y-4">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="flex items-center justify-between p-4 rounded-lg border border-hairline bg-canvas">
-              <div className="space-y-2">
-                <Skeleton className="h-5 w-32" />
-                <Skeleton className="h-4 w-24" />
-              </div>
-              <Skeleton className="h-8 w-16" />
-            </div>
-          ))}
+      <div className="min-h-screen flex flex-col">
+        <TotemHeader
+          backLabel="Voltar às bebidas"
+          showContinueLater
+          onBack={() => router.push("/totem/bebidas")}
+        />
+        <div className={`flex-1 max-w-3xl mx-auto w-full px-4 py-8 ${CART_PILL_SAFE_PADDING}`}>
+          <MenuSkeleton rows={5} />
         </div>
       </div>
     );
@@ -218,84 +218,31 @@ export default function ProdutosPage() {
           </p>
         </div>
 
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-          <button
-            onClick={() => setCategoriaAtiva("todas")}
-            className={`px-4 py-2 rounded-lg whitespace-nowrap text-body-md transition-colors ${
-              categoriaAtiva === "todas"
-                ? "bg-brand-primary text-on-primary"
-                : "bg-surface-soft text-body hover:text-ink"
-            }`}
-          >
-            Todas
-          </button>
-          {categorias.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setCategoriaAtiva(cat.id)}
-              className={`px-4 py-2 rounded-lg whitespace-nowrap text-body-md transition-colors ${
-                categoriaAtiva === cat.id
-                  ? "bg-brand-primary text-on-primary"
-                  : "bg-surface-soft text-body hover:text-ink"
-              }`}
-            >
-              {cat.nome}
-            </button>
-          ))}
-        </div>
+<CategoryChips categories={categorias} activeId={categoriaAtiva} onChange={setCategoriaAtiva} />
 
-        <div className="space-y-2 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
           {categoriasFiltradas.map((produto) => {
             const qtd = quantidades[produto.id] || 0;
             return (
-              <div
+              <MenuItemCard
                 key={produto.id}
-                className="flex items-center justify-between p-4 rounded-lg border border-hairline bg-canvas hover:border-border-strong transition-colors"
-              >
-                <div className="flex-1">
-                  <h3 className="text-body-md font-medium text-ink">{produto.nome}</h3>
-                  {produto.descricao && (
-                    <p className="text-caption text-muted-foreground">{produto.descricao}</p>
-                  )}
-                </div>
-                <div className="flex items-center gap-4">
-                  <span className="text-body-md font-medium text-ink">
-                    R$ {Number(produto.preco).toFixed(2)}
-                  </span>
-                  {qtd > 0 ? (
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => removeQuantidade(produto.id)}
-                        className="w-8 h-8 rounded-full border border-hairline flex items-center justify-center hover:bg-surface-soft"
-                      >
-                        <Minus className="w-4 h-4" />
-                      </button>
-                      <span className="w-6 text-center text-body-md font-medium text-ink">{qtd}</span>
-                      <button
-                        onClick={() => addQuantidade(produto.id)}
-                        className="w-8 h-8 rounded-full bg-brand-primary text-on-primary flex items-center justify-center hover:bg-brand-primary-active"
-                      >
-                        <Plus className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => addQuantidade(produto.id)}
-                      className="w-9 h-9 rounded-lg border border-hairline flex items-center justify-center hover:bg-surface-soft"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </button>
-                  )}
-                </div>
-              </div>
+                name={produto.nome}
+                price={Number(produto.preco)}
+                description={produto.descricao}
+                image={produto.imagem}
+                variant="stepper"
+                quantity={qtd}
+                onAdd={() => addQuantidade(produto.id)}
+                onRemove={() => removeQuantidade(produto.id)}
+              />
             );
           })}
-          {categoriasFiltradas.length === 0 && (
-            <div className="text-center py-8 text-body-md text-muted-foreground">
-              Nenhum produto disponível
-            </div>
-          )}
         </div>
+        {categoriasFiltradas.length === 0 && (
+          <div className="text-center py-8 text-body-md text-muted-foreground mb-8">
+            Nenhum produto disponível
+          </div>
+        )}
 
         <div className="flex gap-3">
           <ButtonSecondary

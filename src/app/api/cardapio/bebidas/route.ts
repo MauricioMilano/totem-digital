@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { nome, descricao, preco, categoriaId, possuiAlcool, volumeMl } = body;
+    const { nome, descricao, preco, categoriaId, possuiAlcool, volumeMl, imagem } = body;
 
     if (!nome || !preco || !categoriaId) {
       return NextResponse.json(
@@ -37,6 +37,7 @@ export async function POST(request: NextRequest) {
         categoriaId,
         possuiAlcool: possuiAlcool || false,
         volumeMl: volumeMl ? parseInt(volumeMl) : null,
+        imagem: imagem || null,
       },
       include: { categoria: true },
     });
@@ -66,6 +67,7 @@ export async function PUT(request: NextRequest) {
         ...data,
         preco: data.preco ? parseFloat(data.preco) : undefined,
         volumeMl: data.volumeMl ? parseInt(data.volumeMl) : undefined,
+        imagem: data.imagem === undefined ? undefined : data.imagem,
       },
       include: { categoria: true },
     });

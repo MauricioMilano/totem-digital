@@ -17,6 +17,7 @@ export async function PUT(
         preco: body.preco ? parseFloat(body.preco) : undefined,
         categoriaId: body.categoriaId,
         quantidade: body.quantidade ? parseInt(body.quantidade) : undefined,
+        imagem: body.imagem === undefined ? undefined : body.imagem,
         ativo: body.ativo,
       },
       include: { categoria: true },

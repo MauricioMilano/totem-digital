@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "StatusComanda" AS ENUM ('ABERTA', 'EM_ANDAMENTO', 'FECHADA', 'PAGA', 'CANCELADA');
+CREATE TYPE "StatusComanda" AS ENUM ('ABERTA', 'PAGA', 'CANCELADA');
 
 -- CreateEnum
 CREATE TYPE "CategoriaServico" AS ENUM ('CORTE', 'BARBA', 'HIDRATACAO', 'SOBRANCELHA', 'COMBO', 'OUTRO');

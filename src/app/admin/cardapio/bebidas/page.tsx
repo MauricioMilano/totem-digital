@@ -7,6 +7,7 @@ import { z } from "zod";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { TextInput } from "@/components/shared/text-input";
+import { ImageUpload } from "@/components/shared/image-upload";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Wine } from "lucide-react";
 
@@ -35,6 +36,7 @@ interface Bebida {
   categoria: Categoria;
   possuiAlcool: boolean;
   volumeMl: number | null;
+  imagem: string | null;
   ativo: boolean;
 }
 
@@ -44,6 +46,7 @@ export default function BebidasPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [imagem, setImagem] = useState<string | null>(null);
 
   const form = useForm<BebidaFormData>({
     resolver: zodResolver(bebidaSchema),
@@ -75,12 +78,13 @@ export default function BebidasPage() {
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editingId ? { id: editingId, ...data } : data),
+        body: JSON.stringify(editingId ? { id: editingId, ...data, imagem } : { ...data, imagem }),
       });
 
       if (!res.ok) throw new Error();
       toast.success(editingId ? "Bebida atualizada" : "Bebida criada");
       form.reset();
+      setImagem(null);
       setEditingId(null);
       setShowForm(false);
       loadData();
@@ -110,6 +114,7 @@ export default function BebidasPage() {
       possuiAlcool: bebida.possuiAlcool,
       volumeMl: bebida.volumeMl ? String(bebida.volumeMl) : "",
     });
+    setImagem(bebida.imagem || null);
     setShowForm(true);
   }
 
@@ -122,7 +127,7 @@ export default function BebidasPage() {
           <h1 className="text-display-md text-ink">Bebidas</h1>
           <p className="text-body-md text-body mt-1">Gerencie o cardápio de bebidas</p>
         </div>
-        <ButtonPrimary onClick={() => { setShowForm(true); setEditingId(null); form.reset(); }}>
+        <ButtonPrimary onClick={() => { setShowForm(true); setEditingId(null); setImagem(null); form.reset(); }}>
           <Plus className="w-4 h-4" /> Nova Bebida
         </ButtonPrimary>
       </div>
@@ -136,6 +141,10 @@ export default function BebidasPage() {
             </div>
             <div className="md:col-span-2">
               <TextInput label="Descrição" {...form.register("descricao")} />
+            </div>
+            <div className="md:col-span-2 flex flex-col gap-1.5">
+              <label className="text-caption text-body">Imagem</label>
+              <ImageUpload value={imagem} onChange={setImagem} />
             </div>
             <TextInput label="Preço (R$)" type="number" step="0.01" {...form.register("preco")} />
             <div className="flex flex-col gap-1.5">
@@ -154,7 +163,7 @@ export default function BebidasPage() {
             </div>
             <div className="md:col-span-2 flex gap-3">
               <ButtonPrimary type="submit">{editingId ? "Salvar" : "Criar"}</ButtonPrimary>
-              <ButtonSecondary type="button" onClick={() => { setShowForm(false); setEditingId(null); form.reset(); }}>Cancelar</ButtonSecondary>
+              <ButtonSecondary type="button" onClick={() => { setShowForm(false); setEditingId(null); setImagem(null); form.reset(); }}>Cancelar</ButtonSecondary>
             </div>
           </form>
         </div>
@@ -164,6 +173,7 @@ export default function BebidasPage() {
         <table className="w-full text-body-md">
           <thead>
             <tr className="border-b border-hairline bg-surface-soft">
+              <th className="text-left px-4 py-3 text-caption text-muted-foreground">Foto</th>
               <th className="text-left px-4 py-3 text-caption text-muted-foreground">Nome</th>
               <th className="text-left px-4 py-3 text-caption text-muted-foreground">Categoria</th>
               <th className="text-right px-4 py-3 text-caption text-muted-foreground">Preço</th>
@@ -176,6 +186,14 @@ export default function BebidasPage() {
           <tbody>
             {bebidas.map((b) => (
               <tr key={b.id} className="border-b border-hairline last:border-0">
+                <td className="px-4 py-3">
+                  {b.imagem ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={b.imagem} alt={b.nome} className="h-10 w-14 rounded object-cover border border-hairline" />
+                  ) : (
+                    <div className="h-10 w-14 rounded bg-surface-soft flex items-center justify-center text-caption text-muted-foreground">—</div>
+                  )}
+                </td>
                 <td className="px-4 py-3 text-ink">{b.nome}</td>
                 <td className="px-4 py-3 text-body">{b.categoria.nome}</td>
                 <td className="px-4 py-3 text-right text-ink">R$ {Number(b.preco).toFixed(2)}</td>
@@ -197,7 +215,7 @@ export default function BebidasPage() {
               </tr>
             ))}
             {bebidas.length === 0 && (
-              <tr><td colSpan={7} className="px-4 py-8 text-center text-body"><Wine className="w-8 h-8 mx-auto mb-2 text-ink" />Nenhuma bebida encontrada</td></tr>
+              <tr><td colSpan={8} className="px-4 py-8 text-center text-body"><Wine className="w-8 h-8 mx-auto mb-2 text-ink" />Nenhuma bebida encontrada</td></tr>
             )}
           </tbody>
         </table>

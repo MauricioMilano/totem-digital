@@ -14,7 +14,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { nome, descricao, categoriaId, preco, duracaoMin } = body;
+    const { nome, descricao, categoriaId, preco, duracaoMin, imagem } = body;
 
     if (!nome || !preco || !categoriaId) {
       return NextResponse.json(
@@ -29,7 +29,8 @@ export async function POST(request: NextRequest) {
         descricao,
         categoriaId,
         preco: parseFloat(preco),
-        duracaoMin: duracaoMin || 30,
+        duracaoMin: duracaoMin ? parseInt(duracaoMin) : 30,
+        imagem: imagem || null,
       },
       include: { categoria: true },
     });

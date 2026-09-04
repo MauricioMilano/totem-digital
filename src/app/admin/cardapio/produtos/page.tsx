@@ -7,6 +7,7 @@ import { z } from "zod";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { TextInput } from "@/components/shared/text-input";
+import { ImageUpload } from "@/components/shared/image-upload";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Package } from "lucide-react";
 
@@ -33,6 +34,7 @@ interface Produto {
   categoriaId: string;
   categoria: Categoria;
   quantidade: number;
+  imagem: string | null;
   ativo: boolean;
 }
 
@@ -42,6 +44,7 @@ export default function ProdutosPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [imagem, setImagem] = useState<string | null>(null);
 
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
@@ -70,11 +73,12 @@ export default function ProdutosPage() {
       const res = await fetch(editingId ? `/api/cardapio/produtos/${editingId}` : "/api/cardapio/produtos", {
         method: editingId ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editingId ? { id: editingId, ...data } : data),
+        body: JSON.stringify(editingId ? { id: editingId, ...data, imagem } : { ...data, imagem }),
       });
       if (!res.ok) throw new Error();
       toast.success(editingId ? "Produto atualizado" : "Produto criado");
       form.reset();
+      setImagem(null);
       setEditingId(null);
       setShowForm(false);
       loadData();
@@ -97,6 +101,7 @@ export default function ProdutosPage() {
   function handleEdit(p: Produto) {
     setEditingId(p.id);
     form.reset({ nome: p.nome, descricao: p.descricao || "", preco: String(p.preco), categoriaId: p.categoriaId, quantidade: String(p.quantidade) });
+    setImagem(p.imagem || null);
     setShowForm(true);
   }
 
@@ -109,7 +114,7 @@ export default function ProdutosPage() {
           <h1 className="text-display-md text-ink">Produtos</h1>
           <p className="text-body-md text-body mt-1">Gerencie os produtos para venda</p>
         </div>
-        <ButtonPrimary onClick={() => { setShowForm(true); setEditingId(null); form.reset(); }}>
+        <ButtonPrimary onClick={() => { setShowForm(true); setEditingId(null); setImagem(null); form.reset(); }}>
           <Plus className="w-4 h-4" /> Novo Produto
         </ButtonPrimary>
       </div>
@@ -120,6 +125,10 @@ export default function ProdutosPage() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="md:col-span-2"><TextInput label="Nome" {...form.register("nome")} /></div>
             <div className="md:col-span-2"><TextInput label="Descrição" {...form.register("descricao")} /></div>
+            <div className="md:col-span-2 flex flex-col gap-1.5">
+              <label className="text-caption text-body">Imagem</label>
+              <ImageUpload value={imagem} onChange={setImagem} />
+            </div>
             <TextInput label="Preço (R$)" type="number" step="0.01" {...form.register("preco")} />
             <div className="flex flex-col gap-1.5">
               <label className="text-caption text-body">Categoria</label>
@@ -131,7 +140,7 @@ export default function ProdutosPage() {
             <TextInput label="Quantidade em estoque" type="number" {...form.register("quantidade")} />
             <div className="md:col-span-2 flex gap-3">
               <ButtonPrimary type="submit">{editingId ? "Salvar" : "Criar"}</ButtonPrimary>
-              <ButtonSecondary type="button" onClick={() => { setShowForm(false); setEditingId(null); form.reset(); }}>Cancelar</ButtonSecondary>
+              <ButtonSecondary type="button" onClick={() => { setShowForm(false); setEditingId(null); setImagem(null); form.reset(); }}>Cancelar</ButtonSecondary>
             </div>
           </form>
         </div>
@@ -141,6 +150,7 @@ export default function ProdutosPage() {
         <table className="w-full text-body-md">
           <thead>
             <tr className="border-b border-hairline bg-surface-soft">
+              <th className="text-left px-4 py-3 text-caption text-muted-foreground">Foto</th>
               <th className="text-left px-4 py-3 text-caption text-muted-foreground">Nome</th>
               <th className="text-left px-4 py-3 text-caption text-muted-foreground">Categoria</th>
               <th className="text-right px-4 py-3 text-caption text-muted-foreground">Preço</th>
@@ -152,6 +162,14 @@ export default function ProdutosPage() {
           <tbody>
             {produtos.map((p) => (
               <tr key={p.id} className="border-b border-hairline last:border-0">
+                <td className="px-4 py-3">
+                  {p.imagem ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={p.imagem} alt={p.nome} className="h-10 w-14 rounded object-cover border border-hairline" />
+                  ) : (
+                    <div className="h-10 w-14 rounded bg-surface-soft flex items-center justify-center text-caption text-muted-foreground">—</div>
+                  )}
+                </td>
                 <td className="px-4 py-3 text-ink">{p.nome}</td>
                 <td className="px-4 py-3 text-body">{p.categoria.nome}</td>
                 <td className="px-4 py-3 text-right text-ink">R$ {Number(p.preco).toFixed(2)}</td>
@@ -170,7 +188,7 @@ export default function ProdutosPage() {
               </tr>
             ))}
             {produtos.length === 0 && (
-              <tr><td colSpan={6} className="px-4 py-8 text-center text-body"><Package className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />Nenhum produto encontrado</td></tr>
+              <tr><td colSpan={7} className="px-4 py-8 text-center text-body"><Package className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />Nenhum produto encontrado</td></tr>
             )}
           </tbody>
         </table>

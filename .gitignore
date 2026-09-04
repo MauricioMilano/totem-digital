@@ -42,3 +42,7 @@ next-env.d.ts
 .dyad/
 .opencode/
 /openspec/
+
+# user-uploaded images (keep folder, ignore contents)
+/public/uploads/*
+!/public/uploads/.gitkeep

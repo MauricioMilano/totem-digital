@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { nome, descricao, preco, categoriaId, quantidade } = body;
+    const { nome, descricao, preco, categoriaId, quantidade, imagem } = body;
 
     if (!nome || !preco || !categoriaId) {
       return NextResponse.json(
@@ -36,6 +36,7 @@ export async function POST(request: NextRequest) {
         preco: parseFloat(preco),
         categoriaId,
         quantidade: quantidade ? parseInt(quantidade) : 0,
+        imagem: imagem || null,
       },
       include: { categoria: true },
     });

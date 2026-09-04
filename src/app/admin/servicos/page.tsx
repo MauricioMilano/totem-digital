@@ -7,6 +7,7 @@ import { z } from "zod";
 import { ButtonPrimary } from "@/components/shared/button-primary";
 import { ButtonSecondary } from "@/components/shared/button-secondary";
 import { TextInput } from "@/components/shared/text-input";
+import { ImageUpload } from "@/components/shared/image-upload";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Scissors } from "lucide-react";
 
@@ -28,6 +29,7 @@ interface Servico {
   categoria: { id: string; nome: string };
   preco: number;
   duracaoMin: number;
+  imagem: string | null;
   ativo: boolean;
 }
 
@@ -42,6 +44,7 @@ export default function ServicosPage() {
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [imagem, setImagem] = useState<string | null>(null);
 
   const form = useForm<ServicoFormData>({
     resolver: zodResolver(servicoSchema),
@@ -85,13 +88,14 @@ export default function ServicosPage() {
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, imagem }),
       });
 
       if (!res.ok) throw new Error("Erro ao salvar");
 
       toast.success(editingId ? "Serviço atualizado" : "Serviço criado");
       form.reset();
+      setImagem(null);
       setEditingId(null);
       setShowForm(false);
       loadServicos();
@@ -120,6 +124,7 @@ export default function ServicosPage() {
       preco: String(servico.preco),
       duracaoMin: String(servico.duracaoMin),
     });
+    setImagem(servico.imagem || null);
     setShowForm(true);
   }
 
@@ -138,7 +143,7 @@ export default function ServicosPage() {
           <h1 className="text-display-md text-ink">Serviços</h1>
           <p className="text-body-md text-body mt-1">Gerencie os serviços oferecidos</p>
         </div>
-        <ButtonPrimary onClick={() => { setShowForm(true); setEditingId(null); form.reset({ nome: "", descricao: "", categoriaId: categorias[0]?.id || "", preco: "", duracaoMin: "30" }); }}>
+        <ButtonPrimary onClick={() => { setShowForm(true); setEditingId(null); setImagem(null); form.reset({ nome: "", descricao: "", categoriaId: categorias[0]?.id || "", preco: "", duracaoMin: "30" }); }}>
           <Plus className="w-4 h-4" />
           Novo Serviço
         </ButtonPrimary>
@@ -156,6 +161,10 @@ export default function ServicosPage() {
             <div className="md:col-span-2">
               <TextInput label="Descrição" {...form.register("descricao")} />
             </div>
+            <div className="md:col-span-2 flex flex-col gap-1.5">
+              <label className="text-caption text-body">Imagem</label>
+              <ImageUpload value={imagem} onChange={setImagem} />
+            </div>
             <div className="flex flex-col gap-1.5">
               <label className="text-caption text-body">Categoria</label>
               <select
@@ -171,7 +180,7 @@ export default function ServicosPage() {
             <TextInput label="Duração (min)" type="number" {...form.register("duracaoMin")} />
             <div className="md:col-span-2 flex gap-3">
               <ButtonPrimary type="submit">{editingId ? "Salvar" : "Criar"}</ButtonPrimary>
-              <ButtonSecondary type="button" onClick={() => { setShowForm(false); setEditingId(null); form.reset(); }}>
+              <ButtonSecondary type="button" onClick={() => { setShowForm(false); setEditingId(null); setImagem(null); form.reset(); }}>
                 Cancelar
               </ButtonSecondary>
             </div>
@@ -183,6 +192,7 @@ export default function ServicosPage() {
         <table className="w-full text-body-md">
           <thead>
             <tr className="border-b border-hairline bg-surface-soft">
+              <th className="text-left px-4 py-3 text-caption text-muted-foreground">Foto</th>
               <th className="text-left px-4 py-3 text-caption text-muted-foreground">Nome</th>
               <th className="text-left px-4 py-3 text-caption text-muted-foreground">Categoria</th>
               <th className="text-right px-4 py-3 text-caption text-muted-foreground">Preço</th>
@@ -194,6 +204,14 @@ export default function ServicosPage() {
           <tbody>
             {servicos.map((servico) => (
               <tr key={servico.id} className="border-b border-hairline last:border-0">
+                <td className="px-4 py-3">
+                  {servico.imagem ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={servico.imagem} alt={servico.nome} className="h-10 w-14 rounded object-cover border border-hairline" />
+                  ) : (
+                    <div className="h-10 w-14 rounded bg-surface-soft flex items-center justify-center text-caption text-muted-foreground">—</div>
+                  )}
+                </td>
                 <td className="px-4 py-3 text-ink">{servico.nome}</td>
                 <td className="px-4 py-3 text-body">{servico.categoria?.nome || "—"}</td>
                 <td className="px-4 py-3 text-right text-ink">R$ {Number(servico.preco).toFixed(2)}</td>
@@ -217,7 +235,7 @@ export default function ServicosPage() {
             ))}
             {servicos.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-body">
+                <td colSpan={7} className="px-4 py-8 text-center text-body">
                   <Scissors className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
                   Nenhum serviço encontrado
                 </td>
